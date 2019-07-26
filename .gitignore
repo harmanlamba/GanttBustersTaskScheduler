@@ -299,4 +299,7 @@ local.properties
 
 .sts4-cache/
 
+# VSCODE stuff
+.vscode
+
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all
