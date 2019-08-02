@@ -1,6 +1,7 @@
 ## Independent JPEG Group (IJG) JPEG v9c
 
 ### IJG License
+
 <pre>
 /*
  * jcapimin.c
