@@ -1,6 +1,7 @@
 ## xmlsoft.org: libxml2 v2.9.7
 
 ### libxml2 License
+
 <pre>
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
