@@ -1,6 +1,7 @@
 ## IBM International Components for Unicode (ICU4C) v62.1
 
 ### ICU License
+
 <pre>
 COPYRIGHT AND PERMISSION NOTICE (ICU 58 and later)
 
