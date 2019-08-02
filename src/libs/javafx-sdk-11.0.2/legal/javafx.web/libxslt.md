@@ -1,6 +1,7 @@
 ## xmlsoft.org: libxslt v1.1.32
 
 ### libxslt License
+
 <pre>
 Copyright (C) 1998-2012 Daniel Veillard.  All Rights Reserved.
 
