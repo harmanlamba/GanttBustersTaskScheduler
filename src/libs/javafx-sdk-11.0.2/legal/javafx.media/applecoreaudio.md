@@ -1,9 +1,11 @@
 ## Apple Computer: CoreAudio Utility Classes v2.0
 
 ### Apple Computer CoreAudio Notice
+
 This software is present only on Mac OS X systems.
 
 ### Apple Computer CoreAudio License
+
 <pre>
 
 File:
