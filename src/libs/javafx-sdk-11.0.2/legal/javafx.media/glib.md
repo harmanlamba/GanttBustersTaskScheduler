@@ -1,6 +1,7 @@
 ## GNU Glib v2.56.1
 
 ### Glib Notice
+
 <pre>
 You are receiving a copy of GNU Glib, Version: 2.56.1 in either source or
 object code in the JavaFX runtime or JavaFX SDK. The terms of the
@@ -26,6 +27,7 @@ code is here:
 </pre>
 
 ### LGPL 2.1
+
 <pre>
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
@@ -531,5 +533,3 @@ necessary.  Here is a sample; alter the names:
 That's all there is to it!
 
 </pre>
-
-
