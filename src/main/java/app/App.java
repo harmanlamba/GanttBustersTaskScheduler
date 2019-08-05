@@ -1,6 +1,8 @@
 package app;
 
-import fileio.IO;
+import algorithm.Algorithm;
+import algorithm.sequential.Sequential;
+import graph.Graph;
 
 /**
  * Hello world!
@@ -8,11 +10,15 @@ import fileio.IO;
  */
 public class App 
 {
-    public static void main( String[] args ) {
-        System.out.println("Hello World!");
+    public static void main( String[] args )
+    {
+        Graph graph = new Graph();
+        graph.setup();
+        Algorithm sequential = new Sequential(graph);
+        sequential.solve();
     }
 
-// DONT REMOVE THIS
+// DON'T REMOVE THIS
 //    public static void visualisationSample() {
 //        //launch(args);
 //
