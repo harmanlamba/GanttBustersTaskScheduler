@@ -1,4 +1,4 @@
-package main.java.algorithm.idastarparallel;
+package algorithm.idastarparallel;
 
 public class IDAStarParallel {
 }

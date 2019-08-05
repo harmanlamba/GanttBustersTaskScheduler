@@ -1,5 +1,5 @@
-package main.java.algorithm.common.utility;
-import main.java.algorithm.Algorithm;
+package algorithm.common.utility;
+
 
 enum AlgorithmType {
     Sequential,

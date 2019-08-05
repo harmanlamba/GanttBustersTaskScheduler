@@ -1,4 +1,4 @@
-package main.java.fileio;
+package fileio;
 
 public class IO {
 }
