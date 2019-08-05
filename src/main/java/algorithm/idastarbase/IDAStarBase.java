@@ -1,4 +1,4 @@
-package main.java.algorithm.idastarbase;
+package algorithm.idastarbase;
 
 public class IDAStarBase {
 }
