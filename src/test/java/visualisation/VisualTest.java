@@ -1,14 +1,10 @@
-package algorithm;
-
-import static org.junit.Assert.assertTrue;
+package visualisation;
 
 import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-{
+import static org.junit.Assert.assertTrue;
+
+public class VisualTest {
     /**
      * Rigorous Test :-)
      */

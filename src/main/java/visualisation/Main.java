@@ -1,4 +1,4 @@
-package sample;
+package visualisation;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,17 +16,5 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
-    }
-
-
-    public static void main(String[] args) {
-        //launch(args);
-
-        //#omp parallel for
-        for(int i = 0; i < 10; i++){
-            System.out.println("Hello world from parallel code, executed by " + Pyjama.omp_get_thread_num());
-        }
-
-        System.out.println("Finished Execution");
     }
 }
