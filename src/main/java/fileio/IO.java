@@ -32,19 +32,10 @@ public class IO implements IIO {
         }
     }
 
-    @Override
-    public String lineRegex(String line, String regex) {
-        return null;
-    }
-
-    @Override
-    public void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge){
-
-    }
-
     /**
      * readFile - loads and reads the .dot file from specified path, and runs makeNodeEdge on each relevant line
      */
+    @Override
     public void readFile() {
         try {
             //Need to take command line arguments so we take in FileReader(args.toString())
@@ -101,15 +92,17 @@ public class IO implements IIO {
      * getNodeList - returns the list of nodes from input file
      * @return List of graph nodes
      */
-    private List<GraphNode> getNodeList() {
-        return new ArrayList<>(_vertexMap.values());
+    @Override
+    public Map<String, GraphNode> getNodeMap() {
+        return _vertexMap;
     }
 
     /**
      * getEdgeList - returns the list of edges from input file
      * @return List of graph edges
      */
-    private List<GraphEdge> getEdgeList() {
+    @Override
+    public List<GraphEdge> getEdgeList() {
         return _edgeList;
     }
 }

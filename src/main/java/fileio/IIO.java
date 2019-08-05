@@ -5,11 +5,18 @@ import graph.GraphEdge;
 import graph.GraphNode;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IIO {
 
     void readFile();
-    String lineRegex(String line, String regex);
-    void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge);
+
+    Map<String, GraphNode> getNodeMap();
+
+    List<GraphEdge> getEdgeList();
+
+    //String lineRegex(String line, String regex);
+
+    //void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge);
 
 }

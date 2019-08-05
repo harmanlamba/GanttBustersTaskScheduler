@@ -1,14 +1,32 @@
 package graph;
 
+import fileio.IIO;
+import fileio.IO;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Graph {
-    Map<String, GraphNode> _vertexMap;
-    DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
+    private Map<String, GraphNode> _vertexMap;
+    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph = new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class);
+
+    public Graph(String path) {
+        IIO io = new IO(path);
+        io.readFile();
+
+        _vertexMap = io.getNodeMap();
+        for (GraphNode graphNode : new ArrayList<>(_vertexMap.values())) {
+            _jGraph.addVertex(graphNode);
+        }
+
+        for (GraphEdge graphEdge : io.getEdgeList()) {
+            DefaultWeightedEdge edge = _jGraph.addEdge(graphEdge.getEdgeFrom(), graphEdge.getedgeTo());
+            _jGraph.setEdgeWeight(edge, graphEdge.getEdgeWeight());
+        }
+    }
 
     public void setup() {
 
