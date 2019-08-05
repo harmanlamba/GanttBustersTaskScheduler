@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IO {
+public class IO implements IIO {
     private BufferedReader _bufferedReader;
     private List<GraphNode> _vertexList;
     private List<GraphEdge> _edgeList;
@@ -60,7 +60,7 @@ public class IO {
         }
     }
 
-    private String lineRegex(String line, String regex) {
+    public String lineRegex(String line, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
@@ -70,6 +70,10 @@ public class IO {
             System.out.println("nothign");
             return "";
         }
+    }
+
+    public void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge){
+
     }
 
 }
