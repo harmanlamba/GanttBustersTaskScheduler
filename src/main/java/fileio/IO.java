@@ -37,6 +37,14 @@ public class IO implements IIO {
         return null;
     }
 
+    @Override
+    public void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge){
+
+    }
+
+    /**
+     * readFile - loads and reads the .dot file from specified path, and runs makeNodeEdge on each relevant line
+     */
     public void readFile() {
         try {
             //Need to take command line arguments so we take in FileReader(args.toString())
@@ -63,6 +71,11 @@ public class IO implements IIO {
         }
     }
 
+    /**
+     * makeNodeEdge - takes line from .dot file, and extracts the relevant graph info (Vertex+Weight) or (Vertex edges+Weight).
+     * Uses regex constants (vertex and edge regex).
+     * @param line - line read from readFile
+     */
     private void makeNodeEdge(String line) {
         Pattern patternNode = Pattern.compile(RGX_NODE);
         Pattern patternEdge = Pattern.compile(RGX_EDGE);
@@ -84,16 +97,19 @@ public class IO implements IIO {
         }
     }
 
+    /**
+     * getNodeList - returns the list of nodes from input file
+     * @return List of graph nodes
+     */
     private List<GraphNode> getNodeList() {
         return new ArrayList<>(_vertexMap.values());
     }
 
+    /**
+     * getEdgeList - returns the list of edges from input file
+     * @return List of graph edges
+     */
     private List<GraphEdge> getEdgeList() {
         return _edgeList;
     }
-
-    public void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge){
-
-    }
-
 }
