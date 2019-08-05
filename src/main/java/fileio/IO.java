@@ -32,6 +32,11 @@ public class IO implements IIO {
         }
     }
 
+    @Override
+    public String lineRegex(String line, String regex) {
+        return null;
+    }
+
     public void readFile() {
         try {
             //Need to take command line arguments so we take in FileReader(args.toString())
