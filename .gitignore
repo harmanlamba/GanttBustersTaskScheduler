@@ -304,6 +304,6 @@ local.properties
 # VSCODE stuff
 .vscode
 
-.dot
+dot
 
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all
