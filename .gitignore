@@ -307,5 +307,6 @@ local.properties
 # Ignore dot exampler files
 dot
 .dot
+*.dot
 
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all
