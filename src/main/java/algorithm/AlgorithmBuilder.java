@@ -8,14 +8,21 @@ import graph.Graph;
 
 public class AlgorithmBuilder {
 
-    public Algorithm AlgorithmBuilder(AlgorithmType type, Graph graph) {
+    private Algorithm _algorithm;
+
+
+    public AlgorithmBuilder(AlgorithmType type, Graph graph) {
         switch (type) {
             case Idstarbase:
-                return new IDAStarBase(graph);
+                _algorithm = new IDAStarBase(graph);
             case Idstarparallel:
-                return new IDAStarParallel(graph);
+                _algorithm = new IDAStarParallel(graph);
             default:
-                return new Sequential(graph);
+                _algorithm = new Sequential(graph);
         }
+    }
+
+    public Algorithm getAlgorithm() {
+        return _algorithm;
     }
 }
