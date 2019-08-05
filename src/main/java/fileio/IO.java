@@ -62,10 +62,9 @@ public class IO {
 
     private String lineRegex(String line, String regex) {
         Pattern pattern = Pattern.compile(regex);
-        String test = line.replaceAll(" ", "");
-        Matcher matcher = pattern.matcher(test);
+        Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
-            System.out.println(matcher.group(1) + "Hello");
+            System.out.println("ye");
             return matcher.group(1);
         } else {
             System.out.println("nothign");
