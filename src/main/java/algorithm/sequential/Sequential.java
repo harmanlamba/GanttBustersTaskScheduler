@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Sequential extends Algorithm {
 
-    int PROCESSOR = 1;
+    private static final int PROCESSOR = 1;
 
     public Sequential(Graph g) {
         super(g);
