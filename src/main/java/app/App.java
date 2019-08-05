@@ -16,7 +16,6 @@ public class App
         graph.setup();
         Algorithm sequential = new Sequential(graph);
         sequential.solve();
-        sequential.getTopologicalOrdering();
     }
 
 // DON'T REMOVE THIS

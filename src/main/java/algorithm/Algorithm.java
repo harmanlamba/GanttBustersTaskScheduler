@@ -2,6 +2,7 @@ package algorithm;
 
 import graph.GraphNode;
 import graph.Graph;
+import graph.OutputGraphNode;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
@@ -16,14 +17,13 @@ public abstract class Algorithm {
         _graph = g;
     }
 
-    public abstract Graph solve();
+    public abstract List<OutputGraphNode> solve();
 
     public void getTopologicalOrdering() {
         TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
 
         while(iterator.hasNext()) {
             GraphNode tempNode = (GraphNode) iterator.next();
-            System.out.println(tempNode.getId());
             _order.add(tempNode);
         }
     }
