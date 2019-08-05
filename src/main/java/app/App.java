@@ -1,5 +1,7 @@
 package app;
 
+import fileio.IO;
+
 /**
  * Hello world!
  *
@@ -9,6 +11,8 @@ public class App
     public static void main( String[] args )
     {
         System.out.println( "Hello World!" );
+        IO io = new IO("example.dot"); //TODO: Change to command line args
+        io.readFile();
     }
 
 // DONT REMOVE THIS
