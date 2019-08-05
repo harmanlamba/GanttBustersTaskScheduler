@@ -1,8 +1,8 @@
 package app;
 
 import algorithm.Algorithm;
-import algorithm.sequential.Sequential;
-import fileio.IO;
+import algorithm.AlgorithmBuilder;
+import algorithm.common.utility.AlgorithmType;
 import graph.Graph;
 
 /**
@@ -14,8 +14,9 @@ public class App
     public static void main( String[] args )
     {
         Graph graph = new Graph("example1.dot");
-        Algorithm sequential = new Sequential(graph);
-        sequential.solve();
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.Sequential, graph);
+        Algorithm algorithm = algorithmBuilder.getAlgorithm();
+        algorithm.solve();
     }
 
 // DON'T REMOVE THIS

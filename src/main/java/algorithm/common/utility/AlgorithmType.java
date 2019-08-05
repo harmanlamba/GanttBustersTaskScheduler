@@ -1,7 +1,7 @@
 package algorithm.common.utility;
 
 
-enum AlgorithmType {
+public enum AlgorithmType {
     Sequential,
     Idstarbase,
     Idstarparallel
