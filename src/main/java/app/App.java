@@ -2,6 +2,7 @@ package app;
 
 import algorithm.Algorithm;
 import algorithm.sequential.Sequential;
+import fileio.IO;
 import graph.Graph;
 
 /**
@@ -12,8 +13,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        Graph graph = new Graph();
-        graph.setup();
+        Graph graph = new Graph("example1.dot");
         Algorithm sequential = new Sequential(graph);
         sequential.solve();
     }
