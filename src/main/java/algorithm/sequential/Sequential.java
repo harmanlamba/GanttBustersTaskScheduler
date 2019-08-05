@@ -10,10 +10,8 @@ import java.util.Map;
 
 public class Sequential extends Algorithm {
 
-    int PROCESSOR = 1;
-
-    public Sequential(Graph g) {
-        super(g);
+    public Sequential(Graph g, int numProcTask, int numProcParallel) {
+        super(g, numProcTask, numProcParallel);
     }
 
     @Override
@@ -24,7 +22,7 @@ public class Sequential extends Algorithm {
         int currentTime = 0;
         for (int i = 0; i < _order.size(); i++) {
             GraphNode tempNode = _order.get(i);
-            OutputGraphNode tempOutputNode = new OutputGraphNode(tempNode, currentTime, PROCESSOR);
+            OutputGraphNode tempOutputNode = new OutputGraphNode(tempNode, currentTime, _numProcTask);
             output.put(tempNode, tempOutputNode);
             currentTime += tempNode.getWeight();
             System.out.println(tempNode.getId() + " " + tempOutputNode.getStartTime());

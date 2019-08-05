@@ -8,8 +8,8 @@ import graph.OutputGraphNode;
 import java.util.Map;
 
 public class IDAStarParallel extends Algorithm {
-    public IDAStarParallel(Graph graph) {
-        super(graph);
+    public IDAStarParallel(Graph g, int numProcTask, int numProcParallel) {
+        super(g, numProcTask, numProcParallel);
     }
 
     @Override
