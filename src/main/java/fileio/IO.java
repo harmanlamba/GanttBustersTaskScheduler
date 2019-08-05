@@ -16,7 +16,7 @@ public class IO {
     private BufferedReader _bufferedReader;
     private List<GraphNode> _vertexList;
     private List<GraphEdge> _edgeList;
-    private static final String RGX_NODE = "\t[a-z]+\t \\[Weight=[0-9]+\\];";
+    private static final String RGX_NODE = "\t([a-z]+)\t \\[Weight=([0-9]+)\\];";
     //private static final String RGX_EDGE = "\\"
 
     public IO(String filePath) {
@@ -64,8 +64,8 @@ public class IO {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(line);
         if (matcher.find()) {
-            System.out.println("ye");
-            return matcher.group(1);
+            
+            return "";
         } else {
             System.out.println("nothign");
             return "";
