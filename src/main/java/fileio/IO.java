@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IO {
+public class IO implements IIO {
     private BufferedReader _bufferedReader;
     private Map<String, GraphNode> _vertexMap;
     private List<GraphEdge> _edgeList;
@@ -85,6 +85,10 @@ public class IO {
 
     private List<GraphEdge> getEdgeList() {
         return _edgeList;
+    }
+
+    public void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge){
+
     }
 
 }
