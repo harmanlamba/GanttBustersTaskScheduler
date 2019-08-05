@@ -16,7 +16,7 @@ public class IO {
     private BufferedReader _bufferedReader;
     private List<GraphNode> _vertexList;
     private List<GraphEdge> _edgeList;
-    private static final String RGX_NODE = "\t[a-z]+\t " + Pattern.quote("[") + "Weight=[0-9]+" + Pattern.quote("]") + ";";
+    private static final String RGX_NODE = "\t[a-z]+\t \\[Weight=[0-9]+\\];";
     //private static final String RGX_EDGE = "\\"
 
     public IO(String filePath) {
