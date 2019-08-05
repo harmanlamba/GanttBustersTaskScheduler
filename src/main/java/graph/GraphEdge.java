@@ -7,6 +7,24 @@ public class GraphEdge {
     private int _edgeWeight;
 
 
+    public GraphEdge(GraphNode edgeFrom, GraphNode edgeTo, int edgeWeight){
+        _edgeFrom=edgeFrom;
+        _edgeTo=edgeTo;
+        _edgeWeight=edgeWeight;
+    }
 
+
+
+    public GraphNode getEdgeFrom(){
+        return _edgeFrom;
+    }
+
+    public GraphNode getedgeTo(){
+        return _edgeTo;
+    }
+
+    public int getEdgeWeight(){
+        return _edgeWeight;
+    }
 
 }
