@@ -7,6 +7,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Algorithm {
 
@@ -17,7 +18,7 @@ public abstract class Algorithm {
         _graph = g;
     }
 
-    public abstract List<OutputGraphNode> solve();
+    public abstract Map<GraphNode, OutputGraphNode> solve();
 
     public void getTopologicalOrdering() {
         TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());

@@ -5,8 +5,8 @@ import graph.Graph;
 import graph.GraphNode;
 import graph.OutputGraphNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sequential extends Algorithm {
 
@@ -17,16 +17,16 @@ public class Sequential extends Algorithm {
     }
 
     @Override
-    public List<OutputGraphNode> solve() {
+    public Map<GraphNode, OutputGraphNode> solve() {
         getTopologicalOrdering();
-        List<OutputGraphNode> output = new ArrayList<>();
+        Map<GraphNode, OutputGraphNode> output = new HashMap<>();
 
         int currentTime = 0;
         for (int i = 0; i < _order.size(); i++) {
-            GraphNode temp = _order.get(i);
-            OutputGraphNode tempOutputNode = new OutputGraphNode(temp, currentTime, PROCESSOR);
-            output.add(tempOutputNode);
-            currentTime += temp.getWeight();
+            GraphNode tempNode = _order.get(i);
+            OutputGraphNode tempOutputNode = new OutputGraphNode(tempNode, currentTime, PROCESSOR);
+            output.put(tempNode, tempOutputNode);
+            currentTime += tempNode.getWeight();
         }
         return output;
     }
