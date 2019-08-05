@@ -1,5 +1,9 @@
 package app;
 
+import algorithm.Algorithm;
+import algorithm.sequential.Sequential;
+import graph.Graph;
+
 /**
  * Hello world!
  *
@@ -8,10 +12,14 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        Graph graph = new Graph();
+        graph.setup();
+        Algorithm sequential = new Sequential(graph);
+        sequential.solve();
+        sequential.getTopologicalOrdering();
     }
 
-// DONT REMOVE THIS
+// DON'T REMOVE THIS
 //    public static void visualisationSample() {
 //        //launch(args);
 //
