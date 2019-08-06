@@ -6,14 +6,16 @@ import algorithm.common.utility.AlgorithmType;
 import fileio.IO;
 import graph.Graph;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Hello world!
  *
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws IOException {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
             printUsage();
@@ -24,11 +26,17 @@ public class App
         int numberOfProcessorsForTask = 1;
         String nameOfInputFile = args[0];
         String nameOfOutputFile = "";
+        String parentPath = "";
 
         // Created an automated out
-        if (args[0].contains(".")) {
-            String[] fileNameSplit = args[0].split("\\.");
+        File file = new File(args[0]);
+        if (file.exists()) {
+            File parentFolder = file.getParentFile();
+            parentPath = parentFolder.getAbsolutePath();
+            String[] fileNameSplit = file.getName().split("\\.");
+            nameOfInputFile = parentPath + "/" + file.getName();
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
+            nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
         } else {
             System.out.println("Invalid file format. Accepted: .dot files");
             printUsage();
@@ -63,6 +71,7 @@ public class App
              else if (args[i].equals("-o")) {
                 try {
                     nameOfOutputFile = args[i + 1].contains(".") ? args[i + 1] : args[i + 1] + ".dot";
+                    nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Invalid output file name");
                     printUsage();
@@ -77,12 +86,6 @@ public class App
                  System.exit(401);
             }
         }
-
-        System.out.println("Input File name: " + nameOfInputFile);
-        System.out.println("Output File name: " + nameOfOutputFile);
-        System.out.println("pTask: " + numberOfProcessorsForTask);
-        System.out.println("pParallelTask: " + numberOfProcessorsForParallelAlgorithm);
-
 
         IO io = new IO(nameOfInputFile, nameOfOutputFile);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
