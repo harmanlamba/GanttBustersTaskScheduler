@@ -5,6 +5,8 @@ import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
 import graph.Graph;
 
+import java.nio.file.Paths;
+
 /**
  * Hello world!
  *
@@ -13,7 +15,10 @@ public class App
 {
     public static void main( String[] args )
     {
-        Graph graph = new Graph("example1.dot");
+        for(int i=0;i< args.length;i++) {
+            System.out.println(args[i]);
+        }
+        Graph graph = new Graph("src/resources/Nodes_11_OutTree.dot");
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, 1, 0);
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         algorithm.solve();
