@@ -9,4 +9,8 @@ import java.util.Map;
 
 public interface IIO {
 
+    public Map<String, GraphNode> getNodeMap();
+    public List<GraphEdge> getEdgeList();
+    public void write(Map<String, GraphNode> algorithmResultMap);
+
 }
