@@ -8,16 +8,11 @@ import java.util.Map;
 
 public class IO {
 
-    private String _inputPath;
-    private String _outputPath;
     private Read _read;
     private Write _write;
 
     public IO(String inputPath, String outputPath) {
-        _inputPath = inputPath;
-        _outputPath = outputPath;
-
-        _read = new Read(_inputPath);
+        _read = new Read(inputPath);
         _read.readFile();
         //TODO: Make write object
     }
