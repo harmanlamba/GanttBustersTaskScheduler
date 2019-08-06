@@ -7,7 +7,7 @@ import graph.GraphNode;
 import java.util.List;
 import java.util.Map;
 
-public class IO {
+public class IO implements IIO {
 
     private Read _read;
     private Write _write;
