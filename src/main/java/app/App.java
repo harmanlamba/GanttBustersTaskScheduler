@@ -14,11 +14,12 @@ public class App
 {
     public static void main( String[] args )
     {
-        IO io = new IO("example.dot", "hello.dot");
+        IO io = new IO("example.dot", "outputExample.dot");
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, 1, 0);
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        algorithm.solve();
+        io.write(algorithm.solve());
+
     }
 
 // DON'T REMOVE THIS

@@ -1,8 +1,6 @@
 package fileio;
 
-import graph.GraphEdge;
 import graph.GraphNode;
-import graph.OutputGraphNode;
 
 import java.io.*;
 import java.util.Map;
@@ -10,20 +8,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Write {
-    private Map<String, GraphNode> _algoResultMap;
+    private Map<String, GraphNode> _algorithmResultMap;
     private BufferedReader _bufferedReader;
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
-    private static final String RGX_UNTIL_WEIGHT = "(.*)];";
+    private static final String RGX_OUTPUT_FILENAME = ".*?/ .dot";
+    //private static final String RGX_UNTIL_WEIGHT = "([.*])];";
     private String _outputPath;
+    private String _inputPath;
+    private File _outputFile;
+
+    public Write(String inputPath, String outputPath) {
+        _outputPath = outputPath;
+        _inputPath = inputPath;
+    }
 
     /**
-     * @param algoResultMap
+     * @param algorithmResultMap
      */
-    void writeFile(Map<String, GraphNode> algoResultMap, String outputPath) {
-        _algoResultMap = algoResultMap;
-        _outputPath = outputPath;
+    public void writeToPath(Map<String, GraphNode> algorithmResultMap) {
+        _algorithmResultMap = algorithmResultMap;
         try {
-            _bufferedReader = new BufferedReader(new FileReader(outputPath));
+            _outputFile = new File(_outputPath);
+            _outputFile.createNewFile();
+            _bufferedReader = new BufferedReader(new FileReader(_inputPath));
             buildFile();
         } catch (IOException e) {
             System.out.println("IO exception");
@@ -31,31 +38,38 @@ public class Write {
         }
     }
 
-    void buildFile() throws IOException {
+    private void buildFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(_outputPath));
 
         // read
         try {
             String currentLine = _bufferedReader.readLine();
             String nextLine = _bufferedReader.readLine();
+            boolean firstLine = true;
 
             while (currentLine!= null) {
-                if (lineIsNode(currentLine)) {
+                if (lineIsNode(currentLine) != null) {
                     // get node
-                    Pattern patternNode = Pattern.compile(RGX_NODE);
-                    Matcher matcherNode = patternNode.matcher(currentLine);
-                    String node = matcherNode.group(0);
-                    GraphNode graphNode = _algoResultMap.get(node);
+                    GraphNode graphNode = _algorithmResultMap.get(lineIsNode(currentLine));
 
-                    Pattern p = Pattern.compile(RGX_UNTIL_WEIGHT);
-                    Matcher m = patternNode.matcher(currentLine);
+                    String appendToLine = ",Start=" + graphNode.getStartTime() + ",Processor=" + graphNode.getProcessor() + "];\n";
+                    StringBuilder sb =  new StringBuilder();
+                    sb.append(currentLine);
+                    sb.setLength(sb.length()-2);
+                    sb.append(appendToLine);
+                    writer.write(sb.toString());
 
-                    String appendToLine = ",Start=" + graphNode.getStartTime() + ",Processor=" + graphNode.getProcessor() + "];";
-                    String newLine = new StringBuilder().append(m.group(0)).append(appendToLine).toString();
-                    System.out.println(newLine);
-                    writer.write(newLine);
+                } else if (firstLine) {
+                    StringBuilder sb =  new StringBuilder();
+                    sb.append("digraph \"");
+                    sb.append(_outputFile.getName());
+                    sb.setLength(sb.length() - 4);
+                    sb.append("\" {\n");
+                    writer.write(sb.toString());
+                    firstLine = false;
+
                 } else {
-                    writer.write(currentLine);
+                    writer.write(currentLine.concat("\n"));
                 }
                 currentLine = nextLine;
                 nextLine = _bufferedReader.readLine();
@@ -70,21 +84,14 @@ public class Write {
     /**
      * @return true if line being read is node, false if not
      */
-    boolean lineIsNode(String line) {
+    private String lineIsNode(String line) {
         Pattern patternNode = Pattern.compile(RGX_NODE);
         Matcher matcherNode = patternNode.matcher(line);
 
         if (matcherNode.find()) {
-            return true;
+            return matcherNode.group(1);
         } else {
-            return false;
+            return null;
         }
     }
-
-
-
-
-
-
-
 }
