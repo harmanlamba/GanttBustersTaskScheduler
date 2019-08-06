@@ -3,7 +3,6 @@ package algorithm.idastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import graph.OutputGraphNode;
 
 import java.util.Map;
 
@@ -14,7 +13,7 @@ public class IDAStarBase extends Algorithm {
     }
 
     @Override
-    public Map<GraphNode, OutputGraphNode> solve() {
+    public Map<String,GraphNode> solve() {
         getTopologicalOrdering();
         return null;
     }
