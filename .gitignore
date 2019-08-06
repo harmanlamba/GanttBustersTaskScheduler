@@ -304,9 +304,12 @@ local.properties
 # VSCODE stuff
 .vscode
 
-# Ignore dot exampler files
-dot
-.dot
 *.dot
+!src/resources/e1.dot
+!src/resources/e2.dot
+!src/resources/e3.dot
+!src/resources/e4.dot
+!src/resources/e5.dot
+
 
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all
