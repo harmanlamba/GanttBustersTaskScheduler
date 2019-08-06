@@ -2,7 +2,6 @@ package algorithm;
 
 import graph.GraphNode;
 import graph.Graph;
-import graph.OutputGraphNode;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public abstract class Algorithm {
         _numProcParallel = numProcParallel;
     }
 
-    public abstract Map<GraphNode, OutputGraphNode> solve();
+    public abstract Map<String, GraphNode> solve();
 
     public void getTopologicalOrdering() {
         TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
