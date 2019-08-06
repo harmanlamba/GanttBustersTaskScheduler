@@ -3,6 +3,7 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
+import fileio.IO;
 import graph.Graph;
 
 /**
@@ -13,8 +14,9 @@ public class App
 {
     public static void main( String[] args )
     {
-        Graph graph = new Graph("example1.dot");
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.Sequential, graph);
+        IO io = new IO("example.dot", "hello.dot");
+        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, 1, 0);
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         algorithm.solve();
     }

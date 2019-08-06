@@ -11,14 +11,14 @@ public class AlgorithmBuilder {
     private Algorithm _algorithm;
 
 
-    public AlgorithmBuilder(AlgorithmType type, Graph graph) {
+    public AlgorithmBuilder(AlgorithmType type, Graph graph, int numProcTask, int numProcParallel) {
         switch (type) {
-            case Idstarbase:
-                _algorithm = new IDAStarBase(graph);
-            case Idstarparallel:
-                _algorithm = new IDAStarParallel(graph);
+            case IDASTARBASE:
+                _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
+            case IDASTARPARALLEL:
+                _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
             default:
-                _algorithm = new Sequential(graph);
+                _algorithm = new Sequential(graph, numProcTask, numProcParallel);
         }
     }
 

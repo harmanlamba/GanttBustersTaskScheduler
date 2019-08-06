@@ -3,17 +3,18 @@ package algorithm.idastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import graph.OutputGraphNode;
 
 import java.util.Map;
 
 public class IDAStarBase extends Algorithm {
-    public IDAStarBase(Graph graph) {
-        super(graph);
+
+    public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
+        super(g, numProcTask, numProcParallel);
     }
 
     @Override
-    public Map<GraphNode, OutputGraphNode> solve() {
+    public Map<String,GraphNode> solve() {
+        getTopologicalOrdering();
         return null;
     }
 }
