@@ -88,7 +88,8 @@ public class App
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, numberOfProcessorsForTask, numberOfProcessorsForParallelAlgorithm);
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        algorithm.solve();
+        io.write(algorithm.solve());
+
     }
 
     private static void printUsage() {
