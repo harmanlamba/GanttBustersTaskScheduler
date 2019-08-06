@@ -1,5 +1,6 @@
 package fileio;
 
+import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
 
@@ -14,7 +15,7 @@ public class IO {
     public IO(String inputPath, String outputPath) {
         _read = new Read(inputPath);
         _read.readFile();
-        //TODO: Make write object
+        _write = new Write(inputPath, outputPath);
     }
 
     public Map<String, GraphNode> getNodeMap() {
@@ -24,5 +25,11 @@ public class IO {
     public List<GraphEdge> getEdgeList() {
         return _read.getEdgeList();
     }
+
+    public void write(Map<String, GraphNode> algorithmResultMap) {
+        _write.writeToPath(algorithmResultMap);
+    }
+
+
 
 }
