@@ -4,32 +4,35 @@ import graph.GraphEdge;
 import graph.GraphNode;
 import graph.OutputGraphNode;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Write {
-    private Map<GraphNode, OutputGraphNode> _algoResultMap;
+    private Map<String, GraphNode> _algoResultMap;
+    private BufferedReader _bufferedReader;
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
-    private String outputPath;
+    private static final String RGX_UNTIL_WEIGHT = "(.*)];";
+    private String _outputPath;
 
     /**
      * @param algoResultMap
      */
-    void writeFile(Map<GraphNode, OutputGraphNode> algoResultMap, String outputPath) {
+    void writeFile(Map<String, GraphNode> algoResultMap, String outputPath) {
         _algoResultMap = algoResultMap;
         _outputPath = outputPath;
-        buildFile();
+        try {
+            _bufferedReader = new BufferedReader(new FileReader(outputPath));
+            buildFile();
+        } catch (IOException e) {
+            System.out.println("IO exception");
+            System.exit(1);
+        }
     }
 
-    void buildFile() {
+    void buildFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(_outputPath));
-//
-//        writer.write(str);
-//        writer.close();
 
         // read
         try {
@@ -37,9 +40,19 @@ public class Write {
             String nextLine = _bufferedReader.readLine();
 
             while (currentLine!= null) {
-                if (lineIsNode()) {
-                    String appendToLine = "";
-                    String newLine = new StringBuilder().append(currentLine).append(appendToLine).toString();
+                if (lineIsNode(currentLine)) {
+                    // get node
+                    Pattern patternNode = Pattern.compile(RGX_NODE);
+                    Matcher matcherNode = patternNode.matcher(currentLine);
+                    String node = matcherNode.group(0);
+                    GraphNode graphNode = _algoResultMap.get(node);
+
+                    Pattern p = Pattern.compile(RGX_UNTIL_WEIGHT);
+                    Matcher m = patternNode.matcher(currentLine);
+
+                    String appendToLine = ",Start=" + graphNode.getStartTime() + ",Processor=" + graphNode.getProcessor() + "];";
+                    String newLine = new StringBuilder().append(m.group(0)).append(appendToLine).toString();
+                    System.out.println(newLine);
                     writer.write(newLine);
                 } else {
                     writer.write(currentLine);
@@ -50,12 +63,14 @@ public class Write {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        writer.close();
     }
 
     /**
      * @return true if line being read is node, false if not
      */
-    boolean lineIsNode() {
+    boolean lineIsNode(String line) {
         Pattern patternNode = Pattern.compile(RGX_NODE);
         Matcher matcherNode = patternNode.matcher(line);
 
@@ -65,6 +80,8 @@ public class Write {
             return false;
         }
     }
+
+
 
 
 
