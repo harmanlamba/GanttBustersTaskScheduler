@@ -38,7 +38,7 @@ public class App
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
             nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
         } else {
-            System.out.println("Invalid file format. Accepted: .dot files");
+            System.err.println("Invalid file format. Accepted: .dot files");
             printUsage();
             System.exit(401);
         }
