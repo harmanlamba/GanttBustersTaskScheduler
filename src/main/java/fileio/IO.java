@@ -2,6 +2,7 @@ package fileio;
 
 import graph.GraphEdge;
 import graph.GraphNode;
+import graph.OutputGraphNode;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -105,4 +106,9 @@ public class IO implements IIO {
     public List<GraphEdge> getEdgeList() {
         return _edgeList;
     }
+
+    void writeFile() {
+        Write write = Write(Map<GraphNode, OutputGraphNode> algoResult, String outputPath);
+    }
+
 }

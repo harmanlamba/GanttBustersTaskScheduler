@@ -3,6 +3,7 @@ package fileio;
 
 import graph.GraphEdge;
 import graph.GraphNode;
+import graph.OutputGraphNode;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,6 @@ public interface IIO {
 
     //String lineRegex(String line, String regex);
 
-    //void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge);
+    void writeFile();
 
 }
