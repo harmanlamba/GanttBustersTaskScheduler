@@ -22,6 +22,6 @@ public class Utility {
         System.err.println("-p N        use N cores for execution in parallel (default is sequential)");
         System.err.println("-v          visualise the search");
         System.err.println("-o OUTPUT   output file is named OUTPUT (default is INPUT-output.dot)");
-
     }
+
 }
