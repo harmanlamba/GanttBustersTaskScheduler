@@ -1,5 +1,6 @@
 package fileio;
 
+import algorithm.common.utility.Utility;
 import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
@@ -13,9 +14,9 @@ public class IO implements IIO {
     private Write _write;
 
     public IO(String inputPath, String outputPath) {
-        _read = new Read(inputPath);
+        _read = (Read) Utility.GuardNull(new Read(inputPath));
         _read.readFile();
-        _write = new Write(inputPath, outputPath);
+        _write = (Write) Utility.GuardNull(new Write(inputPath, outputPath));
     }
 
     public Map<String, GraphNode> getNodeMap() {
