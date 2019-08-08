@@ -9,14 +9,8 @@ import java.util.Map;
 
 public interface IIO {
 
-    void readFile();
-
-    Map<String, GraphNode> getNodeMap();
-
-    List<GraphEdge> getEdgeList();
-
-    //String lineRegex(String line, String regex);
-
-    //void writeFile(List<GraphNode> graphNodes, List<GraphEdge> graphEdge);
+    public Map<String, GraphNode> getNodeMap();
+    public List<GraphEdge> getEdgeList();
+    public void write(Map<String, GraphNode> algorithmResultMap);
 
 }
