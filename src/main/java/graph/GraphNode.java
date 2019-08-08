@@ -1,5 +1,7 @@
 package graph;
 
+import algorithm.common.utility.Utility;
+
 public class GraphNode {
 
     private String _id;
