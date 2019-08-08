@@ -3,10 +3,11 @@ package fileio;
 import algorithm.common.utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
+import static algorithm.common.utility.Utility.printUsage;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import static algorithm.common.utility.Utility.printUsage;
 
 //TODO: class comment
 public class IO implements IIO {
