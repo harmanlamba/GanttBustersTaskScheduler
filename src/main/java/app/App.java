@@ -16,86 +16,15 @@ import java.io.IOException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException {
-        // Checks for minimum number of required parameters
-        if (args.length < 2) {
-            Utility.printUsage();
-            System.exit(401);
-        }
+    public static void main( String[] args ) {
 
-        int numberOfProcessorsForParallelAlgorithm = 0;
-        int numberOfProcessorsForTask = 1;
-        String nameOfInputFile = args[0];
-        String nameOfOutputFile = "";
-        String parentPath = "";
-
-        // Created an automated out
-        File file = new File(args[0]);
-        if (file.exists()) {
-            File parentFolder = file.getParentFile();
-            parentPath = parentFolder.getAbsolutePath();
-            String[] fileNameSplit = file.getName().split("\\.");
-            nameOfInputFile = parentPath + "/" + file.getName();
-            nameOfOutputFile = fileNameSplit[0] + "-output.dot";
-            nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
-        } else {
-            System.err.println("Invalid file format. Accepted: .dot files");
-            Utility.printUsage();
-            System.exit(401);
-        }
-
-
-        try {
-            numberOfProcessorsForTask = Integer.parseInt(args[1]);
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.err.println("Invalid number of processors to allocate tasks on");
-            Utility.printUsage();
-            System.exit(401);
-        }
-
-        for (int i = 2; i < args.length; i++) {
-            if (args[i].equals("-p")) {
-                try {
-                    numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Invalid number of processors for parallelism");
-                    Utility.printUsage();
-                    System.exit(401);
-                }
-                i = i +1;
-            }
-
-             else if (args[i].equals("-v")) {
-                //TODO Add visualisation stuff
-            }
-
-             else if (args[i].equals("-o")) {
-                try {
-                    nameOfOutputFile = args[i + 1].contains(".") ? args[i + 1] : args[i + 1] + ".dot";
-                    nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Invalid output file name");
-                    Utility.printUsage();
-                    System.exit(401);
-                }
-                i = i + 1;
-            }
-
-             else {
-                 System.err.println("Invalid input arguments");
-                 Utility.printUsage();
-                 System.exit(401);
-            }
-        }
-
-        IO io = new IO(nameOfInputFile, nameOfOutputFile);
+        IO io = new IO(args);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, numberOfProcessorsForTask, numberOfProcessorsForParallelAlgorithm);
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
 
     }
-
 
 // DON'T REMOVE THIS
 //    public static void visualisationSample() {
