@@ -1,7 +1,6 @@
 package fileio;
 
 import algorithm.common.utility.Utility;
-import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
 
@@ -15,8 +14,8 @@ public class IO implements IIO {
 
     private Read _read;
     private Write _write;
-    private int numberOfProcessorsForParallelAlgorithm;
-    private int numberOfProcessorsForTask;
+    private int _numberOfProcessorsForParallelAlgorithm;
+    private int _numberOfProcessorsForTask;
 
     public IO(String[] input) {
         validateAndParseInput(input);
@@ -29,8 +28,8 @@ public class IO implements IIO {
             System.exit(401);
         }
 
-        numberOfProcessorsForParallelAlgorithm = 0;
-        numberOfProcessorsForTask = 1;
+        _numberOfProcessorsForParallelAlgorithm = 0;
+        _numberOfProcessorsForTask = 1;
         String nameOfInputFile = args[0];
         String nameOfOutputFile = "";
         String parentPath = "";
@@ -52,7 +51,7 @@ public class IO implements IIO {
 
 
         try {
-            numberOfProcessorsForTask = Integer.parseInt(args[1]);
+            _numberOfProcessorsForTask = Integer.parseInt(args[1]);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Invalid number of processors to allocate tasks on");
             printUsage();
@@ -62,7 +61,7 @@ public class IO implements IIO {
         for (int i = 2; i < args.length; i++) {
             if (args[i].equals("-p")) {
                 try {
-                    numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
+                    _numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     System.err.println("Invalid number of processors for parallelism");
                     printUsage();
@@ -112,10 +111,10 @@ public class IO implements IIO {
     }
 
     public int getNumberOfProcessorsForParallelAlgorithm() {
-        return numberOfProcessorsForParallelAlgorithm;
+        return _numberOfProcessorsForParallelAlgorithm;
     }
 
     public int getNumberOfProcessorsForTask() {
-        return numberOfProcessorsForTask;
+        return _numberOfProcessorsForTask;
     }
 }
