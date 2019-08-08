@@ -3,6 +3,7 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
+import algorithm.common.utility.Utility;
 import fileio.IO;
 import graph.Graph;
 
@@ -18,7 +19,7 @@ public class App
     public static void main( String[] args ) throws IOException {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
-            printUsage();
+            Utility.printUsage();
             System.exit(401);
         }
 
@@ -39,7 +40,7 @@ public class App
             nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
         } else {
             System.err.println("Invalid file format. Accepted: .dot files");
-            printUsage();
+            Utility.printUsage();
             System.exit(401);
         }
 
@@ -48,7 +49,7 @@ public class App
             numberOfProcessorsForTask = Integer.parseInt(args[1]);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Invalid number of processors to allocate tasks on");
-            printUsage();
+            Utility.printUsage();
             System.exit(401);
         }
 
@@ -58,7 +59,7 @@ public class App
                     numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     System.err.println("Invalid number of processors for parallelism");
-                    printUsage();
+                    Utility.printUsage();
                     System.exit(401);
                 }
                 i = i +1;
@@ -74,7 +75,7 @@ public class App
                     nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println("Invalid output file name");
-                    printUsage();
+                    Utility.printUsage();
                     System.exit(401);
                 }
                 i = i + 1;
@@ -82,7 +83,7 @@ public class App
 
              else {
                  System.err.println("Invalid input arguments");
-                 printUsage();
+                 Utility.printUsage();
                  System.exit(401);
             }
         }
@@ -95,17 +96,6 @@ public class App
 
     }
 
-    private static void printUsage() {
-        System.err.println("Usage: ");
-        System.err.println("java -jar scheduler.jar INPUT.dot P [OPTION]");
-        System.err.println("INPUT.dot    a task graph with integer weights in dot format");
-        System.err.println("P            number of processors to schedule the INPUT graph on\n\n");
-        System.err.println("Optional:");
-        System.err.println("-p N        use N cores for execution in parallel (default is sequential)");
-        System.err.println("-v          visualise the search");
-        System.err.println("-o OUTPUT   output file is named OUTPUT (default is INPUT-output.dot)");
-
-    }
 
 // DON'T REMOVE THIS
 //    public static void visualisationSample() {
