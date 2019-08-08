@@ -13,8 +13,9 @@ public class AppTest
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
+    public void runAllTasksOnSequential()
     {
         assertTrue( true );
     }
+
 }

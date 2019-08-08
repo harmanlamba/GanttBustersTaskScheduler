@@ -1,20 +1,22 @@
 package fileio;
 
+import algorithm.common.utility.Utility;
+import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
 
 import java.util.List;
 import java.util.Map;
 
-public class IO {
+public class IO implements IIO {
 
     private Read _read;
     private Write _write;
 
     public IO(String inputPath, String outputPath) {
-        _read = new Read(inputPath);
+        _read = (Read) Utility.GuardNull(new Read(inputPath));
         _read.readFile();
-        //TODO: Make write object
+        _write = (Write) Utility.GuardNull(new Write(inputPath, outputPath));
     }
 
     public Map<String, GraphNode> getNodeMap() {
@@ -24,5 +26,11 @@ public class IO {
     public List<GraphEdge> getEdgeList() {
         return _read.getEdgeList();
     }
+
+    public void write(Map<String, GraphNode> algorithmResultMap) {
+        _write.writeToPath(algorithmResultMap);
+    }
+
+
 
 }

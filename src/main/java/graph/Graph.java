@@ -1,5 +1,6 @@
 package graph;
 
+import algorithm.common.utility.Utility;
 import fileio.IIO;
 import fileio.IO;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Graph {
-    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph = new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class);
+    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph = (DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge>) Utility.GuardNull(new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class));
 
     public Graph(Map<String, GraphNode> vertexMap, List<GraphEdge> edgeList) {
 

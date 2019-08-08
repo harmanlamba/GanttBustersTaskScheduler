@@ -1,5 +1,6 @@
 package fileio;
 
+import algorithm.common.utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
 
@@ -22,8 +23,8 @@ public class Read {
     private static final String RGX_EDGE = "\t([a-zA-Z0-9]+) -> ([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
 
     public Read(String filePath) {
-        _vertexMap = new HashMap<>();
-        _edgeList = new ArrayList<>();
+        _vertexMap = (Map<String, GraphNode>) Utility.GuardNull(new HashMap<>());
+        _edgeList = (List<GraphEdge>) Utility.GuardNull(new ArrayList<>());
 
         try {
             _bufferedReader = new BufferedReader(new FileReader(filePath));

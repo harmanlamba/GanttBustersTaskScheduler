@@ -1,0 +1,26 @@
+digraph "Random_Nodes_8_Density_2.0_CCR_0.1_WeightType_Random" {
+	0	 [Weight=35];
+	1	 [Weight=88];
+	0 -> 1	 [Weight=3];
+	2	 [Weight=176];
+	0 -> 2	 [Weight=9];
+	3	 [Weight=159];
+	0 -> 3	 [Weight=7];
+	4	 [Weight=176];
+	0 -> 4	 [Weight=5];
+	6	 [Weight=141];
+	0 -> 6	 [Weight=4];
+	7	 [Weight=53];
+	0 -> 7	 [Weight=9];
+	1 -> 4	 [Weight=10];
+	1 -> 7	 [Weight=6];
+	2 -> 4	 [Weight=8];
+	5	 [Weight=141];
+	2 -> 5	 [Weight=6];
+	2 -> 7	 [Weight=3];
+	3 -> 5	 [Weight=5];
+	3 -> 6	 [Weight=8];
+	4 -> 6	 [Weight=2];
+	5 -> 7	 [Weight=4];
+	6 -> 7	 [Weight=8];
+}
