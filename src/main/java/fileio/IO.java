@@ -18,8 +18,11 @@ public class IO implements IIO {
     private int numberOfProcessorsForParallelAlgorithm;
     private int numberOfProcessorsForTask;
 
-    public IO(String[] args) {
+    public IO(String[] input) {
+        validateAndParseInput(input);
+    }
 
+    private void validateAndParseInput(String[] args) {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
             printUsage();
