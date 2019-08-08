@@ -3,6 +3,7 @@ package fileio;
 import algorithm.common.utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
+import app.App;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -19,17 +20,23 @@ public class Read {
     private BufferedReader _bufferedReader;
     private Map<String, GraphNode> _vertexMap;
     private List<GraphEdge> _edgeList;
+    private String _filePath;
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_EDGE = "\t([a-zA-Z0-9]+) -> ([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
+    private static final String RGX_FIRST_LINE = "digraph \".*\" \\{";
+    private static final String RGX_LAST_LINE =  "}";
 
     public Read(String filePath) {
         _vertexMap = (Map<String, GraphNode>) Utility.GuardNull(new HashMap<>());
         _edgeList = (List<GraphEdge>) Utility.GuardNull(new ArrayList<>());
+        _filePath = filePath;
 
         try {
-            _bufferedReader = new BufferedReader(new FileReader(filePath));
+            _bufferedReader = new BufferedReader(new FileReader(_filePath));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("File not found: " + _filePath);
+            Utility.printUsage();
+            System.exit(404);
         }
     }
 
@@ -45,10 +52,15 @@ public class Read {
 
             while (currentLine!= null) {
                 if (!hasStarted) {
-                    //TODO: DEAL WITH START LINE
                     hasStarted = true;
+                    if (!checkLine(RGX_FIRST_LINE, currentLine)) {
+                        //TODO: make file invalid format exception, with system.exit
+                    }
                 } else if (nextLine == null) {
-                    //TODO: DEAL WITH END LINE
+                    // Last line
+                    if (!currentLine.equals("}")) {
+                        //TODO: make file invalid format exception, with system.exit
+                    }
                 } else {
                     //In between lines
                     makeNodeEdge(currentLine);
@@ -58,7 +70,19 @@ public class Read {
                 nextLine = _bufferedReader.readLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("File could not be read: " + _filePath);
+            Utility.printUsage();
+            System.exit(406);
+        }
+    }
+
+    private boolean checkLine(String regex, String line) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(line);
+        if (matcher.matches()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -74,17 +98,21 @@ public class Read {
         Matcher matcherNode = patternNode.matcher(line);
         Matcher matcherEdge = patternEdge.matcher(line);
 
-        if (matcherNode.find()) {
+        if (matcherNode.matches()) {
             _vertexMap.put(matcherNode.group(1), new GraphNode(matcherNode.group(1), Integer.parseInt(matcherNode.group(2))));
-        } else if (matcherEdge.find()) {
+        } else if (matcherEdge.matches()) {
             //Retrieve source dest node and add weighting
             GraphNode node1 = _vertexMap.get(matcherEdge.group(1));
             GraphNode node2 = _vertexMap.get(matcherEdge.group(2));
             if (node1 == null || node2 == null) {
-                System.out.println("Vertex does not exist!");
-                System.exit(1);
+                //TODO: exception 
+                System.err.println("Vertex does not exist.");
+                System.exit(407);
             }
             _edgeList.add(new GraphEdge(node1, node2, Integer.parseInt(matcherEdge.group(3))));
+        } else {
+            //TODO: make file invalid format exception, with system.exit
+
         }
     }
 

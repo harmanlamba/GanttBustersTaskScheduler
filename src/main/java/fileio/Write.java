@@ -1,5 +1,6 @@
 package fileio;
 
+import algorithm.common.utility.Utility;
 import graph.GraphNode;
 
 import java.io.*;
@@ -33,8 +34,9 @@ public class Write {
             _bufferedReader = new BufferedReader(new FileReader(_inputPath));
             buildFile();
         } catch (IOException e) {
-            System.out.println("IO exception");
-            System.exit(1);
+            System.err.println("File could not be read: " + _inputPath);
+            Utility.printUsage();
+            System.exit(406);
         }
     }
 
@@ -88,7 +90,7 @@ public class Write {
         Pattern patternNode = Pattern.compile(RGX_NODE);
         Matcher matcherNode = patternNode.matcher(line);
 
-        if (matcherNode.find()) {
+        if (matcherNode.matches()) {
             return matcherNode.group(1);
         } else {
             return null;
