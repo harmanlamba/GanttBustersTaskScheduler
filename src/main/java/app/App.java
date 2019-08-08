@@ -89,7 +89,7 @@ public class App
 
         IO io = new IO(nameOfInputFile, nameOfOutputFile);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, numberOfProcessorsForTask, numberOfProcessorsForParallelAlgorithm);
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.IDASTARBASE, graph, numberOfProcessorsForTask, numberOfProcessorsForParallelAlgorithm);
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
 

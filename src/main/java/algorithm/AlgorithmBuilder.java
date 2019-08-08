@@ -15,8 +15,10 @@ public class AlgorithmBuilder {
         switch (type) {
             case IDASTARBASE:
                 _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
+                break;
             case IDASTARPARALLEL:
                 _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
+                break;
             default:
                 _algorithm = new Sequential(graph, numProcTask, numProcParallel);
         }
