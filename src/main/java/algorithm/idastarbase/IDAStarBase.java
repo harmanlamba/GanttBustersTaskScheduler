@@ -12,12 +12,27 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * IDAStarBase is a child class of Algorithm which solves the task scheduling problem optimally
+ * on one processor.
+ */
 public class IDAStarBase extends Algorithm {
 
+    /**
+     * Constructor for IDAStarBase to instantiate the object
+     * @param g is a graph of the network
+     * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
+     * @param numProcParallel is the number of processors the algorithm should be working on
+     */
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
     }
 
+    /**
+     * Method that solves the problem optimally on one processor
+     * @return A map of the nodes with their corresponding start times (string is the name of the
+     * node and GraphNode contains all of the node information)
+     */
     @Override
     public Map<String,GraphNode> solve() {
         getTopologicalOrdering();
