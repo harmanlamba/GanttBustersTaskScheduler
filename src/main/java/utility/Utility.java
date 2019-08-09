@@ -1,4 +1,4 @@
-package algorithm.common.utility;
+package utility;
 
 /**
  * Provides the utility methods which will be used throughtout the application

@@ -1,6 +1,6 @@
 package fileio;
 
-import algorithm.common.utility.Utility;
+import utility.Utility;
 import exception.NodeNotExistException;
 import graph.GraphEdge;
 import graph.GraphNode;
