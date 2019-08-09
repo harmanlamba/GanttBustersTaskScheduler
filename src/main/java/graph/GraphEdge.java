@@ -1,11 +1,11 @@
 package graph;
 
+//TODO: Class comments + Method comments
 public class GraphEdge {
 
     private GraphNode _edgeFrom;
     private GraphNode _edgeTo;
     private int _edgeWeight;
-
 
     public GraphEdge(GraphNode edgeFrom, GraphNode edgeTo, int edgeWeight){
         _edgeFrom=edgeFrom;

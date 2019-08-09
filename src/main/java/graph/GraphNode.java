@@ -1,7 +1,6 @@
 package graph;
 
-import algorithm.common.utility.Utility;
-
+//TODO: Class comments + Method comments
 public class GraphNode {
 
     private String _id;
