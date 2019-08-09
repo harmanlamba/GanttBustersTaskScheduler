@@ -5,6 +5,7 @@ import graph.Graph;
 import graph.GraphNode;
 
 import java.util.Map;
+import java.util.Set;
 
 public class IDAStarBase extends Algorithm {
 
@@ -16,5 +17,14 @@ public class IDAStarBase extends Algorithm {
     public Map<String,GraphNode> solve() {
         getTopologicalOrdering();
         return null;
+    }
+
+    private int calcWeightProcRatio() {
+        Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
+        int total = 0;
+        for (GraphNode node: allNodes) {
+            total += node.getWeight();
+        }
+        return total/_numProcTask;
     }
 }
