@@ -35,9 +35,8 @@ public class Read {
         try {
             _bufferedReader = new BufferedReader(new FileReader(_filePath)); //create buffer reader to read input filepath
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + _filePath);
+            System.err.println("File not found - please verify name");
             Utility.printUsage();
-            System.exit(404);
         }
     }
 
@@ -73,17 +72,14 @@ public class Read {
                 nextLine = _bufferedReader.readLine();
             }
         } catch (IOException e) {
-            System.err.println("File not found: " + _filePath);
+            System.err.println("File could not be read: " + _filePath);
             Utility.printUsage();
-            System.exit(404);
         } catch (NodeNotExistException e) {
-            System.err.println("Node does not exist in file");
+            System.err.println(e.getMessage());
             Utility.printUsage();
-            System.exit(420);
         } catch (PatternSyntaxException e) {
-            System.err.println("File format is incorrect");
+            System.err.println(e.getMessage() + "\n");
             Utility.printUsage();
-            System.exit(620);
         }
     }
 
@@ -121,7 +117,7 @@ public class Read {
 
             //Throw nodenotexist exception for if any node is currently not shown in edge
             if (node1 == null || node2 == null) {
-                throw new NodeNotExistException("Node(s) have not been instantiated before an edge to the node has been created");
+                throw new NodeNotExistException();
             }
             _edgeList.add(new GraphEdge(node1, node2, Integer.parseInt(matcherEdge.group(3))));
         } else {
