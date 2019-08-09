@@ -16,16 +16,16 @@ import java.util.Map;
 public abstract class Algorithm {
 
     protected Graph _graph;
-    protected List<GraphNode> _order = new ArrayList<>();
+    protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
      * the number of processors specified for the tasks and for parallelisation
-     * @param g
-     * @param numProcTask
-     * @param numProcParallel
+     * @param g is a graph of the network
+     * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
+     * @param numProcParallel is the number of processors the algorithm should be working on
      */
     public Algorithm(Graph g, int numProcTask, int numProcParallel) {
         _graph = g;
@@ -34,11 +34,15 @@ public abstract class Algorithm {
     }
 
     /**
-     * @return Mapping of each node ID (in string) to the corresponding GraphNode
+     * Method that solves the problem optimally on one processor
+     * @return A map of the nodes with their corresponding start time (string is the name of the
+     * node and GraphNode contains all of the node information)
      */
     public abstract Map<String, GraphNode> solve();
 
-    
+    /**
+     * Sets the topological order of the graph
+     */
     public void getTopologicalOrdering() {
         TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
 
