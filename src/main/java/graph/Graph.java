@@ -1,6 +1,6 @@
 package graph;
 
-import algorithm.common.utility.Utility;
+import utility.Utility;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 

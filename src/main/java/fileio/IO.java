@@ -1,9 +1,9 @@
 package fileio;
 
-import algorithm.common.utility.Utility;
+import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
-import static algorithm.common.utility.Utility.printUsage;
+import static utility.Utility.printUsage;
 
 import java.io.File;
 import java.util.List;
