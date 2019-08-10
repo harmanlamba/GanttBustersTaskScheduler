@@ -13,13 +13,11 @@ import graph.Graph;
 public class App 
 {
     public static void main( String[] args ) {
-
         IO io = new IO(args);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
-
     }
 
 // DON'T REMOVE THIS

@@ -8,15 +8,24 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * IDAStarBase is a child class of Algorithm which solves the task scheduling problem optimally
  * on one processor.
  */
 public class IDAStarBase extends Algorithm {
+
+    private int _numTasks;
+    private int _lowerBound;
+    private GraphNode _cTask;
+    private GraphNode _pTask;
+    private int _cProc;
+    private int _pProc;
+    private int _depth;
+    private State _state;
+    private int _orderIndex;
+    private List<State> _states = new ArrayList<>();
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -26,6 +35,15 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
+        _numTasks = _graph.getGraph().vertexSet().size();
+        getTopologicalOrdering();
+        _lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
+        _cTask = null;
+        _pTask = null;
+        _cProc = -1;
+        _pProc = -1;
+        _depth = 0;
+        _orderIndex = 0;
     }
 
     /**
@@ -35,11 +53,25 @@ public class IDAStarBase extends Algorithm {
      */
     @Override
     public Map<String,GraphNode> solve() {
-        getTopologicalOrdering();
-        int lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
+        while (true) {
+            _lowerBound = IDARecursion();
+        }
+
+
         // System.out.println(lowerBound);
-        return null;
+        //return null;
     }
+
+    /**
+     *
+     * @return lower bound
+     */
+    private int IDARecursion() {
+        boolean done = false;
+
+        return 1;
+    }
+
 
     private int calcWeightProcRatio() {
         Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
