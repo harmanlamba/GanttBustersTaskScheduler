@@ -17,6 +17,8 @@ import java.util.regex.PatternSyntaxException;
 //TODO: Class comments
 public class Read {
 
+
+    //Private Fields Declaration
     private BufferedReader _bufferedReader;
     private Map<String, GraphNode> _vertexMap;
     private List<GraphEdge> _edgeList;
