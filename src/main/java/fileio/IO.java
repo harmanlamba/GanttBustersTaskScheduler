@@ -70,6 +70,9 @@ public class IO implements IIO {
         //Set user input with number of processors
         try {
             _numberOfProcessorsForTask = Integer.parseInt(args[1]);
+            if (_numberOfProcessorsForTask < 1) {
+                throw new InvalidInputArgumentException();
+            }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Invalid number of processors to allocate tasks on");
             printUsage();
@@ -82,6 +85,9 @@ public class IO implements IIO {
                 case "-p":
                     try {
                         _numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
+                        if (_numberOfProcessorsForParallelAlgorithm < 1 || _numberOfProcessorsForParallelAlgorithm > Runtime.getRuntime().availableProcessors()) {
+                            throw new InvalidInputArgumentException("Invalid input arguments - number of cores for parallel execution must be between 1-" + Runtime.getRuntime().availableProcessors() + "\n");
+                        }
                     } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                         System.err.println("Invalid number of processors for parallelism");
                         printUsage();
