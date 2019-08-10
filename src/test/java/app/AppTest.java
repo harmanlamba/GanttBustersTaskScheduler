@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit test for simple App.
+ * TODO: Comment tests
  */
 public class AppTest 
 {
@@ -30,53 +30,41 @@ public class AppTest
         _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
     }
 
-    @Test
-    public void testE1File() {
+    private void graphTestHelper(String[] file) {
         IO io = new IO(_file1);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
+    }
+
+    @Test
+    public void testE1File() {
+        graphTestHelper(_file1);
         assertTrue(true);
     }
 
     @Test
     public void testE2File() {
-        IO io = new IO(_file2);
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-        Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        io.write(algorithm.solve());
+        graphTestHelper(_file2);
         assertTrue(true);
     }
 
     @Test
     public void testE3File() {
-        IO io = new IO(_file3);
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-        Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        io.write(algorithm.solve());
+        graphTestHelper(_file3);
         assertTrue(true);
     }
 
     @Test
     public void testE4File() {
-        IO io = new IO(_file4);
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-        Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        io.write(algorithm.solve());
+        graphTestHelper(_file4);
         assertTrue(true);
     }
 
     @Test
     public void testE5File() {
-        IO io = new IO(_file5);
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-        Algorithm algorithm = algorithmBuilder.getAlgorithm();
-        io.write(algorithm.solve());
+        graphTestHelper(_file5);
         assertTrue(true);
     }
 
