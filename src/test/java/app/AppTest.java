@@ -13,8 +13,7 @@ import org.junit.Test;
 /**
  * TODO: Comment tests
  */
-public class AppTest 
-{
+public class AppTest {
     private String[] _file1;
     private String[] _file2;
     private String[] _file3;

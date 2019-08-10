@@ -93,7 +93,10 @@ public class IO implements IIO {
                 case "-o":
                     try {
                         nameOfOutputFile = args[i + 1].contains(".") ? args[i + 1] : args[i + 1] + ".dot";
-                        nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
+
+                        if (!args[i+1].contains("/")) {
+                            nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
+                        }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.err.println("Invalid output file name");
                         printUsage();
