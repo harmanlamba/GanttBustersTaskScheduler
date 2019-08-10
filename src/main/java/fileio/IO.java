@@ -10,9 +10,13 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-//TODO: class comment
+/**
+ * The class is responsible for all the IO that has to be done. This includes but is not limited to reading of the file,
+ * input checking of the file to ensure that the file is correct, and writing the output.
+ */
 public class IO implements IIO {
 
+    //Fields Declaration
     private Read _read;
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
@@ -20,16 +24,19 @@ public class IO implements IIO {
 
     public IO(String[] input) {
         try {
+            //Run the reader in order to validate the input and parse it to the Algorithm class
             validateAndParseInput(input);
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
-            printUsage();
+            printUsage(); //Printing the usage of the command correctly in the case of an exception being thrown
         }
     }
 
     /**
      * validateAndParseInput - Get console inputs and validate if valid user input
      * @param args - user input from console
+     * @throws  FileNotFoundException - Can throw the exception in the case that the specified file is not found or
+     * does not exist
      */
     private void validateAndParseInput(String[] args) throws FileNotFoundException {
         // Checks for minimum number of required parameters
@@ -99,7 +106,7 @@ public class IO implements IIO {
             }
         }
 
-        //Apply guardnull on read and write input - checking for exist of nulls
+        //Applying guardnull on read and write input - checking for exist of nulls
         _read = (Read) Utility.GuardNull(new Read(nameOfInputFile));
         _read.readFile();
         _write = (Write) Utility.GuardNull(new Write(nameOfInputFile, nameOfOutputFile));
