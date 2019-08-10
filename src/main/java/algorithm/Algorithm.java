@@ -51,4 +51,28 @@ public abstract class Algorithm {
             _order.add(tempNode);
         }
     }
+
+    /**
+     * Getter method for the topologically ordered graph nodes
+     * @return topologically ordered graph nodes in a List of GraphNode
+     */
+    public List<GraphNode> getOrder() {
+        return _order;
+    }
+
+    /**
+     * Getter method for the number of processors to schedule tasks to as specified by the input
+     * @return the number of processors to schedule tasks to as specified by the input
+     */
+    public int getNumProcTask() {
+        return _numProcTask;
+    }
+
+    /**
+     * Getter method for the number of processors to run the algorithm on as specified by the input
+     * @return the number of processors to run the algorithm on as specified by the input
+     */
+    public int getNumProcParallel() {
+        return _numProcParallel;
+    }
 }
