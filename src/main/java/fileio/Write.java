@@ -45,7 +45,7 @@ public class Write {
             _bufferedReader = new BufferedReader(new FileReader(_inputPath)); //Reading the input file again for format
             buildFile();
         } catch (IOException e) {
-            System.err.println("File could not be read: " + _inputPath);
+            System.err.println("Output file could not be created: " + _inputPath);
             Utility.printUsage();
         }
     }
