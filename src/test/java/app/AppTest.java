@@ -1,6 +1,5 @@
 package app;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import algorithm.Algorithm;
@@ -10,8 +9,6 @@ import fileio.IO;
 import graph.Graph;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Unit test for simple App.
@@ -31,15 +28,6 @@ public class AppTest
         _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
         _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
         _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
-    }
-
-    /**
-     * Rigorous Test :-)
-     */
-    @Test
-    public void runAllTasksOnSequential()
-    {
-        assertTrue( true );
     }
 
     @Test

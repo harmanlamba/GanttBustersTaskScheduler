@@ -26,6 +26,8 @@ public class Read {
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_EDGE = "\t([a-zA-Z0-9]+) -> ([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_FIRST_LINE = "digraph \".*\" \\{";
+    private static final String RGX_STARTGRAPH_LINE = "\tgraph \\[.*";
+    private static final String RGX_ENDGRAPH_LINE = "\t\\];";
 
     public Read(String filePath) {
         _vertexMap = (Map<String, GraphNode>) Utility.GuardNull(new HashMap<>()); //hold list of vertices from file
@@ -48,7 +50,8 @@ public class Read {
             //Need to take command line arguments so we take in FileReader(args.toString())
             String currentLine = _bufferedReader.readLine();
             String nextLine = _bufferedReader.readLine();
-            boolean hasStarted = false; //First line flag
+            boolean hasStarted = false; //First line of file flag
+            boolean graphSpecialStarted = false; //Special graph instance flag
 
             while (currentLine!= null) {
                 if (!hasStarted) {
@@ -62,9 +65,21 @@ public class Read {
                     if (!currentLine.equals("}")) {
                         throw new PatternSyntaxException("Invalid file format - last line :", "{", 1);
                     }
+                } else if (!graphSpecialStarted) {
+                    //Middle lines - do not ignore
+
+                    if (checkLine(RGX_STARTGRAPH_LINE, currentLine)) {
+                        graphSpecialStarted = true; //Set ignore lines to true
+                    } else {
+                        makeNodeEdge(currentLine);
+                    }
                 } else {
-                    //In between lines
-                    makeNodeEdge(currentLine);
+                    //Middle lines - ignore
+
+                    //Ignore all special graph case lines
+                    if (checkLine(RGX_ENDGRAPH_LINE, currentLine)) {
+                        graphSpecialStarted = false; //Set ignore lines to false
+                    }
                 }
 
                 //Increment lines (i, i+1)
