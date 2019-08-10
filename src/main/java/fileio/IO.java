@@ -1,5 +1,6 @@
 package fileio;
 
+import exception.InvalidInputArgumentException;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
@@ -26,7 +27,7 @@ public class IO implements IIO {
         try {
             //Run the reader in order to validate the input and parse it to the Algorithm class
             validateAndParseInput(input);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | InvalidInputArgumentException e) {
             System.err.println(e.getMessage());
             printUsage(); //Printing the usage of the command correctly in the case of an exception being thrown
         }
@@ -36,9 +37,9 @@ public class IO implements IIO {
      * validateAndParseInput - Get console inputs and validate if valid user input
      * @param args - user input from console
      * @throws  FileNotFoundException - Can throw the exception in the case that the specified file is not found or
-     * does not exist
+     * @throws  InvalidInputArgumentException - Can throw the exception if user's command inputs are invalid
      */
-    private void validateAndParseInput(String[] args) throws FileNotFoundException {
+    private void validateAndParseInput(String[] args) throws FileNotFoundException, InvalidInputArgumentException {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
             printUsage();
@@ -106,8 +107,7 @@ public class IO implements IIO {
                     i++;
                     break;
                 default:
-                    System.err.println("Invalid input arguments");
-                    printUsage();
+                    throw new InvalidInputArgumentException(); //else invalid argument
             }
         }
 
