@@ -43,13 +43,12 @@ public class Write {
         } catch (IOException e) {
             System.err.println("File could not be read: " + _inputPath);
             Utility.printUsage();
-            System.exit(406);
         }
     }
 
     /**
      * buildFile - append map to output file using algorithm's output of nodes
-     * @throws IOException
+     * @throws IOException - thrown if output file path cannot be written to
      */
     private void buildFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(_outputPath));
@@ -60,7 +59,7 @@ public class Write {
             String nextLine = _bufferedReader.readLine();
             boolean firstLine = true;
 
-            while (currentLine!= null) {
+            while (currentLine != null) {
                 if (lineIsNode(currentLine) != null) {
                     //Append appropriate middle line(s) structure
                     GraphNode graphNode = _algorithmResultMap.get(lineIsNode(currentLine));
@@ -93,9 +92,11 @@ public class Write {
                 nextLine = _bufferedReader.readLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("File could not be written to: " + _outputPath);
+            Utility.printUsage();
+        } finally {
+            writer.close();
         }
-        writer.close();
     }
 
     /**
@@ -108,9 +109,9 @@ public class Write {
 
         //Return node number if the current line is a node
         if (matcherNode.matches()) {
-            return matcherNode.group(1);
+            return matcherNode.group(1); //Is a node
         } else {
-            return null;
+            return null; //Is an edge
         }
     }
 }

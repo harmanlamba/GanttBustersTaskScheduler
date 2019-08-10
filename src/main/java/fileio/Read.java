@@ -17,6 +17,8 @@ import java.util.regex.PatternSyntaxException;
 //TODO: Class comments
 public class Read {
 
+
+    //Private Fields Declaration
     private BufferedReader _bufferedReader;
     private Map<String, GraphNode> _vertexMap;
     private List<GraphEdge> _edgeList;
@@ -26,6 +28,8 @@ public class Read {
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_EDGE = "\t([a-zA-Z0-9]+) -> ([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_FIRST_LINE = "digraph \".*\" \\{";
+    private static final String RGX_STARTGRAPH_LINE = "\tgraph \\[.*";
+    private static final String RGX_ENDGRAPH_LINE = "\t\\];";
 
     public Read(String filePath) {
         _vertexMap = (Map<String, GraphNode>) Utility.GuardNull(new HashMap<>()); //hold list of vertices from file
@@ -35,9 +39,8 @@ public class Read {
         try {
             _bufferedReader = new BufferedReader(new FileReader(_filePath)); //create buffer reader to read input filepath
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + _filePath);
+            System.err.println("File not found - please verify name");
             Utility.printUsage();
-            System.exit(404);
         }
     }
 
@@ -49,7 +52,8 @@ public class Read {
             //Need to take command line arguments so we take in FileReader(args.toString())
             String currentLine = _bufferedReader.readLine();
             String nextLine = _bufferedReader.readLine();
-            boolean hasStarted = false; //First line flag
+            boolean hasStarted = false; //First line of file flag
+            boolean graphSpecialStarted = false; //Special graph instance flag
 
             while (currentLine!= null) {
                 if (!hasStarted) {
@@ -63,9 +67,21 @@ public class Read {
                     if (!currentLine.equals("}")) {
                         throw new PatternSyntaxException("Invalid file format - last line :", "{", 1);
                     }
+                } else if (!graphSpecialStarted) {
+                    //Middle lines - do not ignore
+
+                    if (checkLine(RGX_STARTGRAPH_LINE, currentLine)) {
+                        graphSpecialStarted = true; //Set ignore lines to true
+                    } else {
+                        makeNodeEdge(currentLine);
+                    }
                 } else {
-                    //In between lines
-                    makeNodeEdge(currentLine);
+                    //Middle lines - ignore
+
+                    //Ignore all special graph case lines
+                    if (checkLine(RGX_ENDGRAPH_LINE, currentLine)) {
+                        graphSpecialStarted = false; //Set ignore lines to false
+                    }
                 }
 
                 //Increment lines (i, i+1)
@@ -73,17 +89,14 @@ public class Read {
                 nextLine = _bufferedReader.readLine();
             }
         } catch (IOException e) {
-            System.err.println("File not found: " + _filePath);
+            System.err.println("File could not be read: " + _filePath);
             Utility.printUsage();
-            System.exit(404);
         } catch (NodeNotExistException e) {
-            System.err.println("Node does not exist in file");
+            System.err.println(e.getMessage());
             Utility.printUsage();
-            System.exit(420);
         } catch (PatternSyntaxException e) {
-            System.err.println("File format is incorrect");
+            System.err.println(e.getMessage() + "\n");
             Utility.printUsage();
-            System.exit(620);
         }
     }
 
@@ -121,7 +134,7 @@ public class Read {
 
             //Throw nodenotexist exception for if any node is currently not shown in edge
             if (node1 == null || node2 == null) {
-                throw new NodeNotExistException("Node(s) have not been instantiated before an edge to the node has been created");
+                throw new NodeNotExistException();
             }
             _edgeList.add(new GraphEdge(node1, node2, Integer.parseInt(matcherEdge.group(3))));
         } else {
