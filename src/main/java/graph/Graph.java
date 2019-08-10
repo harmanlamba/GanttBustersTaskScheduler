@@ -20,7 +20,7 @@ public class Graph {
         }
 
         for (GraphEdge graphEdge : edgeList) {
-            DefaultWeightedEdge edge = _jGraph.addEdge(graphEdge.getEdgeFrom(), graphEdge.getedgeTo());
+            DefaultWeightedEdge edge = _jGraph.addEdge(graphEdge.getEdgeFrom(), graphEdge.getEdgeTo());
             _jGraph.setEdgeWeight(edge, graphEdge.getEdgeWeight());
         }
     }

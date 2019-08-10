@@ -11,10 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO: Comment tests
+ * AppTest - testing the input and output of dot files. If exceptions have been caught from some exception (usually found
+ * in the dot file), the tests will fail.
  */
 public class AppTest 
 {
+    //File arrays for input file locations
     private String[] _file1;
     private String[] _file2;
     private String[] _file3;
@@ -30,41 +32,46 @@ public class AppTest
         _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
     }
 
-    private void graphTestHelper(String[] file) {
+    /**
+     * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
+     * @param file - dot file input file location
+     */
+    private void sequentialTestHelper(String[] file) {
         IO io = new IO(_file1);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
+                io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
     }
 
     @Test
     public void testE1File() {
-        graphTestHelper(_file1);
+        sequentialTestHelper(_file1);
         assertTrue(true);
     }
 
     @Test
     public void testE2File() {
-        graphTestHelper(_file2);
+        sequentialTestHelper(_file2);
         assertTrue(true);
     }
 
     @Test
     public void testE3File() {
-        graphTestHelper(_file3);
+        sequentialTestHelper(_file3);
         assertTrue(true);
     }
 
     @Test
     public void testE4File() {
-        graphTestHelper(_file4);
+        sequentialTestHelper(_file4);
         assertTrue(true);
     }
 
     @Test
     public void testE5File() {
-        graphTestHelper(_file5);
+        sequentialTestHelper(_file5);
         assertTrue(true);
     }
 
