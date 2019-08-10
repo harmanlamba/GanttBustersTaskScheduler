@@ -49,13 +49,15 @@ public class IO implements IIO {
         _numberOfProcessorsForTask = 1;
         String nameOfInputFile = args[0];
         String nameOfOutputFile = "";
-        String parentPath = "";
+        String parentPath = ".";
 
         // Created an automated out - check for exists and parse appropriate filename
         File file = new File(args[0]);
         if (file.exists()) {
             File parentFolder = file.getParentFile();
-            parentPath = parentFolder.getAbsolutePath();
+            if(parentFolder != null){
+                parentPath = parentFolder.getAbsolutePath();
+            }
             String[] fileNameSplit = file.getName().split("\\.");
             nameOfInputFile = parentPath + "/" + file.getName();
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
