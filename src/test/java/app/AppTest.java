@@ -23,7 +23,8 @@ public class AppTest
     private String[] _file3;
     private String[] _file4;
     private String[] _file5;
-    private String[] _file6;
+    private String[] _invalidFormat;
+    private String[] _missingNode;
 
     @Before
     public void setup() {
@@ -32,7 +33,8 @@ public class AppTest
         _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
         _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
         _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
-        _file6 = new String[]{"src/resources/e6.dot", "1", "-o", "me", "-p", "2"};
+        _invalidFormat = new String[]{"src/resources/e6.dot", "1", "-o", "me", "-p", "2"};
+        _missingNode = new String[]{"src/resources/e7.dot", "1", "-o", "me", "-p", "2"};
     }
 
     /**
@@ -104,11 +106,20 @@ public class AppTest
     @Test
     public void testInvalidFormat() {
         try {
-            sequentialTestHelper(_file6);
+            sequentialTestHelper(_invalidFormat);
             assert(false);
         } catch(HandledException e) {
             assert (true);
         }
     }
 
+    @Test
+    public void testMissingNodes() {
+        try {
+            sequentialTestHelper(_missingNode);
+            assert(false);
+        } catch(HandledException e) {
+            assert (true);
+        }
+    }
 }
