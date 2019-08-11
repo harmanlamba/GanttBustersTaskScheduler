@@ -1,6 +1,6 @@
 package fileio;
 
-import exception.HandledException;
+import exception.InputFileException;
 import utility.Utility;
 import exception.NodeNotExistException;
 import graph.GraphEdge;
@@ -49,7 +49,7 @@ public class Read {
      * readFile - loads and reads the .dot file from specified path, and runs makeNodeEdge on each relevant line
      * @throws PatternSyntaxException - throws only if any input file line is incorrect
      */
-    public void readFile() throws PatternSyntaxException, HandledException {
+    public void readFile() throws PatternSyntaxException, InputFileException {
         try {
             //Need to take command line arguments so we take in FileReader(args.toString())
             String currentLine = _bufferedReader.readLine();
@@ -85,13 +85,13 @@ public class Read {
             }
         } catch (IOException e) {
             System.err.println("File could not be read: " + _filePath);
-            throw new HandledException();
+            throw new InputFileException();
         } catch (NodeNotExistException e) {
             System.err.println(e.getMessage());
-            throw new HandledException("Node has not been instantiated");
+            throw new InputFileException("Node has not been instantiated");
         } catch (PatternSyntaxException e) {
             System.err.println(e.getMessage() + "\n");
-            throw new HandledException("Invalid Format");
+            throw new InputFileException("Invalid Format");
         }
     }
 

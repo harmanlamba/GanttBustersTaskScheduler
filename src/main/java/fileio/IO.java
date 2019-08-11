@@ -1,6 +1,6 @@
 package fileio;
 
-import exception.HandledException;
+import exception.InputFileException;
 import exception.InvalidInputArgumentException;
 import utility.Utility;
 import graph.GraphEdge;
@@ -24,7 +24,7 @@ public class IO implements IIO {
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
 
-    public IO(String[] input) throws HandledException {
+    public IO(String[] input) throws InputFileException {
         try {
             //Run the reader in order to validate the input and parse it to the Algorithm class
             validateAndParseInput(input);
@@ -40,7 +40,7 @@ public class IO implements IIO {
      * @throws  FileNotFoundException - Can throw the exception in the case that the specified file is not found or
      * @throws  InvalidInputArgumentException - Can throw the exception if user's command inputs are invalid
      */
-    private void validateAndParseInput(String[] args) throws FileNotFoundException, InvalidInputArgumentException, HandledException {
+    private void validateAndParseInput(String[] args) throws FileNotFoundException, InvalidInputArgumentException, InputFileException {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
             printUsage();

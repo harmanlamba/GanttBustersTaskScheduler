@@ -3,7 +3,7 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
-import exception.HandledException;
+import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
 import utility.Utility;
@@ -24,7 +24,7 @@ public class App
 
             Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
             io.write(algorithm.solve()); //write onto output dot file
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             Utility.printUsage();
         }
 
