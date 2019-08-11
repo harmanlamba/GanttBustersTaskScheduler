@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
+import exception.HandledException;
 import fileio.IO;
 import graph.Graph;
 import org.junit.Before;
@@ -22,6 +23,7 @@ public class AppTest
     private String[] _file3;
     private String[] _file4;
     private String[] _file5;
+    private String[] _file6;
 
     @Before
     public void setup() {
@@ -30,49 +32,83 @@ public class AppTest
         _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
         _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
         _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
+        _file6 = new String[]{"src/resources/e6.dot", "1", "-o", "me", "-p", "2"};
     }
 
     /**
      * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
      * @param file - dot file input file location
      */
-    private void sequentialTestHelper(String[] file) {
-        IO io = new IO(_file1);
+    private void sequentialTestHelper(String[] file) throws HandledException {
+        IO io = null;
+        io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
+
     }
 
     @Test
     public void testE1File() {
-        sequentialTestHelper(_file1);
-        assertTrue(true);
+        try {
+            sequentialTestHelper(_file1);
+            assertTrue(true);
+        } catch (HandledException e) {
+            assert(false);
+        }
+
     }
 
     @Test
     public void testE2File() {
-        sequentialTestHelper(_file2);
-        assertTrue(true);
+        try {
+            sequentialTestHelper(_file2);
+            assertTrue(true);
+        } catch (HandledException e) {
+            assert(false);
+        }
     }
 
     @Test
     public void testE3File() {
-        sequentialTestHelper(_file3);
-        assertTrue(true);
+        try {
+            sequentialTestHelper(_file3);
+            assertTrue(true);
+        } catch (HandledException e) {
+            assert(false);
+        }
     }
 
     @Test
     public void testE4File() {
-        sequentialTestHelper(_file4);
-        assertTrue(true);
+        try {
+            sequentialTestHelper(_file4);
+            assertTrue(true);
+        } catch (HandledException e) {
+            assert(false);
+        }
     }
 
     @Test
     public void testE5File() {
-        sequentialTestHelper(_file5);
-        assertTrue(true);
+        try {
+            sequentialTestHelper(_file5);
+            assertTrue(true);
+        } catch (HandledException e) {
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testInvalidFormat() {
+        try {
+            sequentialTestHelper(_file6);
+            assert(false);
+        } catch(HandledException e) {
+            assert (true);
+        }
     }
 
 }

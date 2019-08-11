@@ -1,7 +1,7 @@
 # How to run it
 
-To run the application, type the following command into command prompt (Windows) or terminal (Linux) : 
-```java -jar schedular-basic-T3.jar [input dot file] [number of processors to test input graph on] -o [output dot file name] -p [number of processers to run algorithm on]```
+To run the application, type the following command into command prompt (Windows) or terminal (Linux) :
+`java -jar schedular-basic-T3.jar [input dot file] [number of processors to test input graph on] -o [output dot file name] -p [number of processers to run algorithm on]`
 
 This application requires the installation of Java.
 

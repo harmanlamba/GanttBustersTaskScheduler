@@ -3,8 +3,10 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
+import exception.HandledException;
 import fileio.IO;
 import graph.Graph;
+import utility.Utility;
 
 /**
  * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path
@@ -13,13 +15,18 @@ public class App
 {
     public static void main( String[] args ) {
 
-        IO io = new IO(args); //instantiate io
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
-                io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        IO io = null; //instantiate io
+        try {
+            io = new IO(args);
+            Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
+            AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
+                    io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
 
-        Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
-        io.write(algorithm.solve()); //write onto output dot file
+            Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
+            io.write(algorithm.solve()); //write onto output dot file
+        } catch (HandledException e) {
+            Utility.printUsage();
+        }
 
     }
 
