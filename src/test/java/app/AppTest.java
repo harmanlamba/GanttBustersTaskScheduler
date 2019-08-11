@@ -1,11 +1,12 @@
 package app;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
-import exception.HandledException;
+import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
 import org.junit.Before;
@@ -41,9 +42,8 @@ public class AppTest
      * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
      * @param file - dot file input file location
      */
-    private void sequentialTestHelper(String[] file) throws HandledException {
-        IO io = null;
-        io = new IO(file);
+    private void sequentialTestHelper(String[] file) throws InputFileException {
+        IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
@@ -57,7 +57,7 @@ public class AppTest
         try {
             sequentialTestHelper(_file1);
             assertTrue(true);
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             assert(false);
         }
 
@@ -68,7 +68,7 @@ public class AppTest
         try {
             sequentialTestHelper(_file2);
             assertTrue(true);
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             assert(false);
         }
     }
@@ -78,7 +78,7 @@ public class AppTest
         try {
             sequentialTestHelper(_file3);
             assertTrue(true);
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             assert(false);
         }
     }
@@ -88,7 +88,7 @@ public class AppTest
         try {
             sequentialTestHelper(_file4);
             assertTrue(true);
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             assert(false);
         }
     }
@@ -98,7 +98,7 @@ public class AppTest
         try {
             sequentialTestHelper(_file5);
             assertTrue(true);
-        } catch (HandledException e) {
+        } catch (InputFileException e) {
             assert(false);
         }
     }
@@ -108,8 +108,8 @@ public class AppTest
         try {
             sequentialTestHelper(_invalidFormat);
             assert(false);
-        } catch(HandledException e) {
-            assert (true);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Invalid Format");
         }
     }
 
@@ -118,8 +118,8 @@ public class AppTest
         try {
             sequentialTestHelper(_missingNode);
             assert(false);
-        } catch(HandledException e) {
-            assert (true);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Node has not been instantiated");
         }
     }
 }

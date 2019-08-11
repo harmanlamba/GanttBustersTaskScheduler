@@ -1,4 +1,4 @@
-## GanttBuster Scheduler 
+## GanttBuster Scheduler
 
 The official README to Group 3 - Team GanttBuster's Scheduling Project!
 
