@@ -1,5 +1,6 @@
 package app;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import algorithm.Algorithm;
@@ -42,8 +43,7 @@ public class AppTest
      * @param file - dot file input file location
      */
     private void sequentialTestHelper(String[] file) throws HandledException {
-        IO io = null;
-        io = new IO(file);
+        IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
@@ -109,7 +109,7 @@ public class AppTest
             sequentialTestHelper(_invalidFormat);
             assert(false);
         } catch(HandledException e) {
-            assert (true);
+            assertEquals(e.getMessage(),"Invalid Format");
         }
     }
 
@@ -119,7 +119,7 @@ public class AppTest
             sequentialTestHelper(_missingNode);
             assert(false);
         } catch(HandledException e) {
-            assert (true);
+            assertEquals(e.getMessage(),"Node has not been instantiated");
         }
     }
 }

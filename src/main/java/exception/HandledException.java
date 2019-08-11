@@ -7,4 +7,8 @@ public class HandledException extends Exception {
     public HandledException() {
         super("Exception Handled \n");
     }
+    public HandledException(String exceptionMessage) {
+        super(exceptionMessage);
+    }
+
 }

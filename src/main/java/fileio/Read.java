@@ -88,10 +88,10 @@ public class Read {
             throw new HandledException();
         } catch (NodeNotExistException e) {
             System.err.println(e.getMessage());
-            throw new HandledException();
+            throw new HandledException("Node has not been instantiated");
         } catch (PatternSyntaxException e) {
             System.err.println(e.getMessage() + "\n");
-            throw new HandledException();
+            throw new HandledException("Invalid Format");
         }
     }
 
