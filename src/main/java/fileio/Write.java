@@ -8,9 +8,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO: class comments
+/**
+ * Write takes care of the logic behind writing the output file. Essentially it re-reads the input file as the format
+ * is quite similar and adds the extra pieces of information needed, such as the times.
+ */
 public class Write {
 
+    //Defining fields
     private Map<String, GraphNode> _algorithmResultMap;
     private BufferedReader _bufferedReader;
     private String _outputPath;
@@ -20,7 +24,7 @@ public class Write {
     //Regex constants for comparing validity of name and nodes format
     private static final String RGX_NODE = "\t([a-zA-Z0-9]+)\t \\[Weight=([0-9]+)];";
     private static final String RGX_OUTPUT_FILENAME = ".*?/ .dot";
-    //private static final String RGX_UNTIL_WEIGHT = "([.*])];";
+
 
     public Write(String inputPath, String outputPath) {
         _outputPath = outputPath;
@@ -38,18 +42,17 @@ public class Write {
         try {
             _outputFile = new File(_outputPath);
             _outputFile.createNewFile();
-            _bufferedReader = new BufferedReader(new FileReader(_inputPath));
+            _bufferedReader = new BufferedReader(new FileReader(_inputPath)); //Reading the input file again for format
             buildFile();
         } catch (IOException e) {
-            System.err.println("File could not be read: " + _inputPath);
+            System.err.println("Output file could not be created: " + _inputPath);
             Utility.printUsage();
-            System.exit(406);
         }
     }
 
     /**
      * buildFile - append map to output file using algorithm's output of nodes
-     * @throws IOException
+     * @throws IOException - thrown if output file path cannot be written to
      */
     private void buildFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(_outputPath));
@@ -60,7 +63,7 @@ public class Write {
             String nextLine = _bufferedReader.readLine();
             boolean firstLine = true;
 
-            while (currentLine!= null) {
+            while (currentLine != null) {
                 if (lineIsNode(currentLine) != null) {
                     //Append appropriate middle line(s) structure
                     GraphNode graphNode = _algorithmResultMap.get(lineIsNode(currentLine));
@@ -73,7 +76,7 @@ public class Write {
                     sb.append(appendToLine);
                     writer.write(sb.toString());
 
-                } else if (firstLine) {
+                } else if (firstLine) { //First Line
                     //Append appropriate firstline structure
                     StringBuilder sb =  new StringBuilder();
                     sb.append("digraph \"");
@@ -93,9 +96,12 @@ public class Write {
                 nextLine = _bufferedReader.readLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("File could not be written to: " + _outputPath);
+            Utility.printUsage();
+        } finally {
+            //Ensuring that the writer is closed even if there is an exception and that we dont have open writers
+            writer.close();
         }
-        writer.close();
     }
 
     /**
@@ -108,9 +114,9 @@ public class Write {
 
         //Return node number if the current line is a node
         if (matcherNode.matches()) {
-            return matcherNode.group(1);
+            return matcherNode.group(1); //Is a node
         } else {
-            return null;
+            return null; //Is an edge
         }
     }
 }

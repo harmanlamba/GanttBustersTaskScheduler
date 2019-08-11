@@ -1,7 +1,7 @@
 package utility;
 
 /**
- * Provides the utility methods which will be used throughtout the application
+ * Provides the utility methods which will be used throughout the application
  */
 public class Utility {
 

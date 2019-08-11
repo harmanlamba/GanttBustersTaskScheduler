@@ -41,7 +41,7 @@ public class Sequential extends Algorithm {
             GraphNode tempOutputNode = new GraphNode(tempNode, _numProcTask, currentTime);
             output.put(tempNode.getId(), tempOutputNode);
             currentTime += tempNode.getWeight();
-            System.out.println(tempNode.getId() + " " + tempOutputNode.getStartTime());
+            //System.out.println(tempNode.getId() + " " + tempOutputNode.getStartTime());
         }
         return output;
     }

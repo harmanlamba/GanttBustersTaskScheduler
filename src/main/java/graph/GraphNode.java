@@ -1,18 +1,21 @@
 package graph;
 
-//TODO: Class comments + Method comments
+/**
+ * GraphNode - keeps instance of graph node (weight, processor, start time, node id). Such nodes will initially have
+ * no processor/startTime assignments - but will be set during computation of algorithm.
+ */
 public class GraphNode {
 
-    private String _id;
-    private int _weight;
-    private int _processor;
-    private int _startTime;
+    private String _id; //Unique node id
+    private int _weight; //Node weight
+    private int _processor; //Processor assigned to node
+    private int _startTime; //Node's start time on processor
 
     public GraphNode(String id, int weight) {
         _id = id;
         _weight = weight;
-        _processor = -1;
-        _startTime = -1;
+        _processor = -1; //Default processor value
+        _startTime = -1; //Default startTime value
     }
 
     public GraphNode(String id, int weight, int processor, int startTime ){
@@ -23,21 +26,37 @@ public class GraphNode {
     }
 
     public GraphNode(GraphNode node, int processor, int startTime ){
-        this(node._id,node._weight,processor,startTime);
+        this(node._id,node._weight,processor,startTime); //Node write, assigns appropriate processor and startTime
     }
 
+    /**
+     * getId - getter for node id
+     * @return returns node id
+     */
     public String getId() {
         return _id;
     }
 
+    /**
+     * getWeight - getter for node's weight
+     * @return returns the node id's weight
+     */
     public int getWeight() {
         return _weight;
     }
 
+    /**
+     * getProcessor - getter for node id's assigned processor
+     * @return returns node id's processor assignment
+     */
     public int getProcessor(){
         return _processor;
     }
 
+    /**
+     * getStartTime - getter for node id's start time on the processor assignment
+     * @return returns start time value for the node
+     */
     public int getStartTime(){
         return _startTime;
     }

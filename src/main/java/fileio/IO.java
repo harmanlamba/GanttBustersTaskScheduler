@@ -1,35 +1,49 @@
 package fileio;
 
+import exception.InputFileException;
+import exception.InvalidInputArgumentException;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
 import static utility.Utility.printUsage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
-//TODO: class comment
+/**
+ * The class is responsible for all the IO that has to be done. This includes but is not limited to reading of the file,
+ * input checking of the file to ensure that the file is correct, and writing the output.
+ */
 public class IO implements IIO {
 
+    //Fields Declaration
     private Read _read;
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
 
-    public IO(String[] input) {
-        validateAndParseInput(input);
+    public IO(String[] input) throws InputFileException {
+        try {
+            //Run the reader in order to validate the input and parse it to the Algorithm class
+            validateAndParseInput(input);
+        } catch (FileNotFoundException | InvalidInputArgumentException e) {
+            System.err.println(e.getMessage());
+            printUsage(); //Printing the usage of the command correctly in the case of an exception being thrown
+        }
     }
 
     /**
      * validateAndParseInput - Get console inputs and validate if valid user input
      * @param args - user input from console
+     * @throws  FileNotFoundException - Can throw the exception in the case that the specified file is not found or
+     * @throws  InvalidInputArgumentException - Can throw the exception if user's command inputs are invalid
      */
-    private void validateAndParseInput(String[] args) {
+    private void validateAndParseInput(String[] args) throws FileNotFoundException, InvalidInputArgumentException, InputFileException {
         // Checks for minimum number of required parameters
         if (args.length < 2) {
             printUsage();
-            System.exit(401);
         }
 
         //Instantiate initial fields for parsing
@@ -37,30 +51,32 @@ public class IO implements IIO {
         _numberOfProcessorsForTask = 1;
         String nameOfInputFile = args[0];
         String nameOfOutputFile = "";
-        String parentPath = "";
+        String parentPath = ".";
 
         // Created an automated out - check for exists and parse appropriate filename
         File file = new File(args[0]);
         if (file.exists()) {
             File parentFolder = file.getParentFile();
-            parentPath = parentFolder.getAbsolutePath();
+            if(parentFolder != null){
+                parentPath = parentFolder.getAbsolutePath();
+            }
             String[] fileNameSplit = file.getName().split("\\.");
             nameOfInputFile = parentPath + "/" + file.getName();
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
             nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
         } else {
-            System.err.println("Invalid file format. Accepted: .dot files");
-            printUsage();
-            System.exit(401);
+            throw new FileNotFoundException("File not found - please verify name");
         }
 
         //Set user input with number of processors
         try {
             _numberOfProcessorsForTask = Integer.parseInt(args[1]);
+            if (_numberOfProcessorsForTask < 1) {
+                throw new InvalidInputArgumentException();
+            }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             System.err.println("Invalid number of processors to allocate tasks on");
             printUsage();
-            System.exit(401);
         }
 
         //Assign number of processors to algorithm parallel
@@ -70,10 +86,12 @@ public class IO implements IIO {
                 case "-p":
                     try {
                         _numberOfProcessorsForParallelAlgorithm = Integer.parseInt(args[i + 1]);
+                        if (_numberOfProcessorsForParallelAlgorithm < 1 || _numberOfProcessorsForParallelAlgorithm > Runtime.getRuntime().availableProcessors()) {
+                            throw new InvalidInputArgumentException("Invalid input arguments - number of cores for parallel execution must be between 1-" + Runtime.getRuntime().availableProcessors() + "\n");
+                        }
                     } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                         System.err.println("Invalid number of processors for parallelism");
                         printUsage();
-                        System.exit(401);
                     }
                     i++;
                     break;
@@ -85,22 +103,22 @@ public class IO implements IIO {
                 case "-o":
                     try {
                         nameOfOutputFile = args[i + 1].contains(".") ? args[i + 1] : args[i + 1] + ".dot";
-                        nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
+
+                        if (!args[i+1].contains("/")) {
+                            nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
+                        }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.err.println("Invalid output file name");
                         printUsage();
-                        System.exit(401);
                     }
                     i++;
                     break;
                 default:
-                    System.err.println("Invalid input arguments");
-                    printUsage();
-                    System.exit(401);
+                    throw new InvalidInputArgumentException(); //else invalid argument
             }
         }
 
-        //Apply guardnull on read and write input - checking for exist of nulls
+        //Applying guardnull on read and write input - checking for exist of nulls
         _read = (Read) Utility.GuardNull(new Read(nameOfInputFile));
         _read.readFile();
         _write = (Write) Utility.GuardNull(new Write(nameOfInputFile, nameOfOutputFile));
