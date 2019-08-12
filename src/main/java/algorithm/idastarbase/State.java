@@ -42,4 +42,14 @@ public class State {
         return _freeTasks.size();
     }
 
+    public int getCost() {
+        int max = 0;
+        for(GraphNode node : _assignedTasks) {
+            if(node.getStartTime() + node.getWeight() > max) {
+                max = node.getStartTime() + node.getWeight();
+            }
+        }
+        return max;
+    }
+
 }

@@ -17,7 +17,8 @@ import java.util.*;
 public class IDAStarBase extends Algorithm {
 
     private int _numFreeTasks;
-    private int _lowerBound;
+//    private int _lowerBound;
+    private int _upperBound;
     private GraphNode _cTask;
     private GraphNode _pTask;
     private int _cProc;
@@ -37,7 +38,8 @@ public class IDAStarBase extends Algorithm {
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         getTopologicalOrdering();
-        _lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
+//        _lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
+        _upperBound = calcUpperBound();
         _cTask = null;
         _pTask = null;
         _cProc = -1;
@@ -56,7 +58,7 @@ public class IDAStarBase extends Algorithm {
     @Override
     public Map<String,GraphNode> solve() {
         while (true) {
-            _lowerBound = IDARecursion();
+            _upperBound = IDARecursion();
         }
     }
 
@@ -72,14 +74,18 @@ public class IDAStarBase extends Algorithm {
 
          List<GraphNode> nodeList = new ArrayList<>();
          if(_numFreeTasks == 0) {
-             for (GraphNode node : _state.getFreeTasks()) {
-                 for (int currentProcessor = 1; currentProcessor <= _numProcTask; currentProcessor++) {
+             for (GraphNode t : _state.getFreeTasks()) {
+                 for (int j = 1; j <= _numProcTask; j++) {
                      _depth += 1;
                      //TODO: sanitise the schedule
                      _numFreeTasks = _state.getNumberOfFreeTasks();
                      //TODO: schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
                      // it can start for that particular processor - take into account communication costs which it may
                      // incur on other processors)
+                    _pTask = _cTask;
+                    _pProc = _cProc;
+                     _cTask = t;
+                     _cProc = j;
 
 
                  }
@@ -113,7 +119,14 @@ public class IDAStarBase extends Algorithm {
 
 
 
-
+    private int calcUpperBound() {
+        Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
+        int total = 0;
+        for (GraphNode node: allNodes) {
+            total += node.getWeight();
+        }
+        return total;
+    }
 
 
     private int calcWeightProcRatio() {
