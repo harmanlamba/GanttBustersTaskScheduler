@@ -25,7 +25,8 @@ public class IDAStarBase extends Algorithm {
     private int _depth;
     private State _state;
     private int _orderIndex;
-    private List<State> _states = new ArrayList<>();
+    private List<State> _stateList = new ArrayList<>();
+    private List<GraphNode> _stateGraphNodes = new ArrayList<>();
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -44,6 +45,7 @@ public class IDAStarBase extends Algorithm {
         _pProc = -1;
         _depth = 0;
         _orderIndex = 0;
+        _state = new State(_graph);
     }
 
     /**
@@ -56,10 +58,6 @@ public class IDAStarBase extends Algorithm {
         while (true) {
             _lowerBound = IDARecursion();
         }
-
-
-        // System.out.println(lowerBound);
-        //return null;
     }
 
     /**
@@ -68,6 +66,11 @@ public class IDAStarBase extends Algorithm {
      */
     private int IDARecursion() {
         boolean done = false;
+//        if(_state.getFreePointer() != _order.size() - 1) {
+//            GraphNode nextTask = _order.get(_state.getFreePointer());
+//            _state.incrementFreePointer();
+
+         List<GraphNode> nodeList = new ArrayList<>();
 
         return 1;
     }
