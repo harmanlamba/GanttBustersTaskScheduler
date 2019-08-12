@@ -4,6 +4,7 @@ import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import algorithm.common.utility.AlgorithmType;
 import exception.InputFileException;
+import fileio.IIO;
 import fileio.IO;
 import graph.Graph;
 import utility.Utility;
@@ -14,10 +15,9 @@ import utility.Utility;
 public class App 
 {
     public static void main( String[] args ) {
-
-        //TODO: Add getNumberOfProcessorsForTasks() and other to IIO
+        
         try {
-            IO io = new IO(args);
+            IIO io = new IO(args);
             Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
             AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.IDASTARBASE, graph,
                     io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
