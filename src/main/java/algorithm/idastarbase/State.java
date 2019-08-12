@@ -10,11 +10,13 @@ public class State {
     private List<GraphNode> _assignedTasks;
     private Graph _graph;
     private List<GraphNode> _freeTasks;
+    private int[] processorMaxTime;
 
-    public State(Graph graph) {
+    public State(Graph graph, int numProcTask) {
         _graph = graph;
         _assignedTasks = new ArrayList<>();
         _freeTasks = new ArrayList<>();
+        processorMaxTime = new int[numProcTask];
         updateFreeTasks();
     }
 
@@ -42,4 +44,11 @@ public class State {
         return _freeTasks.size();
     }
 
+    public int[] getProcessorMaxTime() {
+        return processorMaxTime;
+    }
+
+    public void setProcessorMaxTime(int processor, int startTime) {
+        processorMaxTime[processor] = startTime;
+    }
 }
