@@ -46,7 +46,7 @@ public class IDAStarBase extends Algorithm {
         _pProc = -1;
         _depth = 0;
         _orderIndex = 0;
-        _state = new State(_graph);
+        _state = new State(_graph, numProcTask);
         _numFreeTasks = _state.getNumberOfFreeTasks();
     }
 
@@ -82,17 +82,35 @@ public class IDAStarBase extends Algorithm {
                      //TODO: schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
                      // it can start for that particular processor - take into account communication costs which it may
                      // incur on other processors)
+                     getTaskTime(t);
                     _pTask = _cTask;
                     _pProc = _cProc;
                      _cTask = t;
                      _cProc = j;
-
-
                  }
              }
          }
 
         return 1;
+    }
+
+    private void getTaskTime(GraphNode node) {
+        Set<GraphNode> testNode = _graph.getGraph().incomingEdgesOf(node);
+        int maxValue = 0;
+        if (testNode.size() != 0) { //If node dependencies exist
+            List<Integer> testValues = new ArrayList<>();
+            for (GraphNode node2 : testNode) {
+                if (node2.getProcessor() != node.getProcessor()) { //If nodes on different processors
+                    int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(node2, node));
+                    int processorCost = node2.getStartTime() + node2.getWeight();
+                    int finalCost = processorCost + communicationCost;
+                    testValues.add(finalCost);
+                }
+            }
+            maxValue = Collections.max(testValues);
+        } else { //No node dependencies exist
+
+        }
     }
 
 

@@ -61,5 +61,9 @@ public class GraphNode {
         return _startTime;
     }
 
+    public void setStartTime(int startTime) {
+        _startTime = startTime;
+    }
+
 
 }
