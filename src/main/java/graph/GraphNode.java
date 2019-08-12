@@ -65,5 +65,9 @@ public class GraphNode {
         _startTime = startTime;
     }
 
+    public void setProcessor(int processor) {
+        _processor = processor;
+    }
+
 
 }

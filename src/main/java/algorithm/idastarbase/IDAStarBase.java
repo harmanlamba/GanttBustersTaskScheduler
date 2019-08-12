@@ -75,14 +75,21 @@ public class IDAStarBase extends Algorithm {
          List<GraphNode> nodeList = new ArrayList<>();
          if(_numFreeTasks == 0) {
              for (GraphNode t : _state.getFreeTasks()) {
-                 for (int j = 1; j <= _numProcTask; j++) {
+                 for (int j = 0; j < _numProcTask; j++) {
                      _depth += 1;
                      //TODO: sanitise the schedule
                      _numFreeTasks = _state.getNumberOfFreeTasks();
-                     //TODO: schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
+
+
+                     // Schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
                      // it can start for that particular processor - take into account communication costs which it may
                      // incur on other processors)
-                     getTaskTime(t);
+                     int startTimeOfT = getTaskTime(t, j);
+                     t.setStartTime(startTimeOfT);
+                     t.setProcessor(j);
+                     _state.addTask(t);
+
+
                     _pTask = _cTask;
                     _pProc = _cProc;
                      _cTask = t;
@@ -94,48 +101,21 @@ public class IDAStarBase extends Algorithm {
         return 1;
     }
 
-    private void getTaskTime(GraphNode node) {
-        Set<GraphNode> testNode = _graph.getGraph().incomingEdgesOf(node);
+    private int getTaskTime(GraphNode node, int processor) {
+        Set<GraphNode> dependentNodeSet = _graph.getGraph().incomingEdgesOf(node);
         int maxValue = 0;
-        if (testNode.size() != 0) { //If node dependencies exist
-            List<Integer> testValues = new ArrayList<>();
-            for (GraphNode node2 : testNode) {
-                if (node2.getProcessor() != node.getProcessor()) { //If nodes on different processors
-                    int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(node2, node));
-                    int processorCost = node2.getStartTime() + node2.getWeight();
-                    int finalCost = processorCost + communicationCost;
-                    testValues.add(finalCost);
-                }
+
+        List<Integer> maxTimeList = new ArrayList<>();
+        for (GraphNode dependentNode : dependentNodeSet) {
+            if (dependentNode.getProcessor() != node.getProcessor()) { //If nodes on different processors
+                int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(dependentNode, node));
+                int processorCost = dependentNode.getStartTime() + dependentNode.getWeight();
+                maxTimeList.add(processorCost + communicationCost);
             }
-            maxValue = Collections.max(testValues);
-        } else { //No node dependencies exist
-
         }
+        maxTimeList.add(_state.getProcessorMaxTime(processor));
+        return Collections.max(maxTimeList);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private int calcUpperBound() {
         Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
