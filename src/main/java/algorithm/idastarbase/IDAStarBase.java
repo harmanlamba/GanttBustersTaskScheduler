@@ -49,11 +49,7 @@ public class IDAStarBase extends Algorithm {
      */
     private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
         boolean done = false;
-//        if(_state.getFreePointer() != _order.size() - 1) {
-//            GraphNode nextTask = _order.get(_state.getFreePointer());
-//            _state.incrementFreePointer();
 
-         List<GraphNode> nodeList = new ArrayList<>();
          if(numFreeTasks != 0) {
              for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
                  for (int j = 0; j < _numProcTask; j++) {
@@ -88,7 +84,7 @@ public class IDAStarBase extends Algorithm {
                  }
              }
          }
-        return true;
+        return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
     }
 
     private int getTaskTime(GraphNode node, int processor) {
