@@ -77,7 +77,6 @@ public class IDAStarBase extends Algorithm {
                      _depth += 1;
                      //TODO: sanitise the schedule
                      _numFreeTasks = _state.getNumberOfFreeTasks();
-                     _graph.getGraph().edge
                      //TODO: schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
                      // it can start for that particular processor - take into account communication costs which it may
                      // incur on other processors)
