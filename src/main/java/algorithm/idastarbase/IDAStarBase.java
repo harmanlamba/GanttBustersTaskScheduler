@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private int _numTasks;
+    private int _numFreeTasks;
     private int _lowerBound;
     private GraphNode _cTask;
     private GraphNode _pTask;
@@ -36,7 +36,6 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
-        _numTasks = _graph.getGraph().vertexSet().size();
         getTopologicalOrdering();
         _lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
         _cTask = null;
@@ -46,6 +45,7 @@ public class IDAStarBase extends Algorithm {
         _depth = 0;
         _orderIndex = 0;
         _state = new State(_graph);
+        _numFreeTasks = _state.getNumberOfFreeTasks();
     }
 
     /**
@@ -71,9 +71,50 @@ public class IDAStarBase extends Algorithm {
 //            _state.incrementFreePointer();
 
          List<GraphNode> nodeList = new ArrayList<>();
+         if(_numFreeTasks == 0) {
+             for (GraphNode node : _state.getFreeTasks()) {
+                 for (int currentProcessor = 1; currentProcessor <= _numProcTask; currentProcessor++) {
+                     _depth += 1;
+                     //TODO: sanitise the schedule
+                     _numFreeTasks = _state.getNumberOfFreeTasks();
+                     _graph.getGraph().edge
+                     //TODO: schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
+                     // it can start for that particular processor - take into account communication costs which it may
+                     // incur on other processors)
+
+
+                 }
+             }
+         }
 
         return 1;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private int calcWeightProcRatio() {
