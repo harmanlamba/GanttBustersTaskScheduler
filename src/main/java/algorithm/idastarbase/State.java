@@ -2,6 +2,8 @@ package algorithm.idastarbase;
 
 import graph.Graph;
 import graph.GraphNode;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -9,11 +11,13 @@ import java.util.ArrayList;
 public class State {
     private List<GraphNode> _assignedTasks;
     private Graph _graph;
+    private Graph _remainingGraph;
     private List<GraphNode> _freeTasks;
     private int[] _processorMaxTime;
 
     public State(Graph graph, int numProcTask) {
         _graph = graph;
+        _remainingGraph = graph;
         _assignedTasks = new ArrayList<>();
         _freeTasks = new ArrayList<>();
         _processorMaxTime = new int[numProcTask];
@@ -21,7 +25,8 @@ public class State {
     }
 
     public void addTask(GraphNode node) {
-        _graph.getGraph().removeVertex(node);
+        _freeTasks.remove(node);
+        _remainingGraph.getGraph().removeVertex(node);
         _assignedTasks.add(node);
         if(_processorMaxTime[node.getProcessor()] < node.getStartTime() + node.getWeight()) {
             _processorMaxTime[node.getProcessor()] = node.getStartTime() + node.getWeight();
@@ -31,9 +36,8 @@ public class State {
 
     //TODO: check the cast
     private void updateFreeTasks() {
-        for(Object objectNode : _graph.getGraph().vertexSet()) {
-            GraphNode node = (GraphNode) objectNode;
-            if(_graph.getGraph().inDegreeOf(node) == 0) {
+        for(GraphNode node : ((DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge>) _remainingGraph.getGraph()).vertexSet()) {
+            if(_remainingGraph.getGraph().inDegreeOf(node) == 0) {
                 _freeTasks.add(node);
             }
         }

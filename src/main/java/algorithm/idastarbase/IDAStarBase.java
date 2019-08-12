@@ -57,9 +57,10 @@ public class IDAStarBase extends Algorithm {
      */
     @Override
     public Map<String,GraphNode> solve() {
-        while (true) {
+        //while (true) {
             _upperBound = IDARecursion();
-        }
+        //}
+        return null;
     }
 
     /**
@@ -73,13 +74,12 @@ public class IDAStarBase extends Algorithm {
 //            _state.incrementFreePointer();
 
          List<GraphNode> nodeList = new ArrayList<>();
-         if(_numFreeTasks == 0) {
-             for (GraphNode t : _state.getFreeTasks()) {
+         if(_numFreeTasks != 0) {
+             List<GraphNode> freeTasks = _state.getFreeTasks(); //TODO: use number for fofr loop - look at algorithm 
+             for (GraphNode t : freeTasks) {
                  for (int j = 0; j < _numProcTask; j++) {
                      _depth += 1;
                      //TODO: sanitise the schedule
-                     _numFreeTasks = _state.getNumberOfFreeTasks();
-
 
                      // Schedule a free task into proc(currentProcessors). Add it to state s (at the earliest time
                      // it can start for that particular processor - take into account communication costs which it may
@@ -89,15 +89,15 @@ public class IDAStarBase extends Algorithm {
                      t.setProcessor(j);
                      _state.addTask(t);
 
+                     _numFreeTasks = _state.getNumberOfFreeTasks();
 
-                    _pTask = _cTask;
+                     _pTask = _cTask;
                     _pProc = _cProc;
                      _cTask = t;
                      _cProc = j;
                  }
              }
          }
-
         return 1;
     }
 

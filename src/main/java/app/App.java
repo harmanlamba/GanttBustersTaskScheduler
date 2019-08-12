@@ -15,9 +15,9 @@ public class App
 {
     public static void main( String[] args ) {
 
-        IO io = null; //instantiate io
+        //TODO: Add getNumberOfProcessorsForTasks() and other to IIO
         try {
-            io = new IO(args);
+            IO io = new IO(args);
             Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
             AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.IDASTARBASE, graph,
                     io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
