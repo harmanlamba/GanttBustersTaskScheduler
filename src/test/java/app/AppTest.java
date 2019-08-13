@@ -29,7 +29,7 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/resources/e1.dot", "1", "-o", "me", "-p", "2"};
+        _file1 = new String[]{"src/resources/e1.dot", "2", "-o", "me", "-p", "2"};
         _file2 = new String[]{"src/resources/e2.dot", "1", "-o", "me", "-p", "2"};
         _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
         _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
@@ -45,7 +45,7 @@ public class AppTest
     private void sequentialTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
+        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.IDASTARBASE, graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());

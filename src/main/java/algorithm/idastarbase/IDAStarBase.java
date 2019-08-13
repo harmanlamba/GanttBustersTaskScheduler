@@ -40,19 +40,16 @@ public class IDAStarBase extends Algorithm {
         return _bestFState.getAssignedTasks();
     }
 
-
-
     /**
-     *
      * @return lower bound
      */
-    private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
+    private void IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
          if (numFreeTasks != 0) {
              for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
                  for (int j = 0; j < _numProcTask; j++) {
                      depth += 1;
                      //TODO: sanitise the schedule
-                     _state.sanitise(depth);
+                     _state.sanitise(depth, _numProcTask);
 
                      numFreeTasks = state.getNumberOfFreeTasks();
 
@@ -80,7 +77,7 @@ public class IDAStarBase extends Algorithm {
                  }
              }
          }
-        return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
+        //return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
     }
 
     private int getTaskTime(GraphNode node, int processor) {
