@@ -3,20 +3,18 @@ package algorithm.idastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * IDAStarBase is a child class of Algorithm which solves the task scheduling problem optimally
  * on one processor.
  */
 public class IDAStarBase extends Algorithm {
+
+    private State _state;
+    private State _bestFState;
+    private int _numTasks;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -26,6 +24,9 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
+        _state = new State(_graph, numProcTask);
+        _bestFState = null;
+        _numTasks = _graph.getGraph().vertexSet().size();
     }
 
     /**
@@ -35,65 +36,75 @@ public class IDAStarBase extends Algorithm {
      */
     @Override
     public Map<String,GraphNode> solve() {
-        getTopologicalOrdering();
-        int lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
-        // System.out.println(lowerBound);
-        return null;
+        IDARecursion(null, -1, null, -1, _state.getNumberOfFreeTasks(), 0, _state, calcUpperBound());
+        return _bestFState.getAssignedTasks();
     }
 
-    private int calcWeightProcRatio() {
+
+
+    /**
+     *
+     * @return lower bound
+     */
+    private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
+         if (numFreeTasks != 0) {
+             for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
+                 for (int j = 0; j < _numProcTask; j++) {
+                     depth += 1;
+                     //TODO: sanitise the schedule
+                     _state.sanitise(depth);
+
+                     numFreeTasks = state.getNumberOfFreeTasks();
+
+                     //Schedule a picked task t from free(s) onto proc j. Add it to state s
+                     GraphNode t = state.getGraphNodeFromFreeTasks(currentFreeTaskIndex);
+                     int startTimeOfT = getTaskTime(t, j);
+                     t.setStartTime(startTimeOfT);
+                     t.setProcessor(j);
+                     state.ScheduleTask(t);
+
+                     pTask = cTask;
+                     pProc = cProc;
+                     cTask = t;
+                     cProc = j;
+
+                     int currentStateCost = state.getCost();
+                     if (currentStateCost <= upperBound && depth == _numTasks) {
+                        _bestFState = state;
+                        upperBound = currentStateCost;
+                     }
+                     if (currentStateCost <= upperBound && depth <= _numTasks) {
+                         IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state, upperBound);
+                     }
+                     depth -= 1;
+                 }
+             }
+         }
+        return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
+    }
+
+    private int getTaskTime(GraphNode node, int processor) {
+        Set<GraphNode> dependentNodeSet = _graph.getGraph().incomingEdgesOf(node);
+        int maxValue = 0;
+
+        List<Integer> maxTimeList = new ArrayList<>();
+        for (GraphNode dependentNode : dependentNodeSet) {
+            if (dependentNode.getProcessor() != node.getProcessor()) { //If nodes on different processors
+                int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(dependentNode, node));
+                int processorCost = dependentNode.getStartTime() + dependentNode.getWeight();
+                maxTimeList.add(processorCost + communicationCost);
+            }
+        }
+        maxTimeList.add(_state.getProcessorMaxTime(processor));
+        return Collections.max(maxTimeList);
+    }
+
+    private int calcUpperBound() {
         Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
         int total = 0;
         for (GraphNode node: allNodes) {
             total += node.getWeight();
         }
-        return total/_numProcTask;
-    }
-
-    private int calcCompBottomLevel() {
-        DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> graphCopy = _graph.getGraph();
-        Set<DefaultWeightedEdge> edges = graphCopy.edgeSet();
-
-        // Finding greatest weighted edge to invert edge weights in next for loop
-        double maxEdgeLength = 0;
-        for (DefaultWeightedEdge edge: edges) {
-            if (graphCopy.getEdgeWeight(edge) > maxEdgeLength) {
-                maxEdgeLength = graphCopy.getEdgeWeight(edge);
-            }
-
-        }
-
-        // Inverting edge weights
-        for (DefaultWeightedEdge edge: edges) {
-            // double origWeight = graphCopy.getEdgeWeight(edge);
-            graphCopy.setEdgeWeight(edge, maxEdgeLength - graphCopy.getEdgeWeight(edge));
-            // System.out.println("Src:" + graphCopy.getEdgeSource(edge) + ", Dest:" + graphCopy.getEdgeTarget(edge) + ", OW: " + origWeight + ", IW: " + graphCopy.getEdgeWeight(edge));
-        }
-
-        Set<GraphNode> startNodes = new HashSet<>();
-        Set<GraphNode> endNodes = new HashSet<>();
-
-        for (GraphNode node: graphCopy.vertexSet()) {
-            if (graphCopy.inDegreeOf(node) == 0) {
-                startNodes.add(node);
-            }
-            if (graphCopy.outDegreeOf(node) == 0) {
-                endNodes.add(node);
-            }
-        }
-
-        DijkstraShortestPath<GraphNode, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath(graphCopy);
-        GraphPath<GraphNode, DefaultWeightedEdge> minPath = dijkstra.getPath(startNodes.iterator().next(), endNodes.iterator().next()); // But its actually the longest (critical) path
-        double minWeight = -1;
-        for (GraphNode start: startNodes) {
-            for (GraphNode end: endNodes) {
-                if (minWeight == -1 || dijkstra.getPath(start, end).getWeight() < minWeight) {
-                    minWeight = dijkstra.getPath(start, end).getWeight();
-                    minPath = dijkstra.getPath(start, end);
-                }
-            }
-        }
-        // System.out.println(minPath.getEdgeList().size());
-        return minPath.getEdgeList().size();
+        return total;
     }
 }

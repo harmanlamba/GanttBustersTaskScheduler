@@ -30,9 +30,19 @@ public class GraphNode {
     }
 
     /**
-     * getId - getter for node id
-     * @return returns node id
+     * equals - overriding equals method
+     * @param o
+     * @return
      */
+    @Override
+    public boolean equals(Object o) {
+        return _id.equals(((GraphNode) o)._id);
+    }
+
+        /**
+         * getId - getter for node id
+         * @return returns node id
+         */
     public String getId() {
         return _id;
     }
@@ -61,5 +71,11 @@ public class GraphNode {
         return _startTime;
     }
 
+    public void setStartTime(int startTime) {
+        _startTime = startTime;
+    }
 
+    public void setProcessor(int processor) {
+        _processor = processor;
+    }
 }
