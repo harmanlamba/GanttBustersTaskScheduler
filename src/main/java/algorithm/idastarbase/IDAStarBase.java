@@ -13,7 +13,6 @@ import java.util.*;
 public class IDAStarBase extends Algorithm {
 
     private State _state;
-    private State _bestFState;
     private int _numTasks;
 
     /**
