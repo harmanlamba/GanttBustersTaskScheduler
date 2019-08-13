@@ -19,7 +19,7 @@ public class App
         try {
             IIO io = new IO(args);
             Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
-            AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.IDASTARBASE, graph,
+            AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
                     io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
 
             Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
