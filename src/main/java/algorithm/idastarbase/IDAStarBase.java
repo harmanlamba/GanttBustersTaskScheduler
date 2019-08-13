@@ -36,7 +36,6 @@ public class IDAStarBase extends Algorithm {
      */
     @Override
     public Map<String,GraphNode> solve() {
-
         IDARecursion(null, -1, null, -1, _state.getNumberOfFreeTasks(), 0, _state, calcUpperBound());
         return _bestFState.getAssignedTasks();
     }
@@ -48,13 +47,12 @@ public class IDAStarBase extends Algorithm {
      * @return lower bound
      */
     private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
-        boolean done = false;
-
-         if(numFreeTasks != 0) {
+         if (numFreeTasks != 0) {
              for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
                  for (int j = 0; j < _numProcTask; j++) {
                      depth += 1;
                      //TODO: sanitise the schedule
+                     _state.sanitise(depth);
 
                      numFreeTasks = state.getNumberOfFreeTasks();
 
@@ -71,16 +69,14 @@ public class IDAStarBase extends Algorithm {
                      cProc = j;
 
                      int currentStateCost = state.getCost();
-                     if(currentStateCost <= upperBound && depth == _numTasks) {
+                     if (currentStateCost <= upperBound && depth == _numTasks) {
                         _bestFState = state;
                         upperBound = currentStateCost;
                      }
-                     if(currentStateCost <= upperBound && depth <= _numTasks) {
-                         done = IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state, upperBound);
+                     if (currentStateCost <= upperBound && depth <= _numTasks) {
+                         IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state, upperBound);
                      }
-                     if(!done) {
-                         depth -= 1;
-                     }
+                     depth -= 1;
                  }
              }
          }

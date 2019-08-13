@@ -11,8 +11,8 @@ public class State {
     private Map<String, GraphNode> _assignedTasks;
     private Graph _graph;
     private Graph _remainingGraph;
-    private List<GraphNode> _freeTasks;
-    private int[] _processorMaxTime;
+    private List<GraphNode> _freeTasks;     // Tasks that can be scheduled (meet dependencies)
+    private int[] _processorMaxTime;        // Index i has the finishing time of the last task scheduled on processor i+1
 
     public State(Graph graph, int numProcTask) {
         _graph = graph;
@@ -23,6 +23,14 @@ public class State {
         updateFreeTasks();
     }
 
+    public void sanitise(int depth) {
+
+    }
+
+    /**
+     * Schedule a task on to
+     * @param task
+     */
     public void ScheduleTask(GraphNode task) {
         _freeTasks.remove(task);
         _remainingGraph.getGraph().removeVertex(task);
@@ -34,8 +42,14 @@ public class State {
     }
 
     //TODO: check the cast
+
+    /**
+     * Update the list of free tasks by adding tasks not yet scheduled and their immediate predecessors
+     * have already been scheduled, ie all dependencies are met.
+     */
     private void updateFreeTasks() {
         for(GraphNode task : ((DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge>) _remainingGraph.getGraph()).vertexSet()) {
+            // If a not-yet scheduled node has all of its dependencies met, it's a free node
             if(_remainingGraph.getGraph().inDegreeOf(task) == 0) {
                 _freeTasks.add(task);
             }
@@ -45,6 +59,7 @@ public class State {
     public int getNumberOfFreeTasks() {
         return _freeTasks.size();
     }
+
 
     public int getCost() {
 //        int max = 0;
