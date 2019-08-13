@@ -5,6 +5,8 @@ import exception.InvalidInputArgumentException;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
+import visualisation.FXApplication;
+
 import static utility.Utility.printUsage;
 
 import java.io.File;
