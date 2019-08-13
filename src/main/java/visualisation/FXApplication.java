@@ -18,7 +18,7 @@ public class FXApplication extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         //Load FXML
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("main/java/visualisation/view/main.fxml"));
 
         //Show stage
         primaryStage.setTitle("Visualization screen");
