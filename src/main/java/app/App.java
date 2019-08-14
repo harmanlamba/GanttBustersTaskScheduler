@@ -21,15 +21,14 @@ public class App
     public static void main( String[] args ) {
         
         try {
-            IIO io = new IO(args);
-            _mainIO = io;
+            _mainIO = new IO(args);
             if(!_mainIO.getStateOfVisualisation()){ // if false run natively
-                Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
+                Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
                 AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
-                        io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm());
 
                 Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
-                io.write(algorithm.solve()); //write onto output dot file
+                _mainIO.write(algorithm.solve()); //write onto output dot file
             }else{
                 //FXApplication will take over
                 Application.launch(FXApplication.class);
