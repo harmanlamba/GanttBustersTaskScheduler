@@ -1,24 +1,42 @@
 package visualisation.controller;
 
-import javafx.fxml.FXML;
+import com.jfoenix.controls.JFXTreeTableView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import javax.xml.soap.Text;
 
 public class MainController implements IObserver {
 
-    @FXML private HBox mainContainer;
-    @FXML private VBox statsContainer;
-    @FXML private TabPane visualsContainer;
-    @FXML private Tab graphTab;
-    @FXML private Tab taskTab;
-    @FXML private Tab resultTab;
+    public HBox mainContainer;
+    public VBox statsContainer;
+    public Text algorithmTypeText1;
+    public Text algorithmTypeText;
+    public Text timeElapsedText;
+    public Text numProcessorsText;
+    public Text parallelProcessorsText;
+    public TabPane visualsContainer;
+    public Tab graphTab;
+    public Pane graphPane;
+    public Tab taskTab;
+    public Pane ganttPane;
+    public Tab resultTab;
+    public JFXTreeTableView<?> scheduleResultsTable;
+    public TreeTableColumn<?, ?> taskIDColumn;
+    public TreeTableColumn<?, ?> startTimeColumn;
+    public TreeTableColumn<?, ?> assignedProcessorColumn;
 
     //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
     //Pruning
     private IObservable _observableAlgorithm;
 
+    public MainController() {
+
+    }
     public MainController(IObservable observableAlgorithm){
         _observableAlgorithm=observableAlgorithm;
     }
