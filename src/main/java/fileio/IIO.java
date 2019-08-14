@@ -38,4 +38,7 @@ public interface IIO {
     //TODO: Comments
     int getNumberOfProcessorsForParallelAlgorithm();
 
+    //TODO: Comments
+    boolean getStateOfVisualisation();
+
 }
