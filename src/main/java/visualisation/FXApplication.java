@@ -35,8 +35,6 @@ public class FXApplication extends Application {
         primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();
 
-
-
         //Temporary Algorithm Run
             IIO io = App._mainIO;
             Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
