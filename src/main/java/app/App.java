@@ -22,16 +22,6 @@ public class App
         
         try {
             _mainIO = new IO(args);
-//            if(!_mainIO.getStateOfVisualisation()){ // if false run natively
-//                Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-//                Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
-//                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
-//                _mainIO.write(algorithm.solve()); //write onto output dot file
-//            }else{
-//                //FXApplication will take over
-//                Application.launch(FXApplication.class);
-//            }
-
             switch(_mainIO.getStateOfVisualisation()) {
                 case COMMAND_LINE:
                     Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
@@ -50,16 +40,4 @@ public class App
         }
 
     }
-
-// DON'T REMOVE THIS
-//    public static void visualisationSample() {
-//        //launch(args);
-//
-//        //#omp parallel for
-//        for(int i = 0; i < 10; i++){
-//            System.out.println("Hello world from parallel code, executed by " + Pyjama.omp_get_thread_num());
-//        }
-//
-//        System.out.println("Finished Execution");
-//    }
 }
