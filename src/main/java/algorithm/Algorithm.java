@@ -1,5 +1,8 @@
 package algorithm;
 
+import visualisation.controller.IObservable;
+import visualisation.controller.IObserver;
+import algorithm.idastarbase.State;
 import graph.GraphNode;
 import graph.Graph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -13,12 +16,14 @@ import java.util.Map;
  * (e.g. Sequential, IDAStarBase). All algorithm classes extending this class may access the
  * input graph, nodes and node scheduling details.
  */
-public abstract class Algorithm {
+public abstract class Algorithm implements IObservable {
 
     protected Graph _graph;
     protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
+    protected State _bestFState;
+    protected List<IObserver> _observerList;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -74,5 +79,29 @@ public abstract class Algorithm {
      */
     public int getNumProcParallel() {
         return _numProcParallel;
+    }
+
+    public State getBestFState(){
+        return _bestFState;
+    }
+
+
+
+    //IObservable Overrides
+    @Override
+    public void add(IObserver e) {
+        _observerList.add(e);
+    }
+
+    @Override
+    public void remove(IObserver e) {
+        _observerList.remove(e);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(IObserver observer : _observerList){
+            observer.update();
+        }
     }
 }

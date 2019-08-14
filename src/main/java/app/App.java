@@ -10,9 +10,9 @@ import graph.Graph;
 import utility.Utility;
 
 /**
- * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path
+ * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path.
  */
-public class App 
+public class App
 {
     public static void main( String[] args ) {
         
