@@ -29,13 +29,13 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/resources/pepman.dot", "2", "-o", "me", "-p", "2"};
-        _file2 = new String[]{"src/resources/e2.dot", "1", "-o", "me", "-p", "2"};
-        _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
-        _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
-        _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
-        _invalidFormat = new String[]{"src/resources/e6.dot", "1", "-o", "me", "-p", "2"};
-        _missingNode = new String[]{"src/resources/e7.dot", "1", "-o", "me", "-p", "2"};
+        _file1 = new String[]{"src/resources/e1.dot", "2", "-o", "me1", "-p", "2"};
+        _file2 = new String[]{"src/resources/e2.dot", "2", "-o", "me2", "-p", "2"};
+        _file3 = new String[]{"src/resources/e3.dot", "2", "-o", "me3", "-p", "2"};
+        _file4 = new String[]{"src/resources/e4.dot", "2", "-o", "me4", "-p", "2"};
+        _file5 = new String[]{"src/resources/e5.dot", "2", "-o", "me5", "-p", "2"};
+        _invalidFormat = new String[]{"src/resources/e6.dot", "2", "-o", "me6", "-p", "2"};
+        _missingNode = new String[]{"src/resources/e7.dot", "2", "-o", "me7", "-p", "2"};
     }
 
     /**
@@ -62,7 +62,7 @@ public class AppTest
         }
 
     }
-    /*
+
     @Test
     public void testE2File() {
         try {
@@ -123,5 +123,5 @@ public class AppTest
         }
     }
 
-     */
+
 }

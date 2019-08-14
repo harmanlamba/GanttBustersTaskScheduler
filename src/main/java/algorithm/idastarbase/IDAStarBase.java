@@ -95,11 +95,11 @@ public class IDAStarBase extends Algorithm {
 
         List<Integer> maxTimeList = new ArrayList<>();
         for (DefaultWeightedEdge edge : edgeSet) {
-            GraphNode dependentNode = (GraphNode) _graph.getGraph().getEdgeTarget(edge);
+            GraphNode parent = (GraphNode) _graph.getGraph().getEdgeSource(edge);
 
-            if (dependentNode.getProcessor() != node.getProcessor()) { //If nodes on different processors
-                int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(dependentNode, node));
-                int processorCost = dependentNode.getStartTime() + dependentNode.getWeight();
+            if (parent.getProcessor() != processor) { //If nodes on different processors
+                int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(parent, node));
+                int processorCost = parent.getStartTime() + parent.getWeight();
                 maxTimeList.add(processorCost + communicationCost);
             }
         }
