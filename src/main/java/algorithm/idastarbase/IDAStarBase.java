@@ -3,6 +3,7 @@ package algorithm.idastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
 
@@ -44,7 +45,8 @@ public class IDAStarBase extends Algorithm {
     /**
      * @return lower bound
      */
-    private void IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state) {
+    private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state) {
+        boolean done = false;
          if (numFreeTasks != 0) {
              for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
                  for (int j = 0; j < _numProcTask; j++) {
@@ -53,7 +55,9 @@ public class IDAStarBase extends Algorithm {
                      state.sanitise(depth, _numProcTask);
 
                      numFreeTasks = state.getNumberOfFreeTasks();
-
+                     if (numFreeTasks == 0) {
+                         return done;
+                     }
 
                      //Schedule a picked task t from free(s) onto proc j. Add it to state s
                      GraphNode t = state.getGraphNodeFromFreeTasks(currentFreeTaskIndex);
@@ -73,21 +77,26 @@ public class IDAStarBase extends Algorithm {
                         _upperBound = currentStateCost;
                      }
                      if (currentStateCost <= _upperBound && depth <= _numTasks) {
-                         IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state);
+                         done = IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state);
                      }
-                     depth -= 1;
+                     if (!done) {
+                         depth -= 1;
+                     }
                  }
              }
          }
-        //return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
+        return done; //TODO: fix what the return here actually should be. idk what it is meant to do.
     }
 
     private int getTaskTime(State state, GraphNode node, int processor) {
-        Set<GraphNode> dependentNodeSet = _graph.getGraph().incomingEdgesOf(node);
+        Set<DefaultWeightedEdge> edgeSet = _graph.getGraph().incomingEdgesOf(node);
+
         int maxValue = 0;
 
         List<Integer> maxTimeList = new ArrayList<>();
-        for (GraphNode dependentNode : dependentNodeSet) {
+        for (DefaultWeightedEdge edge : edgeSet) {
+            GraphNode dependentNode = (GraphNode) _graph.getGraph().getEdgeTarget(edge);
+
             if (dependentNode.getProcessor() != node.getProcessor()) { //If nodes on different processors
                 int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(dependentNode, node));
                 int processorCost = dependentNode.getStartTime() + dependentNode.getWeight();

@@ -23,21 +23,29 @@ public class State {
         _assignedTasks = new HashMap<>();
         _freeTasks = new HashMap<>();
         _processorMaxTime = new int[numProcTask];
-        updateFreeTasks();
     }
 
     public void sanitise(int depth, int numProc) {
         for (int i = _assignedTasks.size() - 1; i > depth; i--) {
             // Add nodes back to the remaining graph
-            Set<GraphEdge> edgeSet = _graph.getGraph().incomingEdgesOf(_assignedTasks.get(i));
-            _remainingGraph.getGraph().addVertex(_assignedTasks.get(i));
-            for (GraphEdge currentEdge : edgeSet) {
-                DefaultWeightedEdge edge = (DefaultWeightedEdge) _remainingGraph.getGraph().addEdge(currentEdge.getEdgeFrom(), currentEdge.getEdgeTo());
-                _remainingGraph.getGraph().setEdgeWeight(edge, currentEdge.getEdgeWeight());
+            GraphNode node = new ArrayList<GraphNode>(_assignedTasks.values()).get(i);
+            Set<DefaultWeightedEdge> edgeSet = _graph.getGraph().outgoingEdgesOf(node);
+            _remainingGraph.getGraph().addVertex(node);
+
+            //everything above is alg
+
+
+            for (DefaultWeightedEdge currentEdge : edgeSet) {
+                GraphNode from = (GraphNode) _graph.getGraph().getEdgeSource(currentEdge);
+
+                GraphNode to = (GraphNode) _graph.getGraph().getEdgeTarget(currentEdge);
+                DefaultWeightedEdge edge = (DefaultWeightedEdge) _remainingGraph.getGraph().addEdge(from, to);
+                int weight = (int)_graph.getGraph().getEdgeWeight(currentEdge);
+                _remainingGraph.getGraph().setEdgeWeight(edge, weight);
             }
 
             // Removes the task from assignedTasks
-            _assignedTasks.remove(_assignedTasks.get(i).getId());
+            _assignedTasks.remove(node.getId());
         }
 
         _processorMaxTime = new int[numProc];
@@ -80,13 +88,6 @@ public class State {
 
 
     public int getCost() {
-//        int max = 0;
-//        for(GraphNode node : _assignedTasks) {
-//            if(node.getStartTime() + node.getWeight() > max) {
-//                max = node.getStartTime() + node.getWeight();
-//            }
-//        }
-//        return max;
         return Collections.max(Arrays.asList(ArrayUtils.toObject(_processorMaxTime)));
     }
 
