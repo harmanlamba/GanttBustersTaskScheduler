@@ -306,12 +306,12 @@ local.properties
 .vscode
 
 *.dot
-!src/resources/e1.dot
-!src/resources/e2.dot
-!src/resources/e3.dot
-!src/resources/e4.dot
-!src/resources/e5.dot
-!src/resources/e6.dot
-!src/resources/e7.dot
+!src/main/resources/e1.dot
+!src/main/resources/e2.dot
+!src/main/resources/e3.dot
+!src/main/resources/e4.dot
+!src/main/resources/e5.dot
+!src/main/resources/e6.dot
+!src/main/resources/e7.dot
 
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all

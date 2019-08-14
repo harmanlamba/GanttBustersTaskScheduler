@@ -5,9 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pj.Pyjama;
-import pj.compiler.PyjamaToJavaCompiler;
-import visualisation.controller.MainController;
 
 public class FXApplication extends Application {
 
@@ -18,7 +15,7 @@ public class FXApplication extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         //Load FXML
-        Parent root = FXMLLoader.load(getClass().getResource("view/main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/main.fxml"));
 
         //Show stage
         primaryStage.setTitle("Visualization screen");

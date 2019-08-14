@@ -29,13 +29,13 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/resources/e1.dot", "1", "-o", "me", "-p", "2"};
-        _file2 = new String[]{"src/resources/e2.dot", "1", "-o", "me", "-p", "2"};
-        _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
-        _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
-        _file5 = new String[]{"src/resources/e5.dot", "1", "-o", "me", "-p", "2"};
-        _invalidFormat = new String[]{"src/resources/e6.dot", "1", "-o", "me", "-p", "2"};
-        _missingNode = new String[]{"src/resources/e7.dot", "1", "-o", "me", "-p", "2"};
+        _file1 = new String[]{"src/main/resources/e1.dot", "1", "-o", "me", "-p", "2"};
+        _file3 = new String[]{"src/main/resources/e3.dot", "1", "-o", "me", "-p", "2"};
+        _file2 = new String[]{"src/main/resources/e2.dot", "1", "-o", "me", "-p", "2"};
+        _file4 = new String[]{"src/main/resources/e4.dot", "1", "-o", "me", "-p", "2"};
+        _file5 = new String[]{"src/main/resources/e5.dot", "1", "-o", "me", "-p", "2"};
+        _invalidFormat = new String[]{"src/main/resources/e6.dot", "1", "-o", "me", "-p", "2"};
+        _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
     }
 
     /**
