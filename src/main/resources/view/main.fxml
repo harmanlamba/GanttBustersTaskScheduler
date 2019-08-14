@@ -27,7 +27,7 @@
                         </Text>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type:" wrappingWidth="280.0">
+                              <Text fx:id="algorithmTypeText" onMouseDragOver="#update" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type:" wrappingWidth="280.0">
                                  <font>
                                     <Font size="19.0" />
                                  </font>

@@ -1,27 +1,34 @@
 package visualisation.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.fxml.Initializable;
+import javafx.scene.text.Text;
 
-public class MainController implements IObserver {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    @FXML private HBox mainContainer;
-    @FXML private VBox statsContainer;
-    @FXML private TabPane visualsContainer;
-    @FXML private Tab graphTab;
-    @FXML private Tab taskTab;
-    @FXML private Tab resultTab;
+public class MainController implements IObserver, Initializable {
 
+
+    public Text algorithmTypeText;
     //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
     //Pruning
     private IObservable _observableAlgorithm;
 
     public MainController(IObservable observableAlgorithm){
         _observableAlgorithm=observableAlgorithm;
+
     }
+
+    public MainController(){
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        algorithmTypeText.setText("Hello Baboons");
+    }
+
 
     @Override
     public void update() {
@@ -30,4 +37,7 @@ public class MainController implements IObserver {
         //TODO: Need to add actual View changes but now have the best state configured
         //Need to ensure that the ObservableAlgorithm is passed to every new controller.
     }
+
+
+
 }
