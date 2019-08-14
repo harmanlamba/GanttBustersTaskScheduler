@@ -1,6 +1,7 @@
 package algorithm;
 
 import algorithm.idastarbase.IDAStarBase;
+import algorithm.idastarparallel.IDAStarParallel;
 import algorithm.sequential.Sequential;
 import graph.Graph;
 
@@ -21,7 +22,11 @@ public class AlgorithmBuilder {
             case 1:
                 return new Sequential(graph, numProcTask, numProcParallel);
             default:
-                 return new IDAStarBase(graph, numProcTask, numProcParallel);
+                if(numProcParallel > 1) {
+                    return new IDAStarParallel(graph, numProcTask, numProcParallel);
+                }else {
+                    return new IDAStarBase(graph, numProcTask, numProcParallel);
+                }
         }
     }
 }
