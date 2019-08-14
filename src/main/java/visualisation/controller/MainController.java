@@ -1,12 +1,39 @@
 package visualisation.controller;
 
+import com.jfoenix.controls.JFXTreeTableView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 
+import javax.xml.soap.Text;
+
+public class MainController implements IObserver {
 import java.net.URL;
 import java.util.ResourceBundle;
 
+    public HBox mainContainer;
+    public VBox statsContainer;
+    public Text algorithmTypeText1;
+    public Text algorithmTypeText;
+    public Text timeElapsedText;
+    public Text numProcessorsText;
+    public Text parallelProcessorsText;
+    public TabPane visualsContainer;
+    public Tab graphTab;
+    public Pane graphPane;
+    public Tab taskTab;
+    public Pane ganttPane;
+    public Tab resultTab;
+    public JFXTreeTableView<?> scheduleResultsTable;
+    public TreeTableColumn<?, ?> taskIDColumn;
+    public TreeTableColumn<?, ?> startTimeColumn;
+    public TreeTableColumn<?, ?> assignedProcessorColumn;
 public class MainController implements IObserver, Initializable {
 
 
