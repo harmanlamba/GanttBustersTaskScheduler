@@ -3,6 +3,7 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import exception.InputFileException;
+import fileio.DisplayMode;
 import fileio.IIO;
 import fileio.IO;
 import graph.Graph;
@@ -21,14 +22,26 @@ public class App
         
         try {
             _mainIO = new IO(args);
-            if(!_mainIO.getStateOfVisualisation()){ // if false run natively
-                Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-                Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
-                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
-                _mainIO.write(algorithm.solve()); //write onto output dot file
-            }else{
-                //FXApplication will take over
-                Application.launch(FXApplication.class);
+//            if(!_mainIO.getStateOfVisualisation()){ // if false run natively
+//                Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
+//                Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
+//                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
+//                _mainIO.write(algorithm.solve()); //write onto output dot file
+//            }else{
+//                //FXApplication will take over
+//                Application.launch(FXApplication.class);
+//            }
+
+            switch(_mainIO.getStateOfVisualisation()) {
+                case COMMAND_LINE:
+                    Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
+                    Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
+                            _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
+                    _mainIO.write(algorithm.solve()); //write onto output dot file
+                    break;
+                default:
+                    //FXApplication will take over
+                    Application.launch(FXApplication.class);
             }
 
 

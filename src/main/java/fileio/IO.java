@@ -26,7 +26,7 @@ public class IO implements IIO {
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
-    private boolean _visualisationState;
+    private DisplayMode _visualisationState = DisplayMode.COMMAND_LINE;
 
     public IO(String[] input) throws InputFileException {
         try {
@@ -102,7 +102,7 @@ public class IO implements IIO {
                 //Use visualization GUI with given file
                 case "-v":
                     //TODO Add visualisation stuff
-                    _visualisationState=true;
+                    _visualisationState=DisplayMode.VISUALISE;
                     break;
                 //Set output file name (if needed)
                 case "-o":
@@ -169,7 +169,7 @@ public class IO implements IIO {
         return _numberOfProcessorsForTask;
     }
 
-    public boolean getStateOfVisualisation(){
+    public DisplayMode getStateOfVisualisation(){
         return _visualisationState;
     }
 }
