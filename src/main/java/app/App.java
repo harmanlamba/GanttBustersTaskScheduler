@@ -2,7 +2,6 @@ package app;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
-import algorithm.common.utility.AlgorithmType;
 import exception.InputFileException;
 import fileio.IIO;
 import fileio.IO;
@@ -24,10 +23,8 @@ public class App
             _mainIO = new IO(args);
             if(!_mainIO.getStateOfVisualisation()){ // if false run natively
                 Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-                AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
-                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm());
-
-                Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
+                Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
+                        _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
                 _mainIO.write(algorithm.solve()); //write onto output dot file
             }else{
                 //FXApplication will take over

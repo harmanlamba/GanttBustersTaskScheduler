@@ -2,11 +2,8 @@ package visualisation;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
-import algorithm.common.utility.AlgorithmType;
-import algorithm.sequential.Sequential;
 import app.App;
 import fileio.IIO;
-import fileio.IO;
 import graph.Graph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -38,10 +35,8 @@ public class FXApplication extends Application {
         //Temporary Algorithm Run
             IIO io = App._mainIO;
             Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
-            AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
-                    io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-
-            Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
+            Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
+                    io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());  //call algorithm graph
             io.write(algorithm.solve()); //write
 
 
