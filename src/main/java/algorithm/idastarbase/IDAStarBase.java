@@ -12,9 +12,9 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private State _state;
     private State _bestFState;
     private int _numTasks;
+    private int _upperBound;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -24,7 +24,6 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
-        _state = new State(_graph, numProcTask);
         _bestFState = null;
         _numTasks = _graph.getGraph().vertexSet().size();
     }
@@ -36,26 +35,28 @@ public class IDAStarBase extends Algorithm {
      */
     @Override
     public Map<String,GraphNode> solve() {
-        IDARecursion(null, -1, null, -1, _state.getNumberOfFreeTasks(), 0, _state, calcUpperBound());
+        State state = new State(_graph, _numProcTask);
+        _upperBound = calcUpperBound();
+        IDARecursion(null, -1, null, -1, state.getNumberOfFreeTasks(), 0, state);
         return _bestFState.getAssignedTasks();
     }
 
     /**
      * @return lower bound
      */
-    private void IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state, int upperBound) {
+    private void IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state) {
          if (numFreeTasks != 0) {
              for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
                  for (int j = 0; j < _numProcTask; j++) {
                      depth += 1;
                      //TODO: sanitise the schedule
-                     _state.sanitise(depth, _numProcTask);
+                     state.sanitise(depth, _numProcTask);
 
                      numFreeTasks = state.getNumberOfFreeTasks();
 
                      //Schedule a picked task t from free(s) onto proc j. Add it to state s
                      GraphNode t = state.getGraphNodeFromFreeTasks(currentFreeTaskIndex);
-                     int startTimeOfT = getTaskTime(t, j);
+                     int startTimeOfT = getTaskTime(state, t, j);
                      t.setStartTime(startTimeOfT);
                      t.setProcessor(j);
                      state.ScheduleTask(t);
@@ -66,12 +67,12 @@ public class IDAStarBase extends Algorithm {
                      cProc = j;
 
                      int currentStateCost = state.getCost();
-                     if (currentStateCost <= upperBound && depth == _numTasks) {
+                     if (currentStateCost <= _upperBound && depth == _numTasks) {
                         _bestFState = state;
-                        upperBound = currentStateCost;
+                        _upperBound = currentStateCost;
                      }
-                     if (currentStateCost <= upperBound && depth <= _numTasks) {
-                         IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state, upperBound);
+                     if (currentStateCost <= _upperBound && depth <= _numTasks) {
+                         IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state);
                      }
                      depth -= 1;
                  }
@@ -80,7 +81,7 @@ public class IDAStarBase extends Algorithm {
         //return true; //TODO: fix what the return here actually should be. idk what it is meant to do.
     }
 
-    private int getTaskTime(GraphNode node, int processor) {
+    private int getTaskTime(State state, GraphNode node, int processor) {
         Set<GraphNode> dependentNodeSet = _graph.getGraph().incomingEdgesOf(node);
         int maxValue = 0;
 
@@ -92,7 +93,7 @@ public class IDAStarBase extends Algorithm {
                 maxTimeList.add(processorCost + communicationCost);
             }
         }
-        maxTimeList.add(_state.getProcessorMaxTime(processor));
+        maxTimeList.add(state.getProcessorMaxTime(processor));
         return Collections.max(maxTimeList);
     }
 

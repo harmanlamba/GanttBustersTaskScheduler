@@ -29,7 +29,7 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/resources/e1.dot", "2", "-o", "me", "-p", "2"};
+        _file1 = new String[]{"src/resources/pepman.dot", "2", "-o", "me", "-p", "2"};
         _file2 = new String[]{"src/resources/e2.dot", "1", "-o", "me", "-p", "2"};
         _file3 = new String[]{"src/resources/e3.dot", "1", "-o", "me", "-p", "2"};
         _file4 = new String[]{"src/resources/e4.dot", "1", "-o", "me", "-p", "2"};
@@ -62,7 +62,7 @@ public class AppTest
         }
 
     }
-
+    /*
     @Test
     public void testE2File() {
         try {
@@ -122,4 +122,6 @@ public class AppTest
             assertEquals(e.getMessage(),"Node has not been instantiated");
         }
     }
+
+     */
 }
