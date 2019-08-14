@@ -5,27 +5,30 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import javax.xml.soap.Text;
 
 public class MainController implements IObserver {
 
-    private HBox mainContainer;
-    private VBox statsContainer;
-    private Text algorithmTypeText;
-    private Text timeElapsedText;
-    private Text numProcessorsText;
-    private Text parallelProcessorsText;
-    private Text memoryUsedText;
-    private TabPane visualsContainer;
-    private Tab graphTab;
-    private Tab taskTab;
-    private Tab resultTab;
-    private JFXTreeTableView<?> scheduleResultsTable;
-    private TreeTableColumn<?, ?> taskIDColumn;
-    private TreeTableColumn<?, ?> startTimeColumn;
-    private TreeTableColumn<?, ?> assignedProcessorColumn;
+    public HBox mainContainer;
+    public VBox statsContainer;
+    public Text algorithmTypeText1;
+    public Text algorithmTypeText;
+    public Text timeElapsedText;
+    public Text numProcessorsText;
+    public Text parallelProcessorsText;
+    public TabPane visualsContainer;
+    public Tab graphTab;
+    public Pane graphPane;
+    public Tab taskTab;
+    public Pane ganttPane;
+    public Tab resultTab;
+    public JFXTreeTableView<?> scheduleResultsTable;
+    public TreeTableColumn<?, ?> taskIDColumn;
+    public TreeTableColumn<?, ?> startTimeColumn;
+    public TreeTableColumn<?, ?> assignedProcessorColumn;
 
     //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
     //Pruning
