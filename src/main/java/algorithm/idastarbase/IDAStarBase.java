@@ -54,6 +54,7 @@ public class IDAStarBase extends Algorithm {
 
                      numFreeTasks = state.getNumberOfFreeTasks();
 
+
                      //Schedule a picked task t from free(s) onto proc j. Add it to state s
                      GraphNode t = state.getGraphNodeFromFreeTasks(currentFreeTaskIndex);
                      int startTimeOfT = getTaskTime(state, t, j);

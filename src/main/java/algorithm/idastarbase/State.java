@@ -18,7 +18,8 @@ public class State {
 
     public State(Graph graph, int numProcTask) {
         _graph = graph;
-        _remainingGraph = graph;
+        _remainingGraph = new Graph(_graph.get_vertexMap(), _graph.get_edgeList());
+
         _assignedTasks = new HashMap<>();
         _freeTasks = new HashMap<>();
         _processorMaxTime = new int[numProcTask];
@@ -55,7 +56,6 @@ public class State {
         if(_processorMaxTime[task.getProcessor()] < task.getStartTime() + task.getWeight()) {
             _processorMaxTime[task.getProcessor()] = task.getStartTime() + task.getWeight();
         }
-        updateFreeTasks();
     }
 
     //TODO: check the cast
@@ -74,6 +74,7 @@ public class State {
     }
 
     public int getNumberOfFreeTasks() {
+        updateFreeTasks();
         return _freeTasks.size();
     }
 
