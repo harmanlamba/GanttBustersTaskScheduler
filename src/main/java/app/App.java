@@ -14,16 +14,25 @@ import utility.Utility;
  */
 public class App
 {
+    public static IO _mainIO;
+
     public static void main( String[] args ) {
         
         try {
             IIO io = new IO(args);
-            Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
-            AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
-                    io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+            _mainIO = (IO) io;
+            if(!_mainIO.getStateOfVisualisation()){ // if false run natively
+                Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
+                AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
+                        io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
 
-            Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
-            io.write(algorithm.solve()); //write onto output dot file
+                Algorithm algorithm = algorithmBuilder.getAlgorithm(); //call algorithm graph
+                io.write(algorithm.solve()); //write onto output dot file
+            }else{
+                //FXApplication will take over
+            }
+
+
         } catch (InputFileException e) {
             Utility.printUsage();
         }

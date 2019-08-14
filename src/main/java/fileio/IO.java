@@ -26,6 +26,7 @@ public class IO implements IIO {
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
+    private boolean _visualisationState;
 
     public IO(String[] input) throws InputFileException {
         try {
@@ -101,6 +102,7 @@ public class IO implements IIO {
                 //Use visualization GUI with given file
                 case "-v":
                     //TODO Add visualisation stuff
+                    _visualisationState=true;
                     Application.launch(FXApplication.class);
                     break;
                 //Set output file name (if needed)
@@ -166,5 +168,9 @@ public class IO implements IIO {
      */
     public int getNumberOfProcessorsForTask() {
         return _numberOfProcessorsForTask;
+    }
+
+    public boolean getStateOfVisualisation(){
+        return _visualisationState;
     }
 }

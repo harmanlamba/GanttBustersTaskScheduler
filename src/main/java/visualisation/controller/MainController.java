@@ -7,16 +7,12 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
-
-import javax.xml.soap.Text;
-
-public class MainController implements IObserver {
 import java.net.URL;
 import java.util.ResourceBundle;
 
+public class MainController implements IObserver, Initializable {
     public HBox mainContainer;
     public VBox statsContainer;
     public Text algorithmTypeText1;
@@ -34,10 +30,8 @@ import java.util.ResourceBundle;
     public TreeTableColumn<?, ?> taskIDColumn;
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
-public class MainController implements IObserver, Initializable {
 
 
-    public Text algorithmTypeText;
     //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
     //Pruning
     private IObservable _observableAlgorithm;
