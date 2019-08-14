@@ -1,4 +1,4 @@
-package ModelController;
+package visualisation.controller;
 
 import algorithm.idastarbase.State;
 

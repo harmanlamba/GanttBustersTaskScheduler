@@ -1,11 +1,10 @@
 package algorithm;
 
-import ModelController.IObservable;
-import ModelController.IObserver;
+import visualisation.controller.IObservable;
+import visualisation.controller.IObserver;
 import algorithm.idastarbase.State;
 import graph.GraphNode;
 import graph.Graph;
-import javafx.collections.ObservableList;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
