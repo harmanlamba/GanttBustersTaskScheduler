@@ -2,6 +2,7 @@ package fileio;
 
 import exception.InputFileException;
 import exception.InvalidInputArgumentException;
+import javafx.application.Application;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
@@ -100,6 +101,7 @@ public class IO implements IIO {
                 //Use visualization GUI with given file
                 case "-v":
                     //TODO Add visualisation stuff
+                    Application.launch(FXApplication.class);
                     break;
                 //Set output file name (if needed)
                 case "-o":

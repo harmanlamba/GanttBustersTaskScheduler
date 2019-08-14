@@ -17,7 +17,6 @@ public class MainController implements IObserver, Initializable {
 
     public MainController(IObservable observableAlgorithm){
         _observableAlgorithm=observableAlgorithm;
-
     }
 
     public MainController(){
