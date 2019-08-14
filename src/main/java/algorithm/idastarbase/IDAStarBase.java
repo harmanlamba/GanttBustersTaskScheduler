@@ -13,7 +13,6 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private State _bestFState;
     private int _numTasks;
     private int _upperBound;
 
@@ -73,8 +72,9 @@ public class IDAStarBase extends Algorithm {
 
                      int currentStateCost = state.getCost();
                      if (currentStateCost <= _upperBound && depth == _numTasks) {
-                        _bestFState = state;
+                        _bestFState = state; //TODO: Deep copy issue
                         _upperBound = currentStateCost;
+                        //TODO: Notify UI using the last method in Algorithm Abstract Class
                      }
                      if (currentStateCost <= _upperBound && depth <= _numTasks) {
                          done = IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state);
