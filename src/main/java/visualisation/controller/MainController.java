@@ -9,6 +9,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import org.graphstream.graph.Graph;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 

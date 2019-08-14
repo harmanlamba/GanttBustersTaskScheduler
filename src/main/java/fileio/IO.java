@@ -103,7 +103,6 @@ public class IO implements IIO {
                 case "-v":
                     //TODO Add visualisation stuff
                     _visualisationState=true;
-                    Application.launch(FXApplication.class);
                     break;
                 //Set output file name (if needed)
                 case "-o":

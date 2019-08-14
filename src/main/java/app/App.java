@@ -7,7 +7,9 @@ import exception.InputFileException;
 import fileio.IIO;
 import fileio.IO;
 import graph.Graph;
+import javafx.application.Application;
 import utility.Utility;
+import visualisation.FXApplication;
 
 /**
  * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path.
@@ -30,6 +32,7 @@ public class App
                 io.write(algorithm.solve()); //write onto output dot file
             }else{
                 //FXApplication will take over
+                Application.launch(FXApplication.class);
             }
 
 
