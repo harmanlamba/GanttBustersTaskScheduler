@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements IObserver, Initializable {
+
     public HBox mainContainer;
     public VBox statsContainer;
     public Text algorithmTypeText1;
@@ -23,16 +24,22 @@ public class MainController implements IObserver, Initializable {
     public Text numProcessorsText;
     public Text parallelProcessorsText;
     public TabPane visualsContainer;
-    public Tab graphTab;
-    public Pane graphPane;
-    public Tab taskTab;
-    public Pane ganttPane;
-    public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
     public TreeTableColumn<?, ?> taskIDColumn;
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
 
+    //graph view
+    public Tab graphTab;
+    public Pane graphPane;
+    private GraphController _graphController;
+
+    //gantt view
+    public Tab taskTab;
+    public Pane ganttPane;
+
+    //table view
+    public Tab resultTab;
 
     //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
     //Pruning
@@ -49,6 +56,7 @@ public class MainController implements IObserver, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         algorithmTypeText.setText("Hello Baboons");
+        initializeGraph();
     }
 
 
@@ -58,6 +66,11 @@ public class MainController implements IObserver, Initializable {
 
         //TODO: Need to add actual View changes but now have the best state configured
         //Need to ensure that the ObservableAlgorithm is passed to every new controller.
+    }
+
+    //TODO: implement graphstream
+    private void initializeGraph() {
+
     }
 
 
