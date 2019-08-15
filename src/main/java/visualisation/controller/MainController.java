@@ -49,10 +49,6 @@ public class MainController implements IObserver, Initializable {
         _observableAlgorithm=observableAlgorithm;
     }
 
-    public MainController(){
-
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         algorithmTypeText.setText("Hello Baboons");
