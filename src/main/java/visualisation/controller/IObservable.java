@@ -1,6 +1,7 @@
 package visualisation.controller;
 
 import algorithm.idastarbase.State;
+import graph.Graph;
 
 public interface IObservable {
 
@@ -8,6 +9,7 @@ public interface IObservable {
     void remove(IObserver e);
     void notifyObservers();
     State getBestFState();
+    Graph getAlgorithmGraph();
 
 
 }

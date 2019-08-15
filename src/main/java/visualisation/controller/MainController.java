@@ -1,6 +1,7 @@
 package visualisation.controller;
 
 import com.jfoenix.controls.JFXTreeTableView;
+import graph.Graph;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -9,13 +10,22 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
-import org.graphstream.graph.Graph;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements IObserver, Initializable {
 
+    //Private Fields
+
+    //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
+    //Pruning
+    private IObservable _observableAlgorithm;
+    private Graph _algorithmGraph;
+
+
+
+    //Public Control Fields from the FXML
     public HBox mainContainer;
     public VBox statsContainer;
     public Text algorithmTypeText1;
@@ -41,12 +51,10 @@ public class MainController implements IObserver, Initializable {
     //table view
     public Tab resultTab;
 
-    //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
-    //Pruning
-    private IObservable _observableAlgorithm;
 
     public MainController(IObservable observableAlgorithm){
         _observableAlgorithm=observableAlgorithm;
+        _algorithmGraph=observableAlgorithm.getAlgorithmGraph();
     }
 
     @Override
