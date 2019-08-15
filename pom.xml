@@ -160,7 +160,7 @@
                 <archive>
                   <manifest>
                     <mainClass>
-                      visualisation.FXApplication
+                      app.App
                     </mainClass>
                   </manifest>
                 </archive>
