@@ -85,6 +85,10 @@ public abstract class Algorithm implements IObservable {
         return _bestFState;
     }
 
+    public Graph getAlgorithmGraph(){
+        return _graph;
+    }
+
 
 
     //IObservable Overrides
