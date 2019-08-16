@@ -1,6 +1,7 @@
 package visualisation.controller;
 
 import com.jfoenix.controls.JFXTreeTableView;
+import fileio.IIO;
 import graph.Graph;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -22,6 +23,7 @@ public class MainController implements IObserver, Initializable {
     //Pruning
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
+    private IIO _io;
 
 
 
@@ -52,8 +54,9 @@ public class MainController implements IObserver, Initializable {
     public Tab resultTab;
 
 
-    public MainController(IObservable observableAlgorithm){
+    public MainController(IObservable observableAlgorithm, IIO io){
         _observableAlgorithm=observableAlgorithm;
+        _io = io;
         _algorithmGraph=observableAlgorithm.getAlgorithmGraph();
     }
 

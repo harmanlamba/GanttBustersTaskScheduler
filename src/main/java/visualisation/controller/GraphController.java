@@ -1,30 +1,40 @@
 package visualisation.controller;
 
+import fileio.IIO;
+import graph.GraphEdge;
+import graph.GraphNode;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.spriteManager.SpriteManager;
 import org.graphstream.ui.view.Viewer;
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GraphController extends Viewer {
-    private Graph _graph;
+    private Graph _graphStream;
     private SpriteManager _spriteManager;
 
-    public GraphController(Graph graph, ThreadingModel threadingModel) {
-        super(graph, threadingModel);
-        _graph = graph;
-        _spriteManager = new SpriteManager(_graph);
+    public GraphController(Graph graph, ThreadingModel threadingModel,
+                           Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
 
+        super(graph,threadingModel);
         intializeGraphSprite();
+
     }
 
     private void intializeGraphSprite() {
         //Graph attributes
-        _graph.addAttribute("ui.antialias");
-        _graph.addAttribute("ui.quality");
+        _graphStream.addAttribute("ui.antialias");
+        _graphStream.addAttribute("ui.quality");
 
         //Style list of nodes
-        for (Node node : _graph) {
+        for (Node node : _graphStream) {
             node.setAttribute("ui.label", node.getId() + "");
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
@@ -34,13 +44,36 @@ public class GraphController extends Viewer {
         }
 
         //Style list of edges
-        int edgeCount = _graph.getEdgeCount();
+        int edgeCount = _graphStream.getEdgeCount();
         for (int i = 0; i < edgeCount; i++) {
-            Edge edge = _graph.getEdge(i);
+            Edge edge = _graphStream.getEdge(i);
             edge.addAttribute("ui.style", "fill-mode: plain; fill-color: grey;\n"
                     + "\ttext-size: 15px; text-color: white;\n"
                     + "\ttext-alignment: along;\n");
             edge.addAttribute("ui.label",edge.getAttribute("weight") + "");
         }
     }
+
+    private void  createGraphStream(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
+        _graphStream = new SingleGraph("AlgorithmGraph");;
+
+        for(GraphNode node : graphNodesMap.values()){
+         Node nodeGraphStream = _graphStream.addNode(node.getId());
+         nodeGraphStream.addAttribute("weight",node.getWeight());
+         nodeGraphStream.addAttribute("processor",null);
+         nodeGraphStream.addAttribute("startTime",null);
+        }
+
+        int edgeID = 0;
+        for(GraphEdge edge : graphEdgesList){
+            edgeID++;
+            Node tempParentNode = _graphStream.getNode(edge.getEdgeFrom().getId());
+            Node tempChildNode = _graphStream.getNode(edge.getEdgeTo().getId());
+            Edge edgeGraphStream = _graphStream.addEdge(Integer.toString(edgeID),tempParentNode, tempChildNode);
+            edgeGraphStream.addAttribute("weight", edge.getEdgeWeight());
+        }
+
+    }
+
+
 }
