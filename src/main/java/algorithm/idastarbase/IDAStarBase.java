@@ -54,11 +54,17 @@ public class IDAStarBase extends Algorithm {
                 while (!_solved) {
                     _solved = idaRecursive(task, 0);
                     _lowerBound++; //TODO: make this better please
-                    System.out.println(_lowerBound);
                 }
             }
         }
-        return null;
+        Map<String, GraphNode> optimal = new HashMap<>();
+        for (int i = 0; i < _numProcTask; i++) {
+            while (!_processorAllocations[i].isEmpty()) {
+                GraphNode task = _processorAllocations[i].pop();
+                optimal.put(task.getId(), task);
+            }
+        }
+        return optimal;
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
