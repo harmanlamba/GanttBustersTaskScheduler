@@ -11,6 +11,8 @@ import graph.Graph;
  */
 public class AlgorithmBuilder {
 
+    public static AlgorithmType _algorithmType;
+
     /**
      Creates and returns the new instantiation of the algorithm, depending on the number of processors to schedule tasks onto
      * @param graph is a graph of the network
@@ -20,11 +22,14 @@ public class AlgorithmBuilder {
     public static Algorithm getAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
         switch (numProcTask) {
             case 1:
+                _algorithmType= AlgorithmType.SEQUENTIAL;
                 return new Sequential(graph, numProcTask, numProcParallel);
             default:
                 if(numProcParallel > 1) {
+                    _algorithmType = AlgorithmType.IDASTARPARRALLEL;
                     return new IDAStarParallel(graph, numProcTask, numProcParallel);
                 }else {
+                    _algorithmType = AlgorithmType.IDASTARBASE;
                     return new IDAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
