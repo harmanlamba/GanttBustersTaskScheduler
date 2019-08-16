@@ -10,6 +10,8 @@ public class GraphNode {
     private int _weight; //Node weight
     private int _processor; //Processor assigned to node
     private int _startTime; //Node's start time on processor
+    private boolean _free;
+    private int _computationalBottomLevel;
 
     public GraphNode(String id, int weight) {
         _id = id;
@@ -77,5 +79,21 @@ public class GraphNode {
 
     public void setProcessor(int processor) {
         _processor = processor;
+    }
+
+    public boolean isFree() {
+        return _free;
+    }
+
+    public void setFree(boolean free) {
+        this._free = free;
+    }
+
+    public int getComputationalBottomLevel() {
+        return _computationalBottomLevel;
+    }
+
+    public void setComputationalBottomLevel(int computationalBottomLevel) {
+        this._computationalBottomLevel = computationalBottomLevel;
     }
 }

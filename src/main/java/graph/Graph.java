@@ -16,7 +16,14 @@ public class Graph {
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph = (DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge>)
             Utility.GuardNull(new DirectedWeightedMultigraph<>(DefaultWeightedEdge.class)); //Hold retrievable jGraphT
 
+    private Map<String, GraphNode> _vertexMap;
+    private List<GraphEdge> _edgeList;
+
+
     public Graph(Map<String, GraphNode> vertexMap, List<GraphEdge> edgeList) {
+        _vertexMap = vertexMap;
+        _edgeList = edgeList;
+
         //Assign graph node map to JGraphT
         for (GraphNode graphNode : new ArrayList<>(vertexMap.values())) {
             _jGraph.addVertex(graphNode);
@@ -35,5 +42,13 @@ public class Graph {
      */
     public DirectedWeightedMultigraph getGraph() {
         return _jGraph;
+    }
+
+    public Map<String, GraphNode> get_vertexMap() {
+        return _vertexMap;
+    }
+
+    public List<GraphEdge> get_edgeList() {
+        return _edgeList;
     }
 }
