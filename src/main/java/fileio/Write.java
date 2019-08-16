@@ -119,4 +119,8 @@ public class Write {
             return null; //Is an edge
         }
     }
+
+    public Map<String, GraphNode> getAlgorithmResultMap() {
+        return _algorithmResultMap;
+    }
 }
