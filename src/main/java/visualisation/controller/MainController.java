@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import org.graphstream.graph.implementations.SingleGraph;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,7 +24,9 @@ public class MainController implements IObserver, Initializable {
     //Pruning
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
+    private SingleGraph _graphStream;
     private IIO _io;
+    private GraphController _graphController;
 
 
 
@@ -44,7 +47,7 @@ public class MainController implements IObserver, Initializable {
     //graph view
     public Tab graphTab;
     public Pane graphPane;
-    private GraphController _graphController;
+
 
     //gantt view
     public Tab taskTab;
@@ -63,6 +66,7 @@ public class MainController implements IObserver, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         algorithmTypeText.setText("Hello Baboons");
+        _graphController = new GraphController(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
     }
 
@@ -77,7 +81,7 @@ public class MainController implements IObserver, Initializable {
 
     //TODO: implement graphstream
     private void initializeGraph() {
-
+        _graphStream = _graphController.getGraph();
     }
 
 

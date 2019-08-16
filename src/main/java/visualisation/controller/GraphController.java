@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GraphController extends Viewer {
-    private Graph _graphStream;
+public class GraphController{
+    private SingleGraph _graphStream;
     private SpriteManager _spriteManager;
 
-    public GraphController(Graph graph, ThreadingModel threadingModel,
-                           Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
+    public GraphController(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
 
-        super(graph,threadingModel);
+
+        createGraphStream(graphNodesMap,graphEdgesList);
         intializeGraphSprite();
 
     }
@@ -75,5 +75,8 @@ public class GraphController extends Viewer {
 
     }
 
+    public SingleGraph getGraph(){
+        return _graphStream;
+    }
 
 }
