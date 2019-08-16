@@ -4,6 +4,7 @@ import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.*;
 
@@ -13,8 +14,10 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private int _numTasks;
-    private int _upperBound;
+    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
+    private Map<String, Boolean> _freeTaskMapping;
+    private List<GraphNode> _freeTaskList;
+    private int _numberOfTasks;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -25,94 +28,43 @@ public class IDAStarBase extends Algorithm {
     public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         _bestFState = null;
-        _numTasks = _graph.getGraph().vertexSet().size();
+        _freeTaskMapping = new HashMap<>();
+        _freeTaskList = new ArrayList<>();
+        _jGraph = _graph.getGraph();
+        _numberOfTasks = _jGraph.vertexSet().size();
+        initialiseFreeTasks();
+        System.out.println(maxComputationalTime());
     }
 
-    /**
-     * Method that solves the problem optimally on one processor
-     * @return A map of the nodes with their corresponding start times (string is the name of the
-     * node and GraphNode contains all of the node information)
-     */
     @Override
-    public Map<String,GraphNode> solve() {
-        State state = new State(_graph, _numProcTask);
-        _upperBound = calcUpperBound();
-        IDARecursion(null, -1, null, -1, state.getNumberOfFreeTasks(), 0, state);
-        return _bestFState.getAssignedTasks();
+    public Map<String, GraphNode> solve() {
+        for (GraphNode task : _freeTaskList) {
+
+        }
+        return null;
     }
 
-    /**
-     * @return lower bound
-     */
-    private boolean IDARecursion(GraphNode cTask, int cProc, GraphNode pTask, int pProc, int numFreeTasks, int depth, State state) {
-        boolean done = false;
-         if (numFreeTasks != 0) {
-             for (int currentFreeTaskIndex = 0; currentFreeTaskIndex < numFreeTasks; currentFreeTaskIndex++) {
-                 for (int j = 0; j < _numProcTask; j++) {
-                     depth += 1;
-                     //TODO: sanitise the schedule
-                     state.sanitise(depth, _numProcTask);
 
-                     numFreeTasks = state.getNumberOfFreeTasks();
-                     if (numFreeTasks == 0) {
-                         return done;
-                     }
 
-                     //Schedule a picked task t from free(s) onto proc j. Add it to state s
-                     GraphNode t = state.getGraphNodeFromFreeTasks(currentFreeTaskIndex);
-                     int startTimeOfT = getTaskTime(state, t, j);
-                     t.setStartTime(startTimeOfT);
-                     t.setProcessor(j);
-                     state.ScheduleTask(t);
 
-                     pTask = cTask;
-                     pProc = cProc;
-                     cTask = t;
-                     cProc = j;
 
-                     int currentStateCost = state.getCost();
-                     if (currentStateCost <= _upperBound && depth == _numTasks) {
-                        _bestFState = state; //TODO: Deep copy issue
-                        _upperBound = currentStateCost;
-                        //TODO: Notify UI using the last method in Algorithm Abstract Class
-                     }
-                     if (currentStateCost <= _upperBound && depth <= _numTasks) {
-                         done = IDARecursion(cTask, cProc, pTask, pProc, numFreeTasks, depth, state);
-                     }
-                     if (!done) {
-                         depth -= 1;
-                     }
-                 }
-             }
-         }
-        return done; //TODO: fix what the return here actually should be. idk what it is meant to do.
-    }
-
-    private int getTaskTime(State state, GraphNode node, int processor) {
-        Set<DefaultWeightedEdge> edgeSet = _graph.getGraph().incomingEdgesOf(node);
-
-        int maxValue = 0;
-
-        List<Integer> maxTimeList = new ArrayList<>();
-        for (DefaultWeightedEdge edge : edgeSet) {
-            GraphNode parent = (GraphNode) _graph.getGraph().getEdgeSource(edge);
-
-            if (parent.getProcessor() != processor) { //If nodes on different processors
-                int communicationCost = (int) _graph.getGraph().getEdgeWeight(_graph.getGraph().getEdge(parent, node));
-                int processorCost = parent.getStartTime() + parent.getWeight();
-                maxTimeList.add(processorCost + communicationCost);
+    private void initialiseFreeTasks() {
+        for (GraphNode task : _jGraph.vertexSet()) {
+            if (_graph.getGraph().inDegreeOf(task) == 0) {
+                _freeTaskList.add(task);
+                _freeTaskMapping.put(task.getId(), true);
+            } else {
+                _freeTaskMapping.put(task.getId(), false);
             }
         }
-        maxTimeList.add(state.getProcessorMaxTime(processor));
-        return Collections.max(maxTimeList);
     }
 
-    private int calcUpperBound() {
-        Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
-        int total = 0;
-        for (GraphNode node: allNodes) {
-            total += node.getWeight();
+    private int maxComputationalTime() {
+        int sum = 0;
+        for(GraphNode task : _jGraph.vertexSet()) {
+            sum += task.getWeight();
         }
-        return total;
+        return sum / _numProcTask;
     }
+
 }
