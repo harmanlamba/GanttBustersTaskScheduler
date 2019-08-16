@@ -35,29 +35,31 @@ public class MainController implements IObserver, Initializable {
     //Public Control Fields from the FXML
     public HBox mainContainer;
     public VBox statsContainer;
-    public Text algorithmTypeText1;
+    public Text algorithmStatus;
     public Text algorithmTypeText;
     public Text timeElapsedText;
-    public Text numProcessorsText;
-    public Text parallelProcessorsText;
+    public Text numberOfTasks;
+    public Text numberOfProcessors;
+    public Text numberOfThreads;
+    public Text currentBestSchedule;
+    public Text branchesBounded;
+    public Text branchesPruned;
+    public Text statesGenerated;
     public TabPane visualsContainer;
+
+    public Tab graphTab;
+    public Pane graphPane;
+    public SwingNode swingNode;
+
+    public Tab taskTab;
+    public Pane ganttPane;
+    public BarChart<?, ?> ganttChart;
+
+    public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
     public TreeTableColumn<?, ?> taskIDColumn;
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
-    public SwingNode swingNode;
-
-    //graph view
-    public Tab graphTab;
-    public Pane graphPane;
-    public BarChart<?, ?> ganttChart;
-
-    //gantt view
-    public Tab taskTab;
-    public Pane ganttPane;
-
-    //table view
-    public Tab resultTab;
 
     public MainController(IObservable observableAlgorithm, IIO io){
         _observableAlgorithm=observableAlgorithm;
@@ -69,6 +71,7 @@ public class MainController implements IObserver, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         _graphController = new GraphController(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
+        initializeStatistics();
     }
 
     @Override
@@ -84,16 +87,25 @@ public class MainController implements IObserver, Initializable {
 
         //Create graphstream view panel
         ViewPanel viewPanel = _graphUpdater.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(690,550)); //Window size
+        viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
         _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
-        //graphPane.getChildren().add((viewPanel);
+        //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
             swingNode.setContent(viewPanel);
         });
         swingNode.setLayoutX(5);
         swingNode.setLayoutY(5);
+    }
+
+    private void initializeStatistics() {
+        algorithmStatus.setText(algorithmStatus.getText() + "In progress");
+        algorithmTypeText.setText("");
+        //set time
+        numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
+        numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
+        numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
 }
