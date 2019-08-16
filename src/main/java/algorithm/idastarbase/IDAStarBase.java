@@ -18,7 +18,6 @@ public class IDAStarBase extends Algorithm {
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
     private Map<String, GraphNode> _taskInfo;
     private List<GraphNode> _freeTaskList;
-    private List<GraphNode> _initialTaskList;
     private int _numberOfTasks;
     private int _lowerBound;
     private int _nextLowerBound;
@@ -36,7 +35,6 @@ public class IDAStarBase extends Algorithm {
         _bestFState = null;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
-        _initialTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
         _numberOfTasks = _jGraph.vertexSet().size();
         _solved = false;
@@ -50,11 +48,13 @@ public class IDAStarBase extends Algorithm {
 
     @Override
     public Map<String, GraphNode> solve() {
-        for (GraphNode task : _initialTaskList) {
-            _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
-            while (!_solved) {
-                _solved = idaRecursive(task, 0);
-                _lowerBound = _nextLowerBound; //TODO: make this better please
+        for (GraphNode task : _taskInfo.values()) {
+            if (task.isFree()) {
+                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
+                while (!_solved) {
+                    _solved = idaRecursive(task, 0);
+                    _lowerBound = _nextLowerBound; //TODO: make this better please
+                }
             }
         }
         return null;
@@ -82,11 +82,16 @@ public class IDAStarBase extends Algorithm {
             if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0) {
                 return true;
             } else {
-                for (GraphNode freeTask : _freeTaskList) {
-                    for (int i = 0; i < _numProcTask; i++) {
-                        _solved = idaRecursive(freeTask, i);
+                for (GraphNode freeTask : _taskInfo.values()) {
+                    if (freeTask.isFree()) {
+                        for (int i = 0; i < _numProcTask; i++) {
+                            _solved = idaRecursive(freeTask, i);
+                            if (_solved) {
+                                break;
+                            }
+                        }
                         if (_solved) {
-                            return true;
+                            break;
                         }
                     }
                 }
@@ -168,7 +173,6 @@ public class IDAStarBase extends Algorithm {
         for (GraphNode task : _jGraph.vertexSet()) {
             if (_graph.getGraph().inDegreeOf(task) == 0) {
                 task.setFree(true);
-                _initialTaskList.add(task);
                 _freeTaskList.add(task);
             } else {
                 task.setFree(false);
