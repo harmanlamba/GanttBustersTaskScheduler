@@ -44,8 +44,8 @@ public class AppTest
     private void sequentialTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
-                io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
+                io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();
         io.write(algorithm.solve());
 
     }
