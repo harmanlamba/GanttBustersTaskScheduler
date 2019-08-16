@@ -18,6 +18,7 @@ public class IDAStarBase extends Algorithm {
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
     private Map<String, GraphNode> _taskInfo;
     private List<GraphNode> _freeTaskList;
+    private List<GraphNode> _initialTaskList;
     private int _numberOfTasks;
     private int _lowerBound;
     private int _nextLowerBound;
@@ -35,6 +36,7 @@ public class IDAStarBase extends Algorithm {
         _bestFState = null;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
+        _initialTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
         _numberOfTasks = _jGraph.vertexSet().size();
         _solved = false;
@@ -48,7 +50,7 @@ public class IDAStarBase extends Algorithm {
 
     @Override
     public Map<String, GraphNode> solve() {
-        for (GraphNode task : _freeTaskList) {
+        for (GraphNode task : _initialTaskList) {
             _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
             while (!_solved) {
                 _solved = idaRecursive(task, 0);
@@ -59,7 +61,6 @@ public class IDAStarBase extends Algorithm {
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
-//        int potentialLowerBound = _lowerBound + 1;
 //        if (potentialLowerBound > _lowerBound) {
 //            if (potentialLowerBound > _nextLowerBound) {
 //                    _nextLowerBound = potentialLowerBound;
@@ -67,12 +68,16 @@ public class IDAStarBase extends Algorithm {
 //            return false;
 //        } else {
             _freeTaskList.remove(task);
-            task.setStartTime(getStartTime(task, processorNumber)); //TODO: check for dependencies and actually calculate the start time
+            task.setStartTime(getStartTime(task, processorNumber));
             task.setProcessor(processorNumber);
             task.setFree(false);
             _taskInfo.put(task.getId(), task);
             _processorAllocations[processorNumber].push(task);
             updateFreeTasks(task);
+
+            if (task.getWeight() + task.getStartTime() > _lowerBound) {
+                return false;
+            }
 
             if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0) {
                 return true;
@@ -81,11 +86,8 @@ public class IDAStarBase extends Algorithm {
                     for (int i = 0; i < _numProcTask; i++) {
                         _solved = idaRecursive(freeTask, i);
                         if (_solved) {
-                            break;
+                            return true;
                         }
-                    }
-                    if (_solved) {
-                        break;
                     }
                 }
                 GraphNode node = _processorAllocations[processorNumber].pop();
@@ -166,6 +168,7 @@ public class IDAStarBase extends Algorithm {
         for (GraphNode task : _jGraph.vertexSet()) {
             if (_graph.getGraph().inDegreeOf(task) == 0) {
                 task.setFree(true);
+                _initialTaskList.add(task);
                 _freeTaskList.add(task);
             } else {
                 task.setFree(false);
