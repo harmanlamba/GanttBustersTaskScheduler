@@ -24,17 +24,12 @@ import java.util.ResourceBundle;
 public class MainController implements IObserver, Initializable {
 
     //Private Fields
-
-    //Reference to the ALgorithm, in order to know when we get notified about the specific stats such as Branch
-    //Pruning
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
     private SingleGraph _graphStream;
     private IIO _io;
     private GraphController _graphController;
     private GraphUpdater _graphUpdater;
-
-
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -50,11 +45,9 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
     public SwingNode swingNode;
-
     //graph view
     public Tab graphTab;
     public Pane graphPane;
-
 
     //gantt view
     public Tab taskTab;
@@ -62,7 +55,6 @@ public class MainController implements IObserver, Initializable {
 
     //table view
     public Tab resultTab;
-
 
     public MainController(IObservable observableAlgorithm, IIO io){
         _observableAlgorithm=observableAlgorithm;
@@ -72,35 +64,33 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        algorithmTypeText.setText("Hello Baboons");
         _graphController = new GraphController(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
     }
 
-
     @Override
     public void update() {
         _observableAlgorithm.getBestFState();
-
-        //TODO: Need to add actual View changes but now have the best state configured
-        //Need to ensure that the ObservableAlgorithm is passed to every new controller.
     }
 
-    //TODO: implement graphstream
     private void initializeGraph() {
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
         _graphStream = _graphController.getGraph();
         _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         _graphUpdater.enableAutoLayout();
+
+        //Create graphstream view panel
         ViewPanel viewPanel = _graphUpdater.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(600,500));
+        viewPanel.setMinimumSize(new Dimension(690,550)); //Window size
         viewPanel.setOpaque(false);
-        viewPanel.setBackground(Color.yellow);
+        viewPanel.setBackground(Color.white);
+        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
         //graphPane.getChildren().add((viewPanel);
-
-
+        SwingUtilities.invokeLater(() -> {
+            swingNode.setContent(viewPanel);
+        });
+        swingNode.setLayoutX(5);
+        swingNode.setLayoutY(5);
     }
-
-
-
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -114,7 +115,11 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Pane fx:id="graphPane" prefHeight="560.0" prefWidth="700.0" />
+                                    <Pane fx:id="graphPane" prefHeight="560.0" prefWidth="700.0">
+                                       <children>
+                                          <SwingNode fx:id="swingNode" />
+                                       </children>
+                                    </Pane>
                                  </children></AnchorPane>
                         </content>
                       </Tab>

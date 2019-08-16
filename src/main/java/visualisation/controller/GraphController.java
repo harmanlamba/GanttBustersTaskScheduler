@@ -1,18 +1,12 @@
 package visualisation.controller;
 
-import fileio.IIO;
 import graph.GraphEdge;
 import graph.GraphNode;
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.spriteManager.SpriteManager;
-import org.graphstream.ui.view.Viewer;
-import org.jgrapht.Graphs;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,9 +18,7 @@ public class GraphController{
         createGraphStream(graphNodesMap,graphEdgesList);
     }
 
-
     private void  createGraphStream(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
-       // _graphStream = new SingleGraph("graph");;
 
         for(GraphNode node : graphNodesMap.values()){
              Node nodeGraphStream = _graphStream.addNode(node.getId());
@@ -40,14 +32,13 @@ public class GraphController{
             edgeID++;
             Node tempParentNode = _graphStream.getNode(edge.getEdgeFrom().getId());
             Node tempChildNode = _graphStream.getNode(edge.getEdgeTo().getId());
-            Edge edgeGraphStream = _graphStream.addEdge(Integer.toString(edgeID),tempParentNode, tempChildNode);
+            Edge edgeGraphStream = _graphStream.addEdge(Integer.toString(edgeID),tempParentNode, tempChildNode, true); //True = directed edge
             edgeGraphStream.addAttribute("weight", edge.getEdgeWeight());
-        }
 
+        }
     }
 
     public SingleGraph getGraph(){
         return _graphStream;
     }
-
 }
