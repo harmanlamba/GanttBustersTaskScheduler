@@ -4,9 +4,11 @@ import algorithm.AlgorithmBuilder;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
+import graph.GraphNode;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -22,6 +24,7 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class MainController implements IObserver, Initializable {
@@ -31,8 +34,9 @@ public class MainController implements IObserver, Initializable {
     private Graph _algorithmGraph;
     private SingleGraph _graphStream;
     private IIO _io;
-    private GraphController _graphController;
+    private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
+    private Map<String, GraphNode> _algorithmResultMap;
     private TimerHelper _timer;
 
     //Public Control Fields from the FXML
@@ -57,6 +61,8 @@ public class MainController implements IObserver, Initializable {
     public Tab taskTab;
     public Pane ganttPane;
     public BarChart<?, ?> ganttChart;
+    public NumberAxis numberOfProcessorsAxis;
+    public NumberAxis startTimeAxis;
 
     public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
@@ -73,9 +79,10 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        _graphController = new GraphController(_io.getNodeMap(),_io.getEdgeList());
+        _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _timer.startTimer();
         initializeGraph();
+        initializeGantt();
         initializeStatistics();
     }
 
@@ -86,7 +93,7 @@ public class MainController implements IObserver, Initializable {
 
     private void initializeGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
-        _graphStream = _graphController.getGraph();
+        _graphStream = _graphManager.getGraph();
         _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         _graphUpdater.enableAutoLayout();
 
@@ -103,6 +110,14 @@ public class MainController implements IObserver, Initializable {
         });
         swingNode.setLayoutX(5);
         swingNode.setLayoutY(5);
+    }
+
+    private void initializeGantt() {
+        numberOfProcessorsAxis.setAutoRanging(false);
+        numberOfProcessorsAxis.setLowerBound(1);
+        numberOfProcessorsAxis.setTickUnit(1);
+        numberOfProcessorsAxis.setUpperBound(_io.getNumberOfProcessorsForTask());
+        _algorithmResultMap = _io.getAlgorithmResultMap();
     }
 
     private void initializeStatistics() {

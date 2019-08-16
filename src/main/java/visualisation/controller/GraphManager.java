@@ -10,11 +10,11 @@ import org.graphstream.ui.spriteManager.SpriteManager;
 import java.util.List;
 import java.util.Map;
 
-public class GraphController{
+public class GraphManager {
     private SingleGraph _graphStream = new SingleGraph("graph");
     private SpriteManager _spriteManager;
 
-    public GraphController(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
+    public GraphManager(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
         createGraphStream(graphNodesMap,graphEdgesList);
     }
 
