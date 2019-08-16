@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import javafx.embed.swing.SwingNode;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -45,9 +46,11 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
     public SwingNode swingNode;
+
     //graph view
     public Tab graphTab;
     public Pane graphPane;
+    public BarChart<?, ?> ganttChart;
 
     //gantt view
     public Tab taskTab;
