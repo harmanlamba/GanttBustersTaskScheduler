@@ -6,10 +6,13 @@ import app.App;
 import fileio.IIO;
 import graph.Graph;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import visualisation.controller.MainController;
 
 public class FXApplication extends Application {
@@ -34,6 +37,13 @@ public class FXApplication extends Application {
         primaryStage.setScene(new Scene(root, 990, 590)); //total window size
         primaryStage.setResizable(false);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
     //TODO: Override stop() method to stop algorithm

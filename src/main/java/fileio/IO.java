@@ -153,6 +153,10 @@ public class IO implements IIO {
         _write.writeToPath(algorithmResultMap);
     }
 
+    public Map<String, GraphNode> getAlgorithmResultMap() {
+        return _write.getAlgorithmResultMap();
+    }
+
     /**
      * getNumberOfProcessorsForParallelAlgorithm - returns number of assigned processors of Parallel Algorithm
      * @return number of processors used

@@ -20,7 +20,7 @@ public class TimerHelper extends Thread {
                 _currentTime++;
                 if (_mainController != null) {
                     //Set the timer for mainController
-                    System.out.println("hello");
+                    _mainController.setTimerStatistic(_currentTime);
                 }
             }
         };
