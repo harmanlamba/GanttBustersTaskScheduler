@@ -4,6 +4,7 @@ import algorithm.AlgorithmBuilder;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.BarChart;
 import javafx.scene.control.Tab;
@@ -32,6 +33,7 @@ public class MainController implements IObserver, Initializable {
     private IIO _io;
     private GraphController _graphController;
     private GraphUpdater _graphUpdater;
+    private TimerHelper _timer;
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -66,11 +68,13 @@ public class MainController implements IObserver, Initializable {
         _observableAlgorithm=observableAlgorithm;
         _io = io;
         _algorithmGraph=observableAlgorithm.getAlgorithmGraph();
+        _timer = new TimerHelper(this);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         _graphController = new GraphController(_io.getNodeMap(),_io.getEdgeList());
+        _timer.startTimer();
         initializeGraph();
         initializeStatistics();
     }
@@ -104,9 +108,39 @@ public class MainController implements IObserver, Initializable {
     private void initializeStatistics() {
         algorithmStatus.setText(algorithmStatus.getText() + "In progress");
         algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder._algorithmType);
-        //set time
         numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
         numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
+    }
+
+    public void setTimerStatistic(int currentTime) {
+        Platform.runLater(() -> {
+            int minutes = currentTime / 6000;
+            int seconds = (currentTime - minutes * 6000) / 100;
+            int milliseconds = currentTime - (minutes * 6000) - (seconds * 100);
+
+            String minutesText ="";
+            String secondsText = "";
+            String millisecondsText = "";
+            if (seconds < 10) { //Fix seconds
+                secondsText = "0" + seconds;
+            } else {
+                secondsText = Integer.toString(seconds);
+            }
+
+            if (minutes < 10) {//Fix minutes
+                minutesText = "0" + minutes;
+            } else {
+                minutesText = Integer.toString(minutes);
+            }
+
+            if (milliseconds < 10) {
+                millisecondsText = "00" + millisecondsText;
+            } else {
+                millisecondsText = Integer.toString(milliseconds);
+            }
+
+            timeElapsedText.setText("Time Elapsed: " + minutesText + " : " + secondsText + " : " + millisecondsText);
+        });
     }
 }
