@@ -2,6 +2,7 @@ package fileio;
 
 import exception.InputFileException;
 import exception.InvalidInputArgumentException;
+import javafx.application.Application;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
@@ -25,6 +26,7 @@ public class IO implements IIO {
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
+    private DisplayMode _visualisationState = DisplayMode.COMMAND_LINE;
 
     public IO(String[] input) throws InputFileException {
         try {
@@ -100,6 +102,7 @@ public class IO implements IIO {
                 //Use visualization GUI with given file
                 case "-v":
                     //TODO Add visualisation stuff
+                    _visualisationState=DisplayMode.VISUALISE;
                     break;
                 //Set output file name (if needed)
                 case "-o":
@@ -164,5 +167,9 @@ public class IO implements IIO {
      */
     public int getNumberOfProcessorsForTask() {
         return _numberOfProcessorsForTask;
+    }
+
+    public DisplayMode getStateOfVisualisation(){
+        return _visualisationState;
     }
 }

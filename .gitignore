@@ -313,5 +313,6 @@ local.properties
 !src/main/resources/e5.dot
 !src/main/resources/e6.dot
 !src/main/resources/e7.dot
+!src/main/resources/e8.dot
 
 # End of https://www.gitignore.io/api/java,linux,macos,windows,intellij,intellij+all

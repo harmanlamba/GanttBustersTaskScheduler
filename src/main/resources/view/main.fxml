@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -30,7 +34,7 @@
                         </Text>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="algorithmTypeText1" strokeType="OUTSIDE" strokeWidth="0.0" text="Status:" wrappingWidth="280.0">
+                              <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -42,34 +46,12 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="algorithmTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type:" wrappingWidth="280.0">
+                              <Text fx:id="algorithmTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed:" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </VBox.margin>
-                        </VBox>
-                        <VBox prefWidth="100.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of tasks:" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numProcessorsText" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of processors:" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="parallelProcessorsText" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of threads:" wrappingWidth="280.0">
+                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -81,22 +63,44 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current best schedule time:" wrappingWidth="280.0">
+                              <Text fx:id="numberOfTasks" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of tasks: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Branches bounded:" wrappingWidth="280.0">
+                              <Text fx:id="numberOfProcessors" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of processors: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Branches pruned:" wrappingWidth="280.0">
+                              <Text fx:id="numberOfThreads" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of threads: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="States generated:" wrappingWidth="280.0">
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefWidth="100.0">
+                           <children>
+                              <Text fx:id="currentBestSchedule" strokeType="OUTSIDE" strokeWidth="0.0" text="Current best schedule time: " wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="branchesBounded" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches bounded: " wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches pruned: " wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="statesGenerated" strokeType="OUTSIDE" strokeWidth="0.0" text="States generated: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -114,7 +118,23 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Pane fx:id="graphPane" prefHeight="560.0" prefWidth="700.0" />
+                                    <VBox prefHeight="560.0" prefWidth="700.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SEARCH GRAPH" textAlignment="CENTER" wrappingWidth="700.0">
+                                             <font>
+                                                <Font size="22.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </Text>
+                                          <Pane fx:id="graphPane" prefHeight="500.0" prefWidth="700.0">
+                                             <children>
+                                                <SwingNode fx:id="swingNode" />
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </VBox>
                                  </children></AnchorPane>
                         </content>
                       </Tab>
@@ -122,7 +142,33 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Pane fx:id="ganttPane" prefHeight="560.0" prefWidth="700.0" />
+                                    <VBox prefHeight="560.0" prefWidth="700.0">
+                                       <children>
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TASK SCHEDULE" textAlignment="CENTER" wrappingWidth="700.0">
+                                             <font>
+                                                <Font size="22.0" />
+                                             </font>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </Text>
+                                          <Pane fx:id="ganttPane" prefHeight="560.0" prefWidth="700.0">
+                                             <children>
+                                                <BarChart fx:id="ganttChart" alternativeColumnFillVisible="true" alternativeRowFillVisible="false" animated="false" barGap="0.0" categoryGap="0.0" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="560.0" prefWidth="700.0">
+                                                  <xAxis>
+                                                    <CategoryAxis side="BOTTOM" />
+                                                  </xAxis>
+                                                  <yAxis>
+                                                    <NumberAxis side="LEFT" />
+                                                  </yAxis>
+                                                   <padding>
+                                                      <Insets bottom="50.0" left="20.0" right="30.0" top="20.0" />
+                                                   </padding>
+                                                </BarChart>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </VBox>
                                  </children></AnchorPane>
                         </content>
                       </Tab>

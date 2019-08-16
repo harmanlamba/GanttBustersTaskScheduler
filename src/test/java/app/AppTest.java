@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
-import algorithm.common.utility.AlgorithmType;
 import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
@@ -45,9 +44,8 @@ public class AppTest
     private void sequentialTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        AlgorithmBuilder algorithmBuilder = new AlgorithmBuilder(AlgorithmType.SEQUENTIAL, graph,
+        Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
-        Algorithm algorithm = algorithmBuilder.getAlgorithm();
         io.write(algorithm.solve());
 
     }
