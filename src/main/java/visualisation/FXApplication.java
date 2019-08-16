@@ -32,8 +32,7 @@ public class FXApplication extends Application {
         io.write(algorithm.solve()); //write
 
         //Run algorithm on own thread
-
-        MainController controller = new MainController(algorithm);
+        MainController controller = new MainController(algorithm, io);
         loader.setController(controller);
         Parent root = loader.load();
         //Show stage

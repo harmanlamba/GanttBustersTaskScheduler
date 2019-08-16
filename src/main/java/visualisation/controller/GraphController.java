@@ -17,51 +17,22 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphController{
-    private SingleGraph _graphStream;
+    private SingleGraph _graphStream = new SingleGraph("graph");
     private SpriteManager _spriteManager;
 
     public GraphController(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
-
-
         createGraphStream(graphNodesMap,graphEdgesList);
-        intializeGraphSprite();
-
     }
 
-    private void intializeGraphSprite() {
-        //Graph attributes
-        _graphStream.addAttribute("ui.antialias");
-        _graphStream.addAttribute("ui.quality");
-
-        //Style list of nodes
-        for (Node node : _graphStream) {
-            node.setAttribute("ui.label", node.getId() + "");
-            node.addAttribute("ui.style", "text-alignment: center;\n"
-                    + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
-                    + "\tfill-mode: plain; fill-color: rgb(0,0,0);\n"
-                    + "\tsize: 20px, 20px;\n"
-                    + "\ttext-size: 15px; text-color: white;\n");
-        }
-
-        //Style list of edges
-        int edgeCount = _graphStream.getEdgeCount();
-        for (int i = 0; i < edgeCount; i++) {
-            Edge edge = _graphStream.getEdge(i);
-            edge.addAttribute("ui.style", "fill-mode: plain; fill-color: grey;\n"
-                    + "\ttext-size: 15px; text-color: white;\n"
-                    + "\ttext-alignment: along;\n");
-            edge.addAttribute("ui.label",edge.getAttribute("weight") + "");
-        }
-    }
 
     private void  createGraphStream(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
-        _graphStream = new SingleGraph("AlgorithmGraph");;
+       // _graphStream = new SingleGraph("graph");;
 
         for(GraphNode node : graphNodesMap.values()){
-         Node nodeGraphStream = _graphStream.addNode(node.getId());
-         nodeGraphStream.addAttribute("weight",node.getWeight());
-         nodeGraphStream.addAttribute("processor",null);
-         nodeGraphStream.addAttribute("startTime",null);
+             Node nodeGraphStream = _graphStream.addNode(node.getId());
+             nodeGraphStream.addAttribute("weight",node.getWeight());
+             nodeGraphStream.addAttribute("processor","null");
+             nodeGraphStream.addAttribute("startTime","null");
         }
 
         int edgeID = 0;

@@ -3,6 +3,7 @@ package visualisation.controller;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -12,7 +13,11 @@ import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.view.Viewer;
 
+import javax.swing.*;
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,6 +32,7 @@ public class MainController implements IObserver, Initializable {
     private SingleGraph _graphStream;
     private IIO _io;
     private GraphController _graphController;
+    private GraphUpdater _graphUpdater;
 
 
 
@@ -43,6 +49,7 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> taskIDColumn;
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
+    public SwingNode swingNode;
 
     //graph view
     public Tab graphTab;
@@ -82,6 +89,16 @@ public class MainController implements IObserver, Initializable {
     //TODO: implement graphstream
     private void initializeGraph() {
         _graphStream = _graphController.getGraph();
+        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        _graphUpdater.enableAutoLayout();
+        ViewPanel viewPanel = _graphUpdater.addDefaultView(false);
+        viewPanel.setMinimumSize(new Dimension(600,500));
+        viewPanel.setOpaque(false);
+        viewPanel.setBackground(Color.yellow);
+
+        //graphPane.getChildren().add((viewPanel);
+
+
     }
 
 
