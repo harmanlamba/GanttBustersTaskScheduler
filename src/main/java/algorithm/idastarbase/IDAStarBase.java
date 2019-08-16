@@ -53,7 +53,8 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
                     _solved = idaRecursive(task, 0);
-                    _lowerBound = _nextLowerBound; //TODO: make this better please
+                    _lowerBound++; //TODO: make this better please
+                    System.out.println(_lowerBound);
                 }
             }
         }
@@ -61,12 +62,9 @@ public class IDAStarBase extends Algorithm {
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
-//        if (potentialLowerBound > _lowerBound) {
-//            if (potentialLowerBound > _nextLowerBound) {
-//                    _nextLowerBound = potentialLowerBound;
-//            }
-//            return false;
-//        } else {
+        if (getStackMax() > _lowerBound) {
+            return false;
+        } else {
             _freeTaskList.remove(task);
             task.setStartTime(getStartTime(task, processorNumber));
             task.setProcessor(processorNumber);
@@ -75,11 +73,7 @@ public class IDAStarBase extends Algorithm {
             _processorAllocations[processorNumber].push(task);
             updateFreeTasks(task);
 
-            if (task.getWeight() + task.getStartTime() > _lowerBound) {
-                return false;
-            }
-
-            if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0) {
+            if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0 && getStackMax() <= _lowerBound) {
                 return true;
             } else {
                 for (GraphNode freeTask : _taskInfo.values()) {
@@ -95,23 +89,12 @@ public class IDAStarBase extends Algorithm {
                         }
                     }
                 }
-                GraphNode node = _processorAllocations[processorNumber].pop();
-                node.setFree(true);
-                node.setStartTime(-1);
-                node.setProcessor(-1);
-                _freeTaskList.add(node);
-                _taskInfo.put(node.getId(), node);
-
-                for (GraphNode child : getChildren(node)) {
-                    _freeTaskList.remove(child);
-                    child.setFree(false);
-                    _taskInfo.put(child.getId(), child);
-
+                if (!_solved) {
+                    sanitise(processorNumber);
                 }
             }
-            _nextLowerBound = _lowerBound + 1;
             return _solved;
-//        }
+        }
     }
 
     private void updateFreeTasks(GraphNode task) {
@@ -208,6 +191,39 @@ public class IDAStarBase extends Algorithm {
                 GraphNode parent = _jGraph.getEdgeSource(edge);
                 calculateBottomLevel(parent, potential);
             }
+        }
+    }
+
+    private int getStackMax() {
+        int max = 0;
+        for (int i = 0; i < _numProcTask; i++) {
+            try {
+                GraphNode node = _processorAllocations[i].peek();
+                if (node.getWeight() + node.getStartTime() > max) {
+                    max = node.getWeight() + node.getStartTime();
+                }
+            } catch (EmptyStackException e) {
+                // Does not need to be handled.
+            }
+        }
+        return max;
+    }
+
+    private void sanitise(int processorNumber) {
+        // Unschedules node, adds it to free task list and set it to free
+        GraphNode node = _processorAllocations[processorNumber].pop();
+        node.setFree(true);
+        node.setStartTime(-1);
+        node.setProcessor(-1);
+        _freeTaskList.add(node);
+        _taskInfo.put(node.getId(), node);
+
+        // Sets children of removed node to not free
+        for (GraphNode child : getChildren(node)) {
+            _freeTaskList.remove(child);
+            child.setFree(false);
+            _taskInfo.put(child.getId(), child);
+
         }
     }
 
