@@ -19,10 +19,13 @@ public class IDAStarBase extends Algorithm {
     private Map<String, GraphNode> _freeTaskMapping;
     private List<GraphNode> _freeTaskList;
     private int _numberOfTasks;
+    private int _lowerBound;
+    private int _nextLowerBound;
+    private boolean _solved;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
-     * @param g is a graph of the network
+     * @param graph is a graph of the network
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
@@ -33,6 +36,7 @@ public class IDAStarBase extends Algorithm {
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
         _numberOfTasks = _jGraph.vertexSet().size();
+        _solved = false;
         initialiseFreeTasks();
         initaliseBottomLevel();
 
@@ -42,9 +46,29 @@ public class IDAStarBase extends Algorithm {
     @Override
     public Map<String, GraphNode> solve() {
         for (GraphNode task : _freeTaskList) {
-
+            _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
+            while (!_solved) {
+                _solved = idaRecursive(task, 1);
+                _lowerBound = _nextLowerBound; //TODO: make this better please
+            }
         }
         return null;
+    }
+
+    private boolean idaRecursive(GraphNode task, int processorNumber) {
+
+
+        int potentialLowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
+
+        if (potentialLowerBound > _lowerBound) {
+            if (potentialLowerBound > _nextLowerBound) {
+                    _nextLowerBound = potentialLowerBound;
+            }
+            return false;
+        } else {
+
+            return true; //TODO: fix this return
+        }
     }
 
     private void initialiseFreeTasks() {
