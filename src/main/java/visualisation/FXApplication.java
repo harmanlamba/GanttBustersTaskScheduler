@@ -22,13 +22,10 @@ public class FXApplication extends Application {
 
         //Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-        IIO io = App._mainIO;
-        Graph graph = new Graph(io.getNodeMap(), io.getEdgeList()); //create graph from nodes and edges
-        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
-        io.write(algorithm.solve());
+
 
         //Run algorithm on own thread
-        MainController controller = new MainController(algorithm, io);
+        MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
 

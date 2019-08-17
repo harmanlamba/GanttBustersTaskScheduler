@@ -2,6 +2,7 @@ package visualisation.controller;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
+import app.App;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
@@ -71,10 +72,16 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
 
-    public MainController(IObservable observableAlgorithm, IIO io){
-        _observableAlgorithm=observableAlgorithm;
-        _io = io;
-        _algorithmGraph=observableAlgorithm.getAlgorithmGraph();
+    public MainController(){
+        _io = App._mainIO;
+
+        Platform.runLater(() -> {
+            Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
+            Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
+            _observableAlgorithm=AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
+            _algorithmGraph=_observableAlgorithm.getAlgorithmGraph();
+            _io.write(algorithm.solve());
+        });
         _timer = new TimerHelper(this);
     }
 
@@ -82,6 +89,7 @@ public class MainController implements IObserver, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _timer.startTimer();
+
         initializeGraph();
         initializeGantt();
         initializeStatistics();
