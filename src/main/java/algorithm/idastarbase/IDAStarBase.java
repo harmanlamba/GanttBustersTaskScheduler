@@ -85,7 +85,11 @@ public class IDAStarBase extends Algorithm {
                 for (GraphNode freeTask : _taskInfo.values()) {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
-                            _solved = idaRecursive(freeTask, i);
+                            if (_numberOfTasks - _freeTaskList.size() == 1 && i > 1) {
+                                // Do nothing
+                            } else {
+                                _solved = idaRecursive(freeTask, i);
+                            }
                             if (_solved) {
                                 break;
                             }
@@ -107,7 +111,7 @@ public class IDAStarBase extends Algorithm {
         for (GraphNode child : getChildren(task)) {
             boolean childFree = true;
             for (GraphNode parent : getParents(child)) {
-                if (parent.isFree()) {
+                if (parent.isFree() || (!parent.isFree() && parent.getProcessor() == -1)) {
                     childFree = false;
                     break; //TODO: test this
                 }
