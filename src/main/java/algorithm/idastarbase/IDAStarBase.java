@@ -139,7 +139,7 @@ public class IDAStarBase extends Algorithm {
         for (GraphNode child : getChildren(task)) {
             boolean childFree = true;
             for (GraphNode parent : getParents(child)) {
-                if (parent.isFree() || (!parent.isFree() && parent.getProcessor() == -1)) {
+                if (parent.getProcessor() == -1) {
                     childFree = false;
                     break;
                 }
