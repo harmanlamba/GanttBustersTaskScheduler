@@ -68,11 +68,27 @@ public class IDAStarBase extends Algorithm {
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
-        if (getStackMax() > _lowerBound) {
+        int startTime = getStartTime(task, processorNumber);
+        int h1 =  task.getComputationalBottomLevel() + startTime;
+        int idle = 0;
+        if (_processorAllocations[processorNumber].isEmpty()) {
+            idle = startTime;
+        } else {
+            GraphNode lastNode =  _processorAllocations[processorNumber].peek();
+            idle = startTime - (lastNode.getStartTime() + lastNode.getWeight());
+        }
+
+        int h2 = maxComputationalTime() + (idle/_numProcTask);
+        int maxH = Math.max(h1, h2);
+
+        if (maxH > _lowerBound) {
+            if (maxH > _nextLowerBound) {
+                _nextLowerBound = maxH;
+            }
             return false;
         } else {
             _freeTaskList.remove(task);
-            task.setStartTime(getStartTime(task, processorNumber));
+            task.setStartTime(startTime);
             task.setProcessor(processorNumber);
             task.setFree(false);
             _taskInfo.put(task.getId(), task);
