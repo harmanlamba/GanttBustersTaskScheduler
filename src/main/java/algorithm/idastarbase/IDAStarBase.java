@@ -57,14 +57,31 @@ public class IDAStarBase extends Algorithm {
                 }
             }
         }
+        return convertStackArrayToMap();
+    }
+
+    private Map<String, GraphNode> convertStackArrayToMap() {
+
+        //TODO: deep copy the _processorAllocations
+        Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
+        for (int i=0; i < _numProcTask; i++) {
+            copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
+        }
+
         Map<String, GraphNode> optimal = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
-            while (!_processorAllocations[i].isEmpty()) {
-                GraphNode task = _processorAllocations[i].pop();
+            while (!copyOfStacks[i].isEmpty()) {
+                GraphNode task = copyOfStacks[i].pop();
                 optimal.put(task.getId(), task);
             }
         }
         return optimal;
+    }
+
+    @Override
+    public Map<String, GraphNode> getCurrentBestState() {
+        notifyObserversOfGraph();
+        return convertStackArrayToMap();
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
@@ -86,6 +103,7 @@ public class IDAStarBase extends Algorithm {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
                             _solved = idaRecursive(freeTask, i);
+                            getCurrentBestState();
                             if (_solved) {
                                 break;
                             }

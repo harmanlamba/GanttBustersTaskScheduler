@@ -10,7 +10,8 @@ public interface IObservable {
 
     void add(IObserver e);
     void remove(IObserver e);
-    void notifyObservers();
+    void notifyObserversOfGraph();
+    void notifyObserversOfTimer();
     Map<String,GraphNode> getCurrentBestState();
     void timerState();
     Graph getAlgorithmGraph();

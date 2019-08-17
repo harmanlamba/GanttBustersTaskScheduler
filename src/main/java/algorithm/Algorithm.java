@@ -24,7 +24,7 @@ public abstract class Algorithm implements IObservable {
     protected final int _numProcTask;
     protected final int _numProcParallel;
     protected State _bestFState;
-    protected List<IObserver> _observerList;
+    protected List<IObserver> _observerList = new ArrayList<>();
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -109,14 +109,21 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObservers() {
-        for(IObserver observer : _observerList){
-            observer.update();
+    public void notifyObserversOfGraph() { //TODO: should this contain some sort of input
+        for (IObserver observer : _observerList) {
+            observer.updateGraph();
+        }
+    }
+
+    @Override
+    public void notifyObserversOfTimer() {
+        for (IObserver observer : _observerList) {
+            observer.stopTimer();
         }
     }
 
     @Override
     public void timerState() {
-        throw new NotImplementedException();
+        notifyObserversOfTimer();
     }
 }

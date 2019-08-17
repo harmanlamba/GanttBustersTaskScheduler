@@ -45,4 +45,9 @@ public class Sequential extends Algorithm {
         }
         return output;
     }
+
+    @Override
+    public Map<String, GraphNode> getCurrentBestState() {
+        return null;
+    }
 }

@@ -79,6 +79,7 @@ public class MainController implements IObserver, Initializable {
             Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
             Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
             _observableAlgorithm=AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
+            algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
             _algorithmGraph=_observableAlgorithm.getAlgorithmGraph();
             _io.write(algorithm.solveAlgorithm());
             algorithm.add(this);
@@ -97,7 +98,7 @@ public class MainController implements IObserver, Initializable {
     }
 
     @Override
-    public void update() {
+    public void updateGraph() {
         _observableAlgorithm.getCurrentBestState();
     }
 
@@ -132,7 +133,6 @@ public class MainController implements IObserver, Initializable {
 
     private void initializeStatistics() {
         algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
         numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
         numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
