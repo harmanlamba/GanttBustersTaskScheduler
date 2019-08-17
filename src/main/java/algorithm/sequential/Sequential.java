@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public class Sequential extends Algorithm {
 
+    Map<String, GraphNode> _output;
+
     /**
      * Instantiates a Sequential instance
      * @param g is a graph of the network
@@ -20,6 +22,7 @@ public class Sequential extends Algorithm {
      */
     public Sequential(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
+        _output = new HashMap<>();
     }
 
     /**
@@ -32,22 +35,24 @@ public class Sequential extends Algorithm {
 
         // Gets topological order of the network graph and puts order into field
         getTopologicalOrdering();
-        Map<String, GraphNode> output = new HashMap<>();
+        _output = new HashMap<>();
 
         // Creates output format of ordering and scheduling (start times for sequential)
         int currentTime = 0;
         for (int i = 0; i < _order.size(); i++) {
             GraphNode tempNode = _order.get(i);
             GraphNode tempOutputNode = new GraphNode(tempNode, _numProcTask, currentTime);
-            output.put(tempNode.getId(), tempOutputNode);
+            _output.put(tempNode.getId(), tempOutputNode);
             currentTime += tempNode.getWeight();
             //System.out.println(tempNode.getId() + " " + tempOutputNode.getStartTime());
         }
-        return output;
+        return _output;
     }
 
     @Override
     public Map<String, GraphNode> getCurrentBestState() {
-        return null;
+        // Method never called because sequential algorithm is too fast
+        notifyObserversOfGraph();
+        return _output;
     }
 }
