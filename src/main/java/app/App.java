@@ -25,8 +25,8 @@ public class App
             switch(_mainIO.getStateOfVisualisation()) {
                 case COMMAND_LINE:
                     Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-                    Algorithm algorithm = AlgorithmBuilder.getAlgorithm(graph,
-                            _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()); //call algorithm graph
+                    Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
+                            _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm(); //call algorithm graph
                     _mainIO.write(algorithm.solve()); //write onto output dot file
                     break;
                 default:

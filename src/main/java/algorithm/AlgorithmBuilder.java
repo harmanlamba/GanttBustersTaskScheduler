@@ -11,7 +11,18 @@ import graph.Graph;
  */
 public class AlgorithmBuilder {
 
-    public static AlgorithmType _algorithmType;
+    private static AlgorithmBuilder _algorithmBuilder;
+    public AlgorithmType _algorithmType;
+    private Algorithm _algorithm;
+
+    private AlgorithmBuilder() { }
+
+    public static AlgorithmBuilder getAlgorithmBuilder() {
+        if (_algorithmBuilder == null) {
+            _algorithmBuilder = new AlgorithmBuilder();
+        }
+        return _algorithmBuilder;
+    }
 
     /**
      Creates and returns the new instantiation of the algorithm, depending on the number of processors to schedule tasks onto
@@ -19,19 +30,29 @@ public class AlgorithmBuilder {
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public static Algorithm getAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
+    public AlgorithmBuilder createAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
         switch (numProcTask) {
             case 1:
                 _algorithmType= AlgorithmType.SEQUENTIAL;
-                return new Sequential(graph, numProcTask, numProcParallel);
+                _algorithm = new Sequential(graph, numProcTask, numProcParallel);
+                break;
             default:
                 if(numProcParallel > 1) {
                     _algorithmType = AlgorithmType.IDASTARPARRALLEL;
-                    return new IDAStarParallel(graph, numProcTask, numProcParallel);
+                    _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
                 }else {
                     _algorithmType = AlgorithmType.IDASTARBASE;
-                    return new IDAStarBase(graph, numProcTask, numProcParallel);
+                    _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
+        return _algorithmBuilder;
+    }
+
+    public Algorithm getAlgorithm () {
+        return _algorithm;
+    }
+
+    public AlgorithmType getAlgorithmType() {
+        return _algorithmType;
     }
 }
