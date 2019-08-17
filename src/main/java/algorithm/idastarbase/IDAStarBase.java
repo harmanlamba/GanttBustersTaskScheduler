@@ -56,7 +56,7 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
                     _solved = idaRecursive(task, 0);
-                    _lowerBound = _nextLowerBound; //TODO: make this better please
+                    _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
                 }
             }
@@ -87,7 +87,7 @@ public class IDAStarBase extends Algorithm {
         int maxH = Math.max(h1, h2);
 
         if (maxH > _lowerBound) {
-            if (maxH > _nextLowerBound || _nextLowerBound == -1) {
+            if (maxH < _nextLowerBound || _nextLowerBound == -1) {
                 _nextLowerBound = maxH;
             }
             _idle -= idleNow;
@@ -141,7 +141,7 @@ public class IDAStarBase extends Algorithm {
             for (GraphNode parent : getParents(child)) {
                 if (parent.isFree() || (!parent.isFree() && parent.getProcessor() == -1)) {
                     childFree = false;
-                    break; //TODO: test this
+                    break;
                 }
             }
             if (childFree) {
