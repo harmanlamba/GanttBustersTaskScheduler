@@ -18,6 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
@@ -90,6 +91,18 @@ public class MainController implements IObserver, Initializable {
     @Override
     public void update() {
         _observableAlgorithm.getBestFState();
+        //Run on another thread
+        Platform.runLater(() -> {
+            //update graph visualization using runnable
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    for (Node node : _graphStream) {
+
+                    }
+                }
+            });
+        });
     }
 
     private void initializeGraph() {
@@ -103,7 +116,8 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
