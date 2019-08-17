@@ -20,8 +20,10 @@ public class IDAStarBase extends Algorithm {
     private List<GraphNode> _freeTaskList;
     private int _numberOfTasks;
     private int _lowerBound;
-    private int _nextLowerBound;
+    private int _nextLowerBound = -1;
     private boolean _solved;
+    private int _maxCompTime;
+    private int _idle = 0;
     private Stack<GraphNode>[] _processorAllocations;
 
     /**
@@ -44,6 +46,7 @@ public class IDAStarBase extends Algorithm {
         }
         initialiseFreeTasks();
         initaliseBottomLevel();
+        _maxCompTime = maxComputationalTime();
     }
 
     @Override
@@ -53,7 +56,8 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
                     _solved = idaRecursive(task, 0);
-                    _lowerBound++; //TODO: make this better please
+                    _lowerBound = _nextLowerBound; //TODO: make this better please
+                    _nextLowerBound = -1;
                 }
             }
         }
@@ -70,21 +74,23 @@ public class IDAStarBase extends Algorithm {
     private boolean idaRecursive(GraphNode task, int processorNumber) {
         int startTime = getStartTime(task, processorNumber);
         int h1 =  task.getComputationalBottomLevel() + startTime;
-        int idle = 0;
+        int idleNow = 0;
         if (_processorAllocations[processorNumber].isEmpty()) {
-            idle = startTime;
+            idleNow = startTime;
         } else {
             GraphNode lastNode =  _processorAllocations[processorNumber].peek();
-            idle = startTime - (lastNode.getStartTime() + lastNode.getWeight());
+            idleNow = startTime - (lastNode.getStartTime() + lastNode.getWeight());
         }
+        _idle += idleNow;
 
-        int h2 = maxComputationalTime() + (idle/_numProcTask);
+        int h2 = _maxCompTime + (_idle/_numProcTask);
         int maxH = Math.max(h1, h2);
 
         if (maxH > _lowerBound) {
-            if (maxH > _nextLowerBound) {
+            if (maxH > _nextLowerBound || _nextLowerBound == -1) {
                 _nextLowerBound = maxH;
             }
+            _idle -= idleNow;
             return false;
         } else {
             _freeTaskList.remove(task);
@@ -124,6 +130,7 @@ public class IDAStarBase extends Algorithm {
                     sanitise(processorNumber);
                 }
             }
+            _idle -= idleNow;
             return _solved;
         }
     }
