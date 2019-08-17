@@ -1,5 +1,6 @@
 package visualisation.controller;
 
+import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
@@ -122,7 +123,7 @@ public class MainController implements IObserver, Initializable {
 
     private void initializeStatistics() {
         algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder._algorithmType);
+        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
         numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
         numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
