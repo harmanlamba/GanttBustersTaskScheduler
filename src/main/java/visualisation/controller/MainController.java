@@ -80,7 +80,8 @@ public class MainController implements IObserver, Initializable {
             Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
             _observableAlgorithm=AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
             _algorithmGraph=_observableAlgorithm.getAlgorithmGraph();
-            _io.write(algorithm.solve());
+            _io.write(algorithm.solveAlgorithm());
+            algorithm.add(this);
         });
         _timer = new TimerHelper(this);
     }
@@ -97,7 +98,7 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void update() {
-        _observableAlgorithm.getBestFState();
+        _observableAlgorithm.getCurrentBestState();
     }
 
     private void initializeGraph() {
@@ -166,5 +167,10 @@ public class MainController implements IObserver, Initializable {
 
             timeElapsedText.setText("Time Elapsed: " + minutesText + " : " + secondsText + " : " + millisecondsText);
         });
+    }
+
+    @Override
+    public void stopTimer() {
+        _timer.stopTimer();
     }
 }

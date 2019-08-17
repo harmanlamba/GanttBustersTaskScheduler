@@ -1,5 +1,6 @@
 package algorithm;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import visualisation.controller.IObservable;
 import visualisation.controller.IObserver;
 import algorithm.idastarbase.State;
@@ -45,6 +46,12 @@ public abstract class Algorithm implements IObservable {
      */
     public abstract Map<String, GraphNode> solve();
 
+    public Map<String,GraphNode> solveAlgorithm(){
+        Map<String, GraphNode> outputMap = solve();
+        timerState();
+        return outputMap;
+    }
+
     /**
      * Sets the topological order of the graph
      */
@@ -81,9 +88,8 @@ public abstract class Algorithm implements IObservable {
         return _numProcParallel;
     }
 
-    public State getBestFState(){
-        return _bestFState;
-    }
+    public abstract Map<String,GraphNode> getCurrentBestState();
+
 
     public Graph getAlgorithmGraph(){
         return _graph;
@@ -107,5 +113,10 @@ public abstract class Algorithm implements IObservable {
         for(IObserver observer : _observerList){
             observer.update();
         }
+    }
+
+    @Override
+    public void timerState() {
+        throw new NotImplementedException();
     }
 }
