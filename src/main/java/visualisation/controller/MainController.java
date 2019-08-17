@@ -9,7 +9,9 @@ import graph.GraphNode;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.StackedBarChart;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -62,9 +64,7 @@ public class MainController implements IObserver, Initializable {
 
     public Tab taskTab;
     public Pane ganttPane;
-    public BarChart<?, ?> ganttChart;
-    public NumberAxis numberOfProcessorsAxis;
-    public NumberAxis startTimeAxis;
+    public LineChart<?, ?> ganttChart;
 
     public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
@@ -98,7 +98,7 @@ public class MainController implements IObserver, Initializable {
                 @Override
                 public void run() {
                     for (Node node : _graphStream) {
-
+                        //TODO: Receive and update node states via GraphUpdater
                     }
                 }
             });
@@ -128,10 +128,6 @@ public class MainController implements IObserver, Initializable {
     }
 
     private void initializeGantt() {
-        numberOfProcessorsAxis.setAutoRanging(false);
-        numberOfProcessorsAxis.setLowerBound(1);
-        numberOfProcessorsAxis.setTickUnit(1);
-        numberOfProcessorsAxis.setUpperBound(_io.getNumberOfProcessorsForTask());
         _algorithmResultMap = _io.getAlgorithmResultMap();
     }
 
