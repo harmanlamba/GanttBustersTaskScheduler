@@ -81,9 +81,7 @@ public class GraphNode {
         _processor = processor;
     }
 
-    public boolean isFree() {
-        return _free;
-    }
+    public boolean isFree() { return _free; }
 
     public void setFree(boolean free) {
         this._free = free;
