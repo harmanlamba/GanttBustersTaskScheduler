@@ -195,26 +195,18 @@ public class MainController implements IObserver, Initializable {
         _animationTimer = new AnimationTimer() {
             private long timestamp;
             private long time = 0;
-            private long fraction = 0;
             @Override
             public void start() {
                 // current time adjusted by remaining time from last run
-                timestamp = System.currentTimeMillis() - fraction;
+                timestamp = System.currentTimeMillis();
                 super.start();
-            }
-            @Override
-            public void stop() {
-                super.stop();
-                // save leftover time not handled with the last update
-                fraction = System.currentTimeMillis() - timestamp;
             }
             @Override
             public void handle(long now) {
                 long newTime = System.currentTimeMillis();
                 if (timestamp <= newTime) {
-                    long deltaT = (newTime - timestamp);
-                    time += deltaT;
-                    timestamp += deltaT;
+                    time += (newTime - timestamp);
+                    timestamp += (newTime - timestamp);
                     setTimerStatistic(time);
                 }
             }
