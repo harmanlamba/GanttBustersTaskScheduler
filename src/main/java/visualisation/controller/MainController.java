@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.BarChart;
@@ -26,6 +27,8 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -39,7 +42,10 @@ public class MainController implements IObserver, Initializable {
     private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
-    private TimerHelper _timer;
+    private AnimationTimer _animationTimer;
+    private long lastTime;
+    private long seconds;
+
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -73,27 +79,56 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> assignedProcessorColumn;
 
     public MainController(){
-        _io = App._mainIO;
 
-        Platform.runLater(() -> {
-            Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
-            Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
-            _observableAlgorithm=AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
-            algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
-            _algorithmGraph=_observableAlgorithm.getAlgorithmGraph();
-            _io.write(algorithm.solveAlgorithm());
-            algorithm.add(this);
-        });
-        _timer = new TimerHelper(this);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
-        _timer.startTimer();
+        //Timer
+        _animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (lastTime != 0) {
+                    if (now > lastTime) {
+                        seconds+= 1.9; //to match 60hz
+                        setTimerStatistic(seconds);
 
+                        lastTime = now;
+                    }
+                } else {
+                    lastTime = now;
+                }
+            }
+
+            @Override
+            public void stop() {
+                super.stop();
+                lastTime = 0;
+                seconds = 0;
+            }
+        };
+
+        //Algorithm
+        _io = App._mainIO;
+        Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
+        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
+        _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
+        //algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
+        _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
+        algorithm.add(this);
+        _animationTimer.start(); //start timer
+
+        new Thread() {
+            public void run() {
+                _io.write(algorithm.solveAlgorithm());
+                _animationTimer.stop();
+            }
+        }.start();
+
+        //GUI
+        _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
-        initializeGantt();
+        //initializeGantt();
         initializeStatistics();
     }
 
@@ -138,11 +173,11 @@ public class MainController implements IObserver, Initializable {
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
 
-    public void setTimerStatistic(int currentTime) {
+    public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
-            int minutes = currentTime / 6000;
-            int seconds = (currentTime - minutes * 6000) / 100;
-            int milliseconds = currentTime - (minutes * 6000) - (seconds * 100);
+            long minutes = currentTime / 6000;
+            long seconds = (currentTime - minutes * 6000) / 100;
+            long milliseconds = currentTime - (minutes * 6000) - (seconds * 100);
 
             String minutesText ="";
             String secondsText = "";
@@ -150,19 +185,19 @@ public class MainController implements IObserver, Initializable {
             if (seconds < 10) { //Fix seconds
                 secondsText = "0" + seconds;
             } else {
-                secondsText = Integer.toString(seconds);
+                secondsText = Long.toString(seconds);
             }
 
             if (minutes < 10) {//Fix minutes
                 minutesText = "0" + minutes;
             } else {
-                minutesText = Integer.toString(minutes);
+                minutesText = Long.toString(minutes);
             }
 
             if (milliseconds < 10) {
                 millisecondsText = "00" + millisecondsText;
             } else {
-                millisecondsText = Integer.toString(milliseconds);
+                millisecondsText = Long.toString(milliseconds);
             }
 
             timeElapsedText.setText("Time Elapsed: " + minutesText + " : " + secondsText + " : " + millisecondsText);
@@ -171,6 +206,6 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void stopTimer() {
-        _timer.stopTimer();
+        //_timer.stopTimer();
     }
 }
