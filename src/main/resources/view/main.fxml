@@ -3,9 +3,6 @@
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -16,7 +13,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.chart.LineChart?>
 <VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
@@ -154,16 +150,9 @@
                                              </VBox.margin>
                                           </Text>
                                           <Pane fx:id="ganttPane" prefHeight="560.0" prefWidth="700.0">
-                                             <children>
-                                                <LineChart fx:id="ganttChart" layoutX="50.0" layoutY="35.0" prefHeight="450.0" prefWidth="600.0" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" verticalGridLinesVisible="true" nodeOrientation="LEFT_TO_RIGHT">
-                                                  <xAxis>
-                                                    <NumberAxis autoRanging="false" label="Runtime(s)" tickUnit="10.0" side="BOTTOM" />
-                                                  </xAxis>
-                                                  <yAxis>
-                                                    <NumberAxis autoRanging="false" minorTickVisible="false" forceZeroInRange="false" tickLabelsVisible="false" tickMarkVisible="false" side="LEFT" />
-                                                  </yAxis>
-                                                </LineChart>
-                                             </children>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
                                           </Pane>
                                        </children>
                                     </VBox>
