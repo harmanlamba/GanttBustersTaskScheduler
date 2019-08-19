@@ -20,8 +20,10 @@ public class IDAStarBase extends Algorithm {
     private List<GraphNode> _freeTaskList;
     private int _numberOfTasks;
     private int _lowerBound;
-    private int _nextLowerBound;
+    private int _nextLowerBound = -1;
     private boolean _solved;
+    private int _maxCompTime;
+    private int _idle = 0;
     private Stack<GraphNode>[] _processorAllocations;
 
     /**
@@ -32,6 +34,7 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph graph, int numProcTask, int numProcParallel) {
         super(graph, numProcTask, numProcParallel);
+        _bestFState = null;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
@@ -43,6 +46,7 @@ public class IDAStarBase extends Algorithm {
         }
         initialiseFreeTasks();
         initaliseBottomLevel();
+        _maxCompTime = maxComputationalTime();
     }
 
     @Override
@@ -52,7 +56,8 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
                     _solved = idaRecursive(task, 0);
-                    _lowerBound++; //TODO: make this better please
+                    _lowerBound = _nextLowerBound;
+                    _nextLowerBound = -1;
                 }
             }
         }
@@ -83,11 +88,29 @@ public class IDAStarBase extends Algorithm {
     }
 
     private boolean idaRecursive(GraphNode task, int processorNumber) {
-        if (getStackMax() > _lowerBound) {
+        int startTime = getStartTime(task, processorNumber);
+        int h1 =  task.getComputationalBottomLevel() + startTime;
+        int idleNow = 0;
+        if (_processorAllocations[processorNumber].isEmpty()) {
+            idleNow = startTime;
+        } else {
+            GraphNode lastNode =  _processorAllocations[processorNumber].peek();
+            idleNow = startTime - (lastNode.getStartTime() + lastNode.getWeight());
+        }
+        _idle += idleNow;
+
+        int h2 = _maxCompTime + (_idle/_numProcTask);
+        int maxH = Math.max(h1, h2);
+
+        if (maxH > _lowerBound) {
+            if (maxH < _nextLowerBound || _nextLowerBound == -1) {
+                _nextLowerBound = maxH;
+            }
+            _idle -= idleNow;
             return false;
         } else {
             _freeTaskList.remove(task);
-            task.setStartTime(getStartTime(task, processorNumber));
+            task.setStartTime(startTime);
             task.setProcessor(processorNumber);
             task.setFree(false);
             _taskInfo.put(task.getId(), task);
@@ -100,8 +123,16 @@ public class IDAStarBase extends Algorithm {
                 for (GraphNode freeTask : _taskInfo.values()) {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
-                            _solved = idaRecursive(freeTask, i);
-                            notifyObserversOfGraph();
+                            if (_numProcTask > 2) {
+                                int freeProc = getFreeProc();
+                                if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
+                                    // Do nothing
+                                } else {
+                                    _solved = idaRecursive(freeTask, i);
+                                }
+                            } else {
+                                _solved = idaRecursive(freeTask, i);
+                            }
                             if (_solved) {
                                 break;
                             }
@@ -115,6 +146,7 @@ public class IDAStarBase extends Algorithm {
                     sanitise(processorNumber);
                 }
             }
+            _idle -= idleNow;
             return _solved;
         }
     }
@@ -125,7 +157,7 @@ public class IDAStarBase extends Algorithm {
             for (GraphNode parent : getParents(child)) {
                 if (parent.getProcessor() == -1) {
                     childFree = false;
-                    break; //TODO: test this
+                    break;
                 }
             }
             if (childFree) {
@@ -247,6 +279,16 @@ public class IDAStarBase extends Algorithm {
             _taskInfo.put(child.getId(), child);
 
         }
+    }
+
+    private int getFreeProc() {
+        int free = 0;
+        for (int i = 0; i < _numProcTask; i++) {
+            if (_processorAllocations[i].empty()) {
+                free++;
+            }
+        }
+        return free;
     }
 
 }

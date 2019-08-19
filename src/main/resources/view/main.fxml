@@ -3,9 +3,6 @@
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TreeTableColumn?>
@@ -153,19 +150,9 @@
                                              </VBox.margin>
                                           </Text>
                                           <Pane fx:id="ganttPane" prefHeight="560.0" prefWidth="700.0">
-                                             <children>
-                                                <BarChart fx:id="ganttChart" alternativeColumnFillVisible="true" alternativeRowFillVisible="false" animated="false" barGap="0.0" categoryGap="0.0" horizontalZeroLineVisible="false" legendVisible="false" prefHeight="560.0" prefWidth="700.0">
-                                                   <xAxis>
-                                                      <CategoryAxis label="Start Time" side="BOTTOM" />
-                                                   </xAxis>
-                                                   <yAxis>
-                                                      <NumberAxis fx:id="numberOfProcessorsAxis" label="Number of Processors" side="LEFT" />
-                                                   </yAxis>
-                                                   <padding>
-                                                      <Insets bottom="50.0" left="20.0" right="30.0" top="20.0" />
-                                                   </padding>
-                                                </BarChart>
-                                             </children>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
                                           </Pane>
                                        </children>
                                     </VBox>

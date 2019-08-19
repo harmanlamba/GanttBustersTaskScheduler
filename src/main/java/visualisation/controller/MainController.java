@@ -9,9 +9,9 @@ import graph.Graph;
 import graph.GraphNode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingNode;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.*;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeTableColumn;
@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
@@ -31,6 +32,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
 
 public class MainController implements IObserver, Initializable {
 
@@ -66,9 +69,6 @@ public class MainController implements IObserver, Initializable {
 
     public Tab taskTab;
     public Pane ganttPane;
-    public BarChart<?, ?> ganttChart;
-    public NumberAxis numberOfProcessorsAxis;
-    public NumberAxis startTimeAxis;
 
     public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
@@ -87,7 +87,7 @@ public class MainController implements IObserver, Initializable {
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
-        //initializeGantt();
+        initializeGantt();
         initializeStatistics();
 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
@@ -112,6 +112,18 @@ public class MainController implements IObserver, Initializable {
     @Override
     public void updateGraph() {
         _observableAlgorithm.getCurrentBestSolution();
+        //Run on another thread
+        Platform.runLater(() -> {
+            //update graph visualization using runnable
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    for (Node node : _graphStream) {
+                        //TODO: Receive and update node states via GraphUpdater
+                    }
+                }
+            });
+        });
     }
 
     @Override
@@ -132,7 +144,8 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -143,11 +156,42 @@ public class MainController implements IObserver, Initializable {
     }
 
     private void initializeGantt() {
-        numberOfProcessorsAxis.setAutoRanging(false);
-        numberOfProcessorsAxis.setLowerBound(1);
-        numberOfProcessorsAxis.setTickUnit(1);
-        numberOfProcessorsAxis.setUpperBound(_io.getNumberOfProcessorsForTask());
         _algorithmResultMap = _io.getAlgorithmResultMap();
+
+        //Gantt chart initialize
+        final NumberAxis xAxis = new NumberAxis();
+        final CategoryAxis yAxis = new CategoryAxis();
+        final GanttChart<Number, String> ganttChart = new GanttChart<>(xAxis, yAxis);
+        ganttPane.getChildren().add(ganttChart);
+        ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
+
+        //ganttchart fx properties
+        ganttChart.setPrefWidth(640);
+        ganttChart.setLayoutX(20);
+        ganttChart.setLayoutY(40);
+        ganttChart.setLegendVisible(false);
+        ganttChart.setBlockHeight(60);
+
+        //y axis (processor count)
+        List<String> machines = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            machines.add("Processor " + Integer.toString(i));
+        }
+        yAxis.setLabel("");
+        yAxis.setTickLabelGap(10);
+        yAxis.setCategories(FXCollections.observableList(machines));
+
+        //x axis (xValue=Starttime, lengthMs=Worktime)
+        xAxis.setLabel("Start time (s)");
+        xAxis.setMinorTickCount(10);
+        for (String processor : machines) {
+            XYChart.Series series1 = new XYChart.Series();
+            series1.getData().add(new XYChart.Data(0, processor, new GanttChart.ExtraData(1, "status-red")));
+            series1.getData().add(new XYChart.Data(1, processor, new GanttChart.ExtraData(2, "status-red")));
+            series1.getData().add(new XYChart.Data(3, processor, new GanttChart.ExtraData(3, "status-red")));
+            series1.getData().add(new XYChart.Data(6, processor, new GanttChart.ExtraData(4, "status-red")));
+            ganttChart.getData().addAll(series1);
+        }
     }
 
     private void initializeStatistics() {

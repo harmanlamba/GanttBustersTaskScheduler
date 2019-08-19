@@ -1,5 +1,6 @@
 package visualisation.controller;
 
+import graph.GraphNode;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -10,19 +11,30 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
 import org.graphstream.ui.view.util.MouseManager;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphUpdater extends Viewer {
     private Graph _graph;
     private SpriteManager _spriteManager;
+    private List<String> _processorColours = new ArrayList<>();
+    private List<String> _colours = new ArrayList<String>() {{
+        add("#90EE90");
+        add("#708090");
+        add("#8A2BE2");
+        add("#FFF8DC");
+        add("#FF6347");
+        add("#00CED1");
+    }};
 
     public GraphUpdater(Graph graph, ThreadingModel threadingModel) {
         super(graph, threadingModel);
         _graph=graph;
         _spriteManager= new SpriteManager(_graph);
-        intializeGraphProperties();
+        initializeGraphProperties();
     }
 
-    private void intializeGraphProperties() {
+    private void initializeGraphProperties() {
         //Graph attributes
         _graph.addAttribute("ui.antialias");
         _graph.addAttribute("ui.quality");
@@ -45,6 +57,35 @@ public class GraphUpdater extends Viewer {
                     + "\ttext-size: 15px; text-color: black;\n"
                     + "\ttext-alignment: along;\n");
             edge.addAttribute("ui.label",edge.getAttribute("weight") + "");
+        }
+    }
+
+    private void updateNode(List<Node> nodesList) {
+        //Update nodes processor assignment
+        for (Node node : nodesList) {
+            String processColour = getProcessorColour(node.getAttribute("processor"));
+            node.removeAttribute("ui.style"); //reset style
+            node.addAttribute("ui.style", "text-alignment: center;\n"
+                    + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
+                    + "\tfill-mode: plain; fill-color:" + processColour + ";\n"
+                    + "\tsize: 30px, 30px;\n"
+                    + "\ttext-size: 15px; text-color: white;\n");
+        }
+        //Update nodes additional properties
+    }
+
+    private String getProcessorColour(int processorIndex) {
+        return _processorColours.get(processorIndex);
+    }
+
+    public void setProcessorColours(int processorCount) {
+        //If only 1 processor count, then set to main node colour
+        if (processorCount > 1) {
+            for (int i = 0; i < processorCount; i++) {
+                _processorColours.add(_colours.get(i));
+            }
+        } else {
+            _processorColours.add(_colours.get(1));
         }
     }
 
@@ -79,7 +120,6 @@ public class GraphUpdater extends Viewer {
             }
 
         };
-
         viewPanel.setMouseManager(manager);
     }
 }
