@@ -19,7 +19,6 @@ public class GraphManager {
     }
 
     private void  createGraphStream(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
-
         for(GraphNode node : graphNodesMap.values()){
              Node nodeGraphStream = _graphStream.addNode(node.getId());
              nodeGraphStream.addAttribute("weight",node.getWeight());
