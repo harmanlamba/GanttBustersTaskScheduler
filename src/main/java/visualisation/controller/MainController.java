@@ -106,39 +106,28 @@ public class MainController implements IObserver, Initializable {
         new Thread() {
             public void run() {
                 _io.write(algorithm.solveAlgorithm());
-                Platform.runLater(() -> {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            testUpdate();
-                        }
-                    });
-                });
             }
         }.start();
     }
 
     @Override
     public void updateGraph() {
-        _observableAlgorithm.getCurrentBestSolution();
+        List<GraphNode> test = new ArrayList<>(_observableAlgorithm.getCurrentBestSolution().values());
+
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    for (Node node : _graphStream) {
-                        //TODO: Receive and update node states via GraphUpdater
-                    }
+                    updateGantt(test); //TODO: TEMP
                 }
             });
         });
     }
 
     //TODO: Call for every task allocated to a processor
-    public void testUpdate() {
-        List<GraphNode> test = new ArrayList<>(_io.getAlgorithmResultMap().values());
-
+    public void updateGantt(List<GraphNode> test) {
         List<String> processors = new ArrayList<>();
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
