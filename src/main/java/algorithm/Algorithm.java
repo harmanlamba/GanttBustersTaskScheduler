@@ -1,9 +1,7 @@
 package algorithm;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import visualisation.controller.IObservable;
 import visualisation.controller.IObserver;
-import algorithm.idastarbase.State;
 import graph.GraphNode;
 import graph.Graph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -23,7 +21,6 @@ public abstract class Algorithm implements IObservable {
     protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
-    protected State _bestFState;
     protected List<IObserver> _observerList = new ArrayList<>();
 
     /**
@@ -88,7 +85,7 @@ public abstract class Algorithm implements IObservable {
         return _numProcParallel;
     }
 
-    public abstract Map<String,GraphNode> getCurrentBestState();
+    public abstract Map<String,GraphNode> getCurrentBestSolution();
 
 
     public Graph getAlgorithmGraph(){

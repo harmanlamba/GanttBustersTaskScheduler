@@ -44,15 +44,13 @@ public class Sequential extends Algorithm {
             GraphNode tempOutputNode = new GraphNode(tempNode, _numProcTask, currentTime);
             _output.put(tempNode.getId(), tempOutputNode);
             currentTime += tempNode.getWeight();
-            //System.out.println(tempNode.getId() + " " + tempOutputNode.getStartTime());
         }
         return _output;
     }
 
     @Override
-    public Map<String, GraphNode> getCurrentBestState() {
+    public Map<String, GraphNode> getCurrentBestSolution() {
         // Method never called because sequential algorithm is too fast
-        notifyObserversOfGraph();
         return _output;
     }
 }

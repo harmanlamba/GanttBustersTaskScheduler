@@ -17,7 +17,7 @@ public class IDAStarParallel extends Algorithm {
     }
 
     @Override
-    public Map<String, GraphNode> getCurrentBestState() {
+    public Map<String, GraphNode> getCurrentBestSolution() {
         return null;
     }
 }

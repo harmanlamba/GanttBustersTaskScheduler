@@ -43,8 +43,6 @@ public class MainController implements IObserver, Initializable {
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
     private AnimationTimer _animationTimer;
-    private long lastTime;
-    private long seconds;
 
 
     //Public Control Fields from the FXML
@@ -92,45 +90,18 @@ public class MainController implements IObserver, Initializable {
         //initializeGantt();
         initializeStatistics();
 
+        //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
+        // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
+        // somehow to make this not an issue
         //Algorithm
         Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
         Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
-        //algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
+        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
         _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
         algorithm.add(this);
-        _animationTimer = new AnimationTimer() {
-            private long timestamp;
-            private long time = 0;
-            private long fraction = 0;
-
-            @Override
-            public void start() {
-                // current time adjusted by remaining time from last run
-                timestamp = System.currentTimeMillis() - fraction;
-                super.start();
-            }
-
-            @Override
-            public void stop() {
-                super.stop();
-                // save leftover time not handled with the last update
-                fraction = System.currentTimeMillis() - timestamp;
-            }
-
-            @Override
-            public void handle(long now) {
-                long newTime = System.currentTimeMillis();
-                if (timestamp <= newTime) {
-                    long deltaT = (newTime - timestamp);
-                    time += deltaT;
-                    timestamp += deltaT;
-                    setTimerStatistic(time);
-                }
-            }
-        };
-        _animationTimer.start(); //start timer
-
+        startTimer();
+        //Runs the algorithm in a new thread
         new Thread() {
             public void run() {
                 _io.write(algorithm.solveAlgorithm());
@@ -140,7 +111,14 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void updateGraph() {
-        _observableAlgorithm.getCurrentBestState();
+        _observableAlgorithm.getCurrentBestSolution();
+    }
+
+    @Override
+    public void stopTimer() {
+        System.out.println("done");
+        _animationTimer.stop();
+        _algorithmResultMap = _observableAlgorithm.getCurrentBestSolution();
     }
 
     private void initializeGraph() {
@@ -181,9 +159,6 @@ public class MainController implements IObserver, Initializable {
 
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
-//            long minutes = currentTime / 6000;
-//            long seconds = ((currentTime - minutes * 60) / 1000);
-//            long milliseconds = (currentTime - (minutes * 6000000) - (seconds * 1000)) / 10;
 
             long minutes = (currentTime / 60000);
             long seconds = ((currentTime - minutes * 60) / 1000);
@@ -214,9 +189,34 @@ public class MainController implements IObserver, Initializable {
         });
     }
 
-    @Override
-    public void stopTimer() {
-        System.out.println("hi");
-        _animationTimer.stop();
+    public void startTimer() {
+        _animationTimer = new AnimationTimer() {
+            private long timestamp;
+            private long time = 0;
+            private long fraction = 0;
+            @Override
+            public void start() {
+                // current time adjusted by remaining time from last run
+                timestamp = System.currentTimeMillis() - fraction;
+                super.start();
+            }
+            @Override
+            public void stop() {
+                super.stop();
+                // save leftover time not handled with the last update
+                fraction = System.currentTimeMillis() - timestamp;
+            }
+            @Override
+            public void handle(long now) {
+                long newTime = System.currentTimeMillis();
+                if (timestamp <= newTime) {
+                    long deltaT = (newTime - timestamp);
+                    time += deltaT;
+                    timestamp += deltaT;
+                    setTimerStatistic(time);
+                }
+            }
+        };
+        _animationTimer.start(); //start timer
     }
 }

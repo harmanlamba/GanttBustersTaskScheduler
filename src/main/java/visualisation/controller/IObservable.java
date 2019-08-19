@@ -1,6 +1,5 @@
 package visualisation.controller;
 
-import algorithm.idastarbase.State;
 import graph.Graph;
 import graph.GraphNode;
 
@@ -12,6 +11,6 @@ public interface IObservable {
     void remove(IObserver e);
     void notifyObserversOfGraph();
     void notifyObserversOfTime();
-    Map<String,GraphNode> getCurrentBestState();
     Graph getAlgorithmGraph();
+    Map<String, GraphNode> getCurrentBestSolution();
 }
