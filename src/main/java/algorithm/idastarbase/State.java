@@ -17,7 +17,5 @@ public class State {
 
     public State(Graph graph) {
         _graph = graph;
-
-
     }
 }
