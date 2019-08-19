@@ -34,7 +34,6 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph graph, int numProcTask, int numProcParallel) {
         super(graph, numProcTask, numProcParallel);
-        _bestFState = null;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
@@ -58,6 +57,7 @@ public class IDAStarBase extends Algorithm {
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
+                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }

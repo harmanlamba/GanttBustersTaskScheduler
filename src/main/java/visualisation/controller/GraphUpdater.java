@@ -19,6 +19,7 @@ public class GraphUpdater extends Viewer {
     private SpriteManager _spriteManager;
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
+        //TODO: As there are only 6 colours here, it throws an error if I try to schedule the tasks onto 7 processors as there is not enough colours. A better solution needs to be thought of for this.
         add("#90EE90");
         add("#708090");
         add("#8A2BE2");
