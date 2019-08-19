@@ -116,7 +116,7 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void stopTimer() {
-        System.out.println("done");
+        algorithmStatus.setText("Status: Done");
         _animationTimer.stop();
         _algorithmResultMap = _observableAlgorithm.getCurrentBestSolution();
     }
@@ -157,6 +157,7 @@ public class MainController implements IObserver, Initializable {
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
 
+    //TODO: Refactor this stuff out
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
 
@@ -189,6 +190,7 @@ public class MainController implements IObserver, Initializable {
         });
     }
 
+    //TODO: Refactor this crap outta here
     public void startTimer() {
         _animationTimer = new AnimationTimer() {
             private long timestamp;
