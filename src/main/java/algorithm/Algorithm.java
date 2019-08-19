@@ -48,7 +48,7 @@ public abstract class Algorithm implements IObservable {
 
     public Map<String,GraphNode> solveAlgorithm(){
         Map<String, GraphNode> outputMap = solve();
-        timerState();
+        notifyObserversOfTime();
         return outputMap;
     }
 
@@ -116,14 +116,9 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObserversOfTimer() {
+    public void notifyObserversOfTime() {
         for (IObserver observer : _observerList) {
             observer.stopTimer();
         }
-    }
-
-    @Override
-    public void timerState() {
-        notifyObserversOfTimer();
     }
 }

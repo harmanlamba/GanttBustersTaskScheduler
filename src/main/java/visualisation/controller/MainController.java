@@ -84,52 +84,58 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Timer
-        _animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (lastTime != 0) {
-                    if (now > lastTime) {
-                        seconds+= 1.9; //to match 60hz
-                        setTimerStatistic(seconds);
-
-                        lastTime = now;
-                    }
-                } else {
-                    lastTime = now;
-                }
-            }
-
-            @Override
-            public void stop() {
-                super.stop();
-                lastTime = 0;
-                seconds = 0;
-            }
-        };
-
-        //Algorithm
         _io = App._mainIO;
-        Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
-        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
-        _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
-        //algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
-        _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
-        algorithm.add(this);
-        _animationTimer.start(); //start timer
-
-        new Thread() {
-            public void run() {
-                _io.write(algorithm.solveAlgorithm());
-                _animationTimer.stop();
-            }
-        }.start();
 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         initializeGraph();
         //initializeGantt();
         initializeStatistics();
+
+        //Algorithm
+        Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
+        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
+        _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
+        //algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
+        _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
+        algorithm.add(this);
+        _animationTimer = new AnimationTimer() {
+            private long timestamp;
+            private long time = 0;
+            private long fraction = 0;
+
+            @Override
+            public void start() {
+                // current time adjusted by remaining time from last run
+                timestamp = System.currentTimeMillis() - fraction;
+                super.start();
+            }
+
+            @Override
+            public void stop() {
+                super.stop();
+                // save leftover time not handled with the last update
+                fraction = System.currentTimeMillis() - timestamp;
+            }
+
+            @Override
+            public void handle(long now) {
+                long newTime = System.currentTimeMillis();
+                if (timestamp <= newTime) {
+                    long deltaT = (newTime - timestamp);
+                    time += deltaT;
+                    timestamp += deltaT;
+                    setTimerStatistic(time);
+                }
+            }
+        };
+        _animationTimer.start(); //start timer
+
+        new Thread() {
+            public void run() {
+                _io.write(algorithm.solveAlgorithm());
+            }
+        }.start();
     }
 
     @Override
@@ -175,17 +181,21 @@ public class MainController implements IObserver, Initializable {
 
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
-            long minutes = currentTime / 6000;
-            long seconds = (currentTime - minutes * 6000) / 100;
-            long milliseconds = currentTime - (minutes * 6000) - (seconds * 100);
+//            long minutes = currentTime / 6000;
+//            long seconds = ((currentTime - minutes * 60) / 1000);
+//            long milliseconds = (currentTime - (minutes * 6000000) - (seconds * 1000)) / 10;
+
+            long minutes = (currentTime / 60000);
+            long seconds = ((currentTime - minutes * 60) / 1000);
+            long milliseconds = (currentTime - minutes * 60 - seconds * 1000) / 10;
 
             String minutesText ="";
             String secondsText = "";
             String millisecondsText = "";
-            if (seconds < 10) { //Fix seconds
-                secondsText = "0" + seconds;
+            if (seconds % 60 < 10) { //Fix seconds
+                secondsText = "0" + seconds % 60;
             } else {
-                secondsText = Long.toString(seconds);
+                secondsText = Long.toString(seconds % 60);
             }
 
             if (minutes < 10) {//Fix minutes
@@ -206,6 +216,7 @@ public class MainController implements IObserver, Initializable {
 
     @Override
     public void stopTimer() {
-        //_timer.stopTimer();
+        System.out.println("hi");
+        _animationTimer.stop();
     }
 }

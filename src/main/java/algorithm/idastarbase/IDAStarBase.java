@@ -103,7 +103,6 @@ public class IDAStarBase extends Algorithm {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
                             _solved = idaRecursive(freeTask, i);
-                            getCurrentBestState();
                             if (_solved) {
                                 break;
                             }

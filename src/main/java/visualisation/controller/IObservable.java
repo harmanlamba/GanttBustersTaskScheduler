@@ -11,11 +11,7 @@ public interface IObservable {
     void add(IObserver e);
     void remove(IObserver e);
     void notifyObserversOfGraph();
-    void notifyObserversOfTimer();
+    void notifyObserversOfTime();
     Map<String,GraphNode> getCurrentBestState();
-    void timerState();
     Graph getAlgorithmGraph();
-
-
-
 }
