@@ -2,10 +2,12 @@ package visualisation.controller;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
+import app.App;
 import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingNode;
@@ -26,6 +28,10 @@ import org.graphstream.ui.view.Viewer;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.*;
 import java.util.List;
 
@@ -39,7 +45,8 @@ public class MainController implements IObserver, Initializable {
     private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
-    private TimerHelper _timer;
+    private AnimationTimer _animationTimer;
+
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -69,25 +76,42 @@ public class MainController implements IObserver, Initializable {
     public TreeTableColumn<?, ?> startTimeColumn;
     public TreeTableColumn<?, ?> assignedProcessorColumn;
 
-    public MainController(IObservable observableAlgorithm, IIO io){
-        _observableAlgorithm=observableAlgorithm;
-        _io = io;
-        _algorithmGraph=observableAlgorithm.getAlgorithmGraph();
-        _timer = new TimerHelper(this);
+    public MainController(){
+
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        _io = App._mainIO;
+
+        //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
-        _timer.startTimer();
         initializeGraph();
         initializeGantt();
         initializeStatistics();
+
+        //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
+        // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
+        // somehow to make this not an issue
+        //Algorithm
+        Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
+        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
+        _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
+        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
+        _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
+        algorithm.add(this);
+        startTimer();
+        //Runs the algorithm in a new thread
+        new Thread() {
+            public void run() {
+                _io.write(algorithm.solveAlgorithm());
+            }
+        }.start();
     }
 
     @Override
-    public void update() {
-        _observableAlgorithm.getBestFState();
+    public void updateGraph() {
+        _observableAlgorithm.getCurrentBestSolution();
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
@@ -100,6 +124,13 @@ public class MainController implements IObserver, Initializable {
                 }
             });
         });
+    }
+
+    @Override
+    public void stopTimer() {
+        algorithmStatus.setText("Status: Done");
+        _animationTimer.stop();
+        _algorithmResultMap = _observableAlgorithm.getCurrentBestSolution();
     }
 
     private void initializeGraph() {
@@ -165,40 +196,65 @@ public class MainController implements IObserver, Initializable {
 
     private void initializeStatistics() {
         algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
         numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
         numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
 
-    public void setTimerStatistic(int currentTime) {
+    //TODO: Refactor this stuff out
+    public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
-            int minutes = currentTime / 6000;
-            int seconds = (currentTime - minutes * 6000) / 100;
-            int milliseconds = currentTime - (minutes * 6000) - (seconds * 100);
+
+            long minutes = (currentTime / 60000);
+            long seconds = ((currentTime - minutes * 60) / 1000);
+            long milliseconds = (currentTime - minutes * 60 - seconds * 1000) / 10;
 
             String minutesText ="";
             String secondsText = "";
             String millisecondsText = "";
-            if (seconds < 10) { //Fix seconds
-                secondsText = "0" + seconds;
+            if (seconds % 60 < 10) { //Fix seconds
+                secondsText = "0" + seconds % 60;
             } else {
-                secondsText = Integer.toString(seconds);
+                secondsText = Long.toString(seconds % 60);
             }
 
             if (minutes < 10) {//Fix minutes
                 minutesText = "0" + minutes;
             } else {
-                minutesText = Integer.toString(minutes);
+                minutesText = Long.toString(minutes);
             }
 
             if (milliseconds < 10) {
                 millisecondsText = "00" + millisecondsText;
             } else {
-                millisecondsText = Integer.toString(milliseconds);
+                millisecondsText = Long.toString(milliseconds);
             }
 
             timeElapsedText.setText("Time Elapsed: " + minutesText + " : " + secondsText + " : " + millisecondsText);
         });
+    }
+
+    //TODO: Refactor this crap outta here
+    public void startTimer() {
+        _animationTimer = new AnimationTimer() {
+            private long timestamp;
+            private long time = 0;
+            @Override
+            public void start() {
+                // current time adjusted by remaining time from last run
+                timestamp = System.currentTimeMillis();
+                super.start();
+            }
+            @Override
+            public void handle(long now) {
+                long newTime = System.currentTimeMillis();
+                if (timestamp <= newTime) {
+                    time += (newTime - timestamp);
+                    timestamp += (newTime - timestamp);
+                    setTimerStatistic(time);
+                }
+            }
+        };
+        _animationTimer.start(); //start timer
     }
 }

@@ -34,7 +34,6 @@ public class IDAStarBase extends Algorithm {
      */
     public IDAStarBase(Graph graph, int numProcTask, int numProcParallel) {
         super(graph, numProcTask, numProcParallel);
-        _bestFState = null;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
@@ -58,13 +57,30 @@ public class IDAStarBase extends Algorithm {
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
+                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
+        return convertProcessorAllocationsToMap();
+    }
+
+    @Override
+    public Map<String, GraphNode> getCurrentBestSolution() {
+        return convertProcessorAllocationsToMap();
+    }
+
+    private Map<String, GraphNode> convertProcessorAllocationsToMap() {
+
+        //TODO: deep copy the _processorAllocations
+        Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
+        for (int i=0; i < _numProcTask; i++) {
+            copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
+        }
+
         Map<String, GraphNode> optimal = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
-            while (!_processorAllocations[i].isEmpty()) {
-                GraphNode task = _processorAllocations[i].pop();
+            while (!copyOfStacks[i].isEmpty()) {
+                GraphNode task = copyOfStacks[i].pop();
                 optimal.put(task.getId(), task);
             }
         }

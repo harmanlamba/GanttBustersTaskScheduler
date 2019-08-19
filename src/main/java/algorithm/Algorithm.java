@@ -2,7 +2,6 @@ package algorithm;
 
 import visualisation.controller.IObservable;
 import visualisation.controller.IObserver;
-import algorithm.idastarbase.State;
 import graph.GraphNode;
 import graph.Graph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -22,8 +21,7 @@ public abstract class Algorithm implements IObservable {
     protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
-    protected State _bestFState;
-    protected List<IObserver> _observerList;
+    protected List<IObserver> _observerList = new ArrayList<>();
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -44,6 +42,12 @@ public abstract class Algorithm implements IObservable {
      * node and GraphNode contains all of the node information)
      */
     public abstract Map<String, GraphNode> solve();
+
+    public Map<String,GraphNode> solveAlgorithm(){
+        Map<String, GraphNode> outputMap = solve();
+        notifyObserversOfTime();
+        return outputMap;
+    }
 
     /**
      * Sets the topological order of the graph
@@ -81,9 +85,8 @@ public abstract class Algorithm implements IObservable {
         return _numProcParallel;
     }
 
-    public State getBestFState(){
-        return _bestFState;
-    }
+    public abstract Map<String,GraphNode> getCurrentBestSolution();
+
 
     public Graph getAlgorithmGraph(){
         return _graph;
@@ -103,9 +106,16 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObservers() {
-        for(IObserver observer : _observerList){
-            observer.update();
+    public void notifyObserversOfGraph() { //TODO: should this contain some sort of input
+        for (IObserver observer : _observerList) {
+            observer.updateGraph();
+        }
+    }
+
+    @Override
+    public void notifyObserversOfTime() {
+        for (IObserver observer : _observerList) {
+            observer.stopTimer();
         }
     }
 }

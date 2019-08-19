@@ -1,6 +1,7 @@
 package visualisation.controller;
 
 public interface IObserver {
-    void update();
+    void updateGraph();
+    void stopTimer();
 }
 
