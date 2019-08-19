@@ -69,6 +69,7 @@ public class MainController implements IObserver, Initializable {
 
     public Tab taskTab;
     public Pane ganttPane;
+    private GanttChart<Number, String> ganttChart;
 
     public Tab resultTab;
     public JFXTreeTableView<?> scheduleResultsTable;
@@ -105,6 +106,14 @@ public class MainController implements IObserver, Initializable {
         new Thread() {
             public void run() {
                 _io.write(algorithm.solveAlgorithm());
+                Platform.runLater(() -> {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            testUpdate();
+                        }
+                    });
+                });
             }
         }.start();
     }
@@ -126,6 +135,26 @@ public class MainController implements IObserver, Initializable {
         });
     }
 
+    //TODO: Call for every task allocated to a processor
+    public void testUpdate() {
+        List<GraphNode> test = new ArrayList<>(_io.getAlgorithmResultMap().values());
+
+        List<String> processors = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            processors.add(Integer.toString(i));
+        }
+
+        XYChart.Series series1 = new XYChart.Series();
+        for (String processor : processors) {
+            for (GraphNode graphNode : test) {
+                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.ExtraData(graphNode.getWeight(), "status-red")));
+                }
+            }
+        }
+        ganttChart.getData().addAll(series1);
+    }
+
     @Override
     public void stopTimer() {
         algorithmStatus.setText("Status: Done");
@@ -145,7 +174,7 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
         _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -156,12 +185,10 @@ public class MainController implements IObserver, Initializable {
     }
 
     private void initializeGantt() {
-        _algorithmResultMap = _io.getAlgorithmResultMap();
-
         //Gantt chart initialize
         final NumberAxis xAxis = new NumberAxis();
         final CategoryAxis yAxis = new CategoryAxis();
-        final GanttChart<Number, String> ganttChart = new GanttChart<>(xAxis, yAxis);
+        ganttChart = new GanttChart<>(xAxis, yAxis);
         ganttPane.getChildren().add(ganttChart);
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
@@ -173,25 +200,18 @@ public class MainController implements IObserver, Initializable {
         ganttChart.setBlockHeight(60);
 
         //y axis (processor count)
-        List<String> machines = new ArrayList<>();
+        List<String> processors = new ArrayList<>();
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
-            machines.add("Processor " + Integer.toString(i));
+            processors.add(Integer.toString(i));
         }
         yAxis.setLabel("");
         yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.observableList(machines));
+        yAxis.setCategories(FXCollections.observableList(processors));
 
         //x axis (xValue=Starttime, lengthMs=Worktime)
         xAxis.setLabel("Start time (s)");
         xAxis.setMinorTickCount(10);
-        for (String processor : machines) {
-            XYChart.Series series1 = new XYChart.Series();
-            series1.getData().add(new XYChart.Data(0, processor, new GanttChart.ExtraData(1, "status-red")));
-            series1.getData().add(new XYChart.Data(1, processor, new GanttChart.ExtraData(2, "status-red")));
-            series1.getData().add(new XYChart.Data(3, processor, new GanttChart.ExtraData(3, "status-red")));
-            series1.getData().add(new XYChart.Data(6, processor, new GanttChart.ExtraData(4, "status-red")));
-            ganttChart.getData().addAll(series1);
-        }
+
     }
 
     private void initializeStatistics() {
