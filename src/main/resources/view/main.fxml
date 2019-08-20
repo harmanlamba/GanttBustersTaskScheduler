@@ -82,7 +82,7 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="currentBestSchedule" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Time: " wrappingWidth="280.0">
+                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

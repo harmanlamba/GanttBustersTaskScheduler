@@ -20,4 +20,9 @@ public class IDAStarParallel extends Algorithm {
     public Map<String, GraphNode> getCurrentBestSolution() {
         return null;
     }
+
+    @Override
+    public int getBestScheduleCost() {
+        return 0;
+    }
 }

@@ -94,4 +94,7 @@ public abstract class Algorithm implements IObservable {
     public int getStatesGenerated() {
         return _statesGenerated;
     }
+
+    @Override
+    public abstract int getBestScheduleCost();
 }

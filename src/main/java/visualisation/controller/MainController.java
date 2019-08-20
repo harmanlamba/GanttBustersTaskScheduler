@@ -47,7 +47,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: ";
     private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: ";
 
-    private final static String BEST_SCHEDULE_TIME_TEXT = "Best Schedule Time: ";
+    private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
     private final static String BRANCHES_BOUNDED_TEXT = "Branches Bounded: ";
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
     private final static String STATES_GENERATED_TEXT = "States Generated: ";
@@ -76,7 +76,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfTasks;
     public Text numberOfProcessors;
     public Text numberOfThreads;
-    public Text currentBestSchedule;
+    public Text bestScheduleCost;
     public Text branchesBounded;
     public Text branchesPruned;
     public Text statesGenerated;
@@ -141,6 +141,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public void stopTimer() {
         _observableTimer.stop();
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
+        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + _observableAlgorithm.getBestScheduleCost());
         updateGraph();
     }
 

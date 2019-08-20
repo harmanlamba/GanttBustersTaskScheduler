@@ -15,4 +15,5 @@ public interface IObservable {
     int getBranchesBounded();
     int getBranchesPruned();
     int getStatesGenerated();
+    int getBestScheduleCost();
 }

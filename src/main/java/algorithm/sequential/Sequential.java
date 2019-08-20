@@ -15,7 +15,8 @@ import java.util.Map;
  */
 public class Sequential extends Algorithm {
 
-    Map<String, GraphNode> _output;
+    private Map<String, GraphNode> _output;
+    private List<GraphNode> _topologicalOrder;
 
     /**
      * Instantiates a Sequential instance
@@ -26,6 +27,7 @@ public class Sequential extends Algorithm {
     public Sequential(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         _output = new HashMap<>();
+        _topologicalOrder = new ArrayList<>();
     }
 
     /**
@@ -34,13 +36,12 @@ public class Sequential extends Algorithm {
      */
     public List<GraphNode> getTopologicalOrdering() {
         TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
-        List<GraphNode> topologicalOrder = new ArrayList<>();
 
         while(iterator.hasNext()) {
             GraphNode tempNode = (GraphNode) iterator.next();
-            topologicalOrder.add(tempNode);
+            _topologicalOrder.add(tempNode);
         }
-        return topologicalOrder;
+        return _topologicalOrder;
     }
 
     /**
@@ -65,5 +66,11 @@ public class Sequential extends Algorithm {
     public Map<String, GraphNode> getCurrentBestSolution() {
         // Method never called because sequential algorithm is too fast
         return _output;
+    }
+
+    @Override
+    public int getBestScheduleCost() {
+        GraphNode task = _topologicalOrder.get(_topologicalOrder.size()-1);
+        return task.getStartTime() + task.getWeight();
     }
 }
