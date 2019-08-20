@@ -85,13 +85,19 @@ public abstract class Algorithm implements IObservable {
         return _numProcParallel;
     }
 
+    /**
+     * Getter method which retrieves the best optimal solution for the scheduling based on the algorithm applied
+     * @return a map of Strings mapping to GraphNodes containing the nodes' scheduling information
+     */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
 
-
+    /**
+     * Getter method for the task dependency graph containing node and edge weights
+     * @return a graph object containing the dependency information
+     */
     public Graph getAlgorithmGraph(){
         return _graph;
     }
-
 
 
     //IObservable Overrides

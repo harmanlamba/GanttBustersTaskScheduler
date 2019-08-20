@@ -26,7 +26,7 @@ public interface IIO {
     List<GraphEdge> getEdgeList();
 
     /*
-    This method explictly calls on the writer to write to the output file. Note: The reader does not have
+    This method explicitly calls on the writer to write to the output file. Note: The reader does not have
     a method in this interface and that is because it gets called in the constructor during the creation of the IO
     object.
      */
@@ -34,13 +34,19 @@ public interface IIO {
 
     Map<String, GraphNode> getAlgorithmResultMap();
 
-    //TODO: Comments
+    /*
+    Gets the number of processors on which to schedule tasks as specified by the input
+     */
     int getNumberOfProcessorsForTask();
 
-    //TODO: Comments
+    /*
+    Gets the number of processors on which to run the algorithm as specified by the input
+     */
     int getNumberOfProcessorsForParallelAlgorithm();
 
-    //TODO: Comments
+    /*
+    Gets the display mode type as specified by the input
+     */
     DisplayMode getStateOfVisualisation();
 
 }

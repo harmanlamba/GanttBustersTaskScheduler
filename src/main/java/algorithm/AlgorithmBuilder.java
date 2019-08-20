@@ -33,14 +33,14 @@ public class AlgorithmBuilder {
     public AlgorithmBuilder createAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
         switch (numProcTask) {
             case 1:
-                _algorithmType= AlgorithmType.SEQUENTIAL;
+                _algorithmType = AlgorithmType.SEQUENTIAL;
                 _algorithm = new Sequential(graph, numProcTask, numProcParallel);
                 break;
             default:
-                if(numProcParallel > 1) {
+                if (numProcParallel > 1) {
                     _algorithmType = AlgorithmType.IDASTARPARRALLEL;
                     _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
-                }else {
+                } else {
                     _algorithmType = AlgorithmType.IDASTARBASE;
                     _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
                 }
@@ -48,10 +48,18 @@ public class AlgorithmBuilder {
         return _algorithmBuilder;
     }
 
-    public Algorithm getAlgorithm () {
+    /**
+     * getAlgorithm - getter method for the Algorithm instance
+     * @return returns the Algorithm object itself
+     */
+    public Algorithm getAlgorithm() {
         return _algorithm;
     }
 
+    /**
+     * getAlgorithmType - getter method for the type of the Algorithm instance
+     * @return returns an AlgorithmType enum
+     */
     public AlgorithmType getAlgorithmType() {
         return _algorithmType;
     }

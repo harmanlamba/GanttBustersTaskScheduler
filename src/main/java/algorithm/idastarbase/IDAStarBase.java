@@ -15,16 +15,15 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
-    private Map<String, GraphNode> _taskInfo;
-    private List<GraphNode> _freeTaskList;
-    private int _numberOfTasks;
-    private int _lowerBound;
-    private int _nextLowerBound = -1;
-    private boolean _solved;
-    private int _maxCompTime;
-    private int _idle = 0;
-    private Stack<GraphNode>[] _processorAllocations;
+    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
+    private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
+    private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
+    private int _lowerBound; // Current lower bound to find solution against
+    private int _nextLowerBound = -1; // Next lower bound to be assigned to _lowerBound
+    private boolean _solved; // Represents whether the optimal solution has been found
+    private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
+    private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
+    private Stack<GraphNode>[] _processorAllocations; // Stack array holding tasks scheduled to the processors
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -37,7 +36,6 @@ public class IDAStarBase extends Algorithm {
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
-        _numberOfTasks = _jGraph.vertexSet().size();
         _solved = false;
         _processorAllocations = new Stack[numProcTask];
         for (int i=0; i < numProcTask; i++) {
