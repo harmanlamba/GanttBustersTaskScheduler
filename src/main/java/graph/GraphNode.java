@@ -10,6 +10,7 @@ public class GraphNode {
     private int _weight; //Node weight
     private int _processor; //Processor assigned to node
     private int _startTime; //Node's start time on processor
+    private int _endTime;
     private boolean _free;
     private int _computationalBottomLevel;
 
@@ -77,6 +78,10 @@ public class GraphNode {
         _startTime = startTime;
     }
 
+    public void setEndTime(int endTime){
+        _endTime = endTime;
+    }
+
     public void setProcessor(int processor) {
         _processor = processor;
     }
@@ -93,5 +98,26 @@ public class GraphNode {
 
     public void setComputationalBottomLevel(int computationalBottomLevel) {
         this._computationalBottomLevel = computationalBottomLevel;
+    }
+
+    //Framework Specific Auto Generated Getters for the Table Population
+    public String get_id() {
+        return _id;
+    }
+
+    public int get_weight() {
+        return _weight;
+    }
+
+    public int get_processor() {
+        return _processor;
+    }
+
+    public int get_startTime() {
+        return _startTime;
+    }
+
+    public int get_endTime() {
+        return _endTime;
     }
 }

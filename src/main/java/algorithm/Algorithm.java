@@ -118,4 +118,11 @@ public abstract class Algorithm implements IObservable {
             observer.stopTimer();
         }
     }
+
+    @Override
+    public void notifyObserversofTable() {
+        for (IObserver observer : _observerList) {
+            observer.updateTable();
+        }
+    }
 }

@@ -2,17 +2,16 @@ package visualisation.controller;
 
 import algorithm.AlgorithmBuilder;
 import app.App;
-import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.*;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -45,6 +44,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
     private ITimerObservable _observableTimer;
+    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
 
 
     //Public Control Fields from the FXML
@@ -70,10 +70,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Pane ganttPane;
 
     public Tab resultTab;
-    public JFXTreeTableView<?> scheduleResultsTable;
-    public TreeTableColumn<?, ?> taskIDColumn;
-    public TreeTableColumn<?, ?> startTimeColumn;
-    public TreeTableColumn<?, ?> assignedProcessorColumn;
+    public TableView<GraphNode> scheduleResultsTable;
+    public TableColumn<GraphNode, String> taskIDColumn;
+    public TableColumn<GraphNode, Integer> startTimeColumn;
+    public TableColumn<GraphNode, Integer> endTimeColumn;
+    public TableColumn<GraphNode, Integer> assignedProcessorColumn;
 
     public MainController(){
 
@@ -88,6 +89,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         initializeGraph();
         initializeGantt();
         initializeStatistics();
+        initializeTable();
 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
         // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
@@ -121,6 +123,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _observableTimer.stop();
         algorithmStatus.setText("Status: Done");
         updateGraph();
+        updateTable();
     }
 
     private void initializeGraph() {
@@ -192,6 +195,27 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
         timeElapsedText.setText("Time Elapsed: 00:00:00");
     }
+
+    private void initializeTable() {
+        taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("_id"));
+        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_startTime"));
+        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_endTime"));
+        assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("_processor")));
+        scheduleResultsTable.setItems(_tablePopulationList);
+    }
+
+    @Override
+    public void updateTable() {
+        Map<String,GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
+        //_tablePopulationList.clear();  Have to check if clear is needed TODO: Check if clear is needed
+        //Repopulate with the new GraphNode Details
+        for(Map.Entry<String,GraphNode> node : update.entrySet()){
+            //Setting the end-time for each GraphNode
+            node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
+            _tablePopulationList.add(node.getValue());
+        }
+    }
+
 
     @Override
     public void updateTimer(String s) {
