@@ -57,11 +57,11 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
                     _numberOfIterations += 1;
-                    notifyObserversOfStatistics();
+                    notifyObserversOfIterationChange();
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
-                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
+                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }

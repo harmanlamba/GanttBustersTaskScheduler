@@ -120,9 +120,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateGraph() {
+    public void updateScheduleInformation() {
         Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
-        updateStatistics();
+        updateIterationInformation();
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
@@ -138,11 +138,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void stopTimer() {
+    public void algorithmStopped() {
         _observableTimer.stop();
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + _observableAlgorithm.getBestScheduleCost());
-        updateGraph();
+        updateScheduleInformation();
     }
 
     private void initializeGraph() {
@@ -216,7 +216,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateStatistics() {
+    public void updateIterationInformation() {
         branchesPruned.setText(BRANCHES_PRUNED_TEXT + _observableAlgorithm.getBranchesPruned());
         numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + _observableAlgorithm.getNumberOfIterations());
         currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((_observableAlgorithm.getCurrentLowerBound() == -1) ? "N/A" : _observableAlgorithm.getCurrentLowerBound()));

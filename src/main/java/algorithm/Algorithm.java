@@ -50,7 +50,7 @@ public abstract class Algorithm implements IObservable {
 
     public Map<String,GraphNode> solveAlgorithm(){
         Map<String, GraphNode> outputMap = solve();
-        notifyObserversOfTime();
+        notifyObserversOfAlgorithmEnding();
         return outputMap;
     }
 
@@ -67,23 +67,23 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObserversOfGraph() {
+    public void notifyObserversOfSchedulingUpdate() {
         for (IObserver observer : _observerList) {
-            observer.updateGraph();
+            observer.updateScheduleInformation();
         }
     }
 
     @Override
-    public void notifyObserversOfTime() {
+    public void notifyObserversOfAlgorithmEnding() {
         for (IObserver observer : _observerList) {
-            observer.stopTimer();
+            observer.algorithmStopped();
         }
     }
 
     @Override
-    public void notifyObserversOfStatistics() {
+    public void notifyObserversOfIterationChange() {
         for (IObserver observer : _observerList) {
-            observer.updateStatistics();
+            observer.updateIterationInformation();
         }
     }
 

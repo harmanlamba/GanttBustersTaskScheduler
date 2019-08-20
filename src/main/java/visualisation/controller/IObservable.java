@@ -9,9 +9,9 @@ public interface IObservable {
 
     void add(IObserver e);
     void remove(IObserver e);
-    void notifyObserversOfGraph();
-    void notifyObserversOfTime();
-    void notifyObserversOfStatistics();
+    void notifyObserversOfSchedulingUpdate();
+    void notifyObserversOfAlgorithmEnding();
+    void notifyObserversOfIterationChange();
     Map<String, GraphNode> getCurrentBestSolution();
     int getBestScheduleCost();
     int getBranchesPruned();
