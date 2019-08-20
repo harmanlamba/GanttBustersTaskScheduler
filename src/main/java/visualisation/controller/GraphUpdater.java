@@ -59,7 +59,7 @@ public class GraphUpdater extends Viewer {
 
         //Update nodes processor assignment
         for (Node node : nodesList) {
-            String processColour = _processorColourHelper.getProcessorColour(Integer.parseInt(node.getAttribute("processor")));
+            String processColour = _processorColourHelper.getProcessorColour(node.getAttribute("processor")); //TODO: Run code - look at exception
             node.removeAttribute("ui.style"); //reset style
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
