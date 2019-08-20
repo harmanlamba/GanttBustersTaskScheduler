@@ -12,7 +12,7 @@ public interface IObservable {
     void notifyObserversOfGraph();
     void notifyObserversOfTime();
     Map<String, GraphNode> getCurrentBestSolution();
-    int branchesBounded();
-    int branchesPruned();
-    int statesGenerated();
+    int getBranchesBounded();
+    int getBranchesPruned();
+    int getStatesGenerated();
 }

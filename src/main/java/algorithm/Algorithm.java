@@ -81,17 +81,17 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public int branchesBounded() {
+    public int getBranchesBounded() {
         return _branchesBounded;
     }
 
     @Override
-    public int branchesPruned() {
+    public int getBranchesPruned() {
         return _branchesPruned;
     }
 
     @Override
-    public int statesGenerated() {
+    public int getStatesGenerated() {
         return _statesGenerated;
     }
 }
