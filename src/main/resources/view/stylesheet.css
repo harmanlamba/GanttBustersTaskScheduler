@@ -1,0 +1,13 @@
+#statsContainer {
+  -fx-background-color: #f0f0f0;
+}
+
+#visualsContainer {
+  -fx-background-color: #ffffff;
+}
+
+.status-red {
+  -fx-background-color: #f05171;
+  -fx-border-color: white;
+  -fx-border-width: 1;
+}

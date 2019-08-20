@@ -3,14 +3,11 @@ package algorithm.idastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * IDAStarBase is a child class of Algorithm which solves the task scheduling problem optimally
@@ -18,82 +15,280 @@ import java.util.Set;
  */
 public class IDAStarBase extends Algorithm {
 
+    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
+    private Map<String, GraphNode> _taskInfo;
+    private List<GraphNode> _freeTaskList;
+    private int _numberOfTasks;
+    private int _lowerBound;
+    private int _nextLowerBound = -1;
+    private boolean _solved;
+    private int _maxCompTime;
+    private int _idle = 0;
+    private Stack<GraphNode>[] _processorAllocations;
+
     /**
      * Constructor for IDAStarBase to instantiate the object
-     * @param g is a graph of the network
+     * @param graph is a graph of the network
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public IDAStarBase(Graph g, int numProcTask, int numProcParallel) {
-        super(g, numProcTask, numProcParallel);
+    public IDAStarBase(Graph graph, int numProcTask, int numProcParallel) {
+        super(graph, numProcTask, numProcParallel);
+        _taskInfo = new HashMap<>();
+        _freeTaskList = new ArrayList<>();
+        _jGraph = _graph.getGraph();
+        _numberOfTasks = _jGraph.vertexSet().size();
+        _solved = false;
+        _processorAllocations = new Stack[numProcTask];
+        for (int i=0; i < numProcTask; i++) {
+            _processorAllocations[i] = new Stack();
+        }
+        initialiseFreeTasks();
+        initaliseBottomLevel();
+        _maxCompTime = maxComputationalTime();
     }
 
-    /**
-     * Method that solves the problem optimally on one processor
-     * @return A map of the nodes with their corresponding start times (string is the name of the
-     * node and GraphNode contains all of the node information)
-     */
     @Override
-    public Map<String,GraphNode> solve() {
-        getTopologicalOrdering();
-        int lowerBound = Math.max(calcWeightProcRatio(), calcCompBottomLevel());
-        // System.out.println(lowerBound);
-        return null;
-    }
-
-    private int calcWeightProcRatio() {
-        Set<GraphNode> allNodes = _graph.getGraph().vertexSet();
-        int total = 0;
-        for (GraphNode node: allNodes) {
-            total += node.getWeight();
-        }
-        return total/_numProcTask;
-    }
-
-    private int calcCompBottomLevel() {
-        DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> graphCopy = _graph.getGraph();
-        Set<DefaultWeightedEdge> edges = graphCopy.edgeSet();
-
-        // Finding greatest weighted edge to invert edge weights in next for loop
-        double maxEdgeLength = 0;
-        for (DefaultWeightedEdge edge: edges) {
-            if (graphCopy.getEdgeWeight(edge) > maxEdgeLength) {
-                maxEdgeLength = graphCopy.getEdgeWeight(edge);
-            }
-
-        }
-
-        // Inverting edge weights
-        for (DefaultWeightedEdge edge: edges) {
-            // double origWeight = graphCopy.getEdgeWeight(edge);
-            graphCopy.setEdgeWeight(edge, maxEdgeLength - graphCopy.getEdgeWeight(edge));
-            // System.out.println("Src:" + graphCopy.getEdgeSource(edge) + ", Dest:" + graphCopy.getEdgeTarget(edge) + ", OW: " + origWeight + ", IW: " + graphCopy.getEdgeWeight(edge));
-        }
-
-        Set<GraphNode> startNodes = new HashSet<>();
-        Set<GraphNode> endNodes = new HashSet<>();
-
-        for (GraphNode node: graphCopy.vertexSet()) {
-            if (graphCopy.inDegreeOf(node) == 0) {
-                startNodes.add(node);
-            }
-            if (graphCopy.outDegreeOf(node) == 0) {
-                endNodes.add(node);
-            }
-        }
-
-        DijkstraShortestPath<GraphNode, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath(graphCopy);
-        GraphPath<GraphNode, DefaultWeightedEdge> minPath = dijkstra.getPath(startNodes.iterator().next(), endNodes.iterator().next()); // But its actually the longest (critical) path
-        double minWeight = -1;
-        for (GraphNode start: startNodes) {
-            for (GraphNode end: endNodes) {
-                if (minWeight == -1 || dijkstra.getPath(start, end).getWeight() < minWeight) {
-                    minWeight = dijkstra.getPath(start, end).getWeight();
-                    minPath = dijkstra.getPath(start, end);
+    public Map<String, GraphNode> solve() {
+        for (GraphNode task : _taskInfo.values()) {
+            if (task.isFree()) {
+                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
+                while (!_solved) {
+                    _solved = idaRecursive(task, 0);
+                    _lowerBound = _nextLowerBound;
+                    _nextLowerBound = -1;
+                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
-        // System.out.println(minPath.getEdgeList().size());
-        return minPath.getEdgeList().size();
+        return convertProcessorAllocationsToMap();
     }
+
+    @Override
+    public Map<String, GraphNode> getCurrentBestSolution() {
+        return convertProcessorAllocationsToMap();
+    }
+
+    private Map<String, GraphNode> convertProcessorAllocationsToMap() {
+
+        //TODO: deep copy the _processorAllocations
+        Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
+        for (int i=0; i < _numProcTask; i++) {
+            copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
+        }
+
+        Map<String, GraphNode> optimal = new HashMap<>();
+        for (int i = 0; i < _numProcTask; i++) {
+            while (!copyOfStacks[i].isEmpty()) {
+                GraphNode task = copyOfStacks[i].pop();
+                optimal.put(task.getId(), task);
+            }
+        }
+        return optimal;
+    }
+
+    private boolean idaRecursive(GraphNode task, int processorNumber) {
+        int startTime = getStartTime(task, processorNumber);
+        int h1 =  task.getComputationalBottomLevel() + startTime;
+        int idleNow = 0;
+        if (_processorAllocations[processorNumber].isEmpty()) {
+            idleNow = startTime;
+        } else {
+            GraphNode lastNode =  _processorAllocations[processorNumber].peek();
+            idleNow = startTime - (lastNode.getStartTime() + lastNode.getWeight());
+        }
+        _idle += idleNow;
+
+        int h2 = _maxCompTime + (_idle/_numProcTask);
+        int maxH = Math.max(h1, h2);
+
+        if (maxH > _lowerBound) {
+            if (maxH < _nextLowerBound || _nextLowerBound == -1) {
+                _nextLowerBound = maxH;
+            }
+            _idle -= idleNow;
+            return false;
+        } else {
+            _freeTaskList.remove(task);
+            task.setStartTime(startTime);
+            task.setProcessor(processorNumber);
+            task.setFree(false);
+            _taskInfo.put(task.getId(), task);
+            _processorAllocations[processorNumber].push(task);
+            updateFreeTasks(task);
+
+            if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0 && getStackMax() <= _lowerBound) {
+                return true;
+            } else {
+                for (GraphNode freeTask : _taskInfo.values()) {
+                    if (freeTask.isFree()) {
+                        for (int i = 0; i < _numProcTask; i++) {
+                            if (_numProcTask > 2) {
+                                int freeProc = getFreeProc();
+                                if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
+                                    // Do nothing
+                                } else {
+                                    _solved = idaRecursive(freeTask, i);
+                                }
+                            } else {
+                                _solved = idaRecursive(freeTask, i);
+                            }
+                            if (_solved) {
+                                break;
+                            }
+                        }
+                        if (_solved) {
+                            break;
+                        }
+                    }
+                }
+                if (!_solved) {
+                    sanitise(processorNumber);
+                }
+            }
+            _idle -= idleNow;
+            return _solved;
+        }
+    }
+
+    private void updateFreeTasks(GraphNode task) {
+        for (GraphNode child : getChildren(task)) {
+            boolean childFree = true;
+            for (GraphNode parent : getParents(child)) {
+                if (parent.getProcessor() == -1) {
+                    childFree = false;
+                    break;
+                }
+            }
+            if (childFree) {
+                child.setFree(childFree);
+                _taskInfo.put(child.getId(), child);
+                _freeTaskList.add(child);
+            }
+        }
+    }
+
+    private Set<GraphNode> getParents(GraphNode task) {
+        Set<GraphNode> parents = new HashSet<>();
+        for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
+            parents.add((GraphNode) _jGraph.getEdgeSource(edge));
+        }
+        return parents;
+    }
+
+    private Set<GraphNode> getChildren(GraphNode task) {
+        Set<GraphNode> children = new HashSet<>();
+        for (DefaultWeightedEdge edge : _jGraph.outgoingEdgesOf(task)) {
+            children.add((GraphNode) _jGraph.getEdgeTarget(edge));
+        }
+        return children;
+    }
+
+
+    private int getStartTime(GraphNode task, int processorNumber) {
+        int[] maxTimes = new int[_numProcTask];
+        for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
+            GraphNode parent = (GraphNode) _jGraph.getEdgeSource(edge);
+            if (parent.getProcessor() != processorNumber) {
+                int cost = parent.getStartTime() + parent.getWeight(); //parent finish time
+                cost += (int) _jGraph.getEdgeWeight(edge); //communication cost
+                if (cost > maxTimes[parent.getProcessor()]) {
+                    maxTimes[parent.getProcessor()] = cost;
+                }
+            }
+        }
+        try {
+            GraphNode topOfStack = _processorAllocations[processorNumber].peek();
+            maxTimes[processorNumber] = topOfStack.getStartTime() + topOfStack.getWeight();
+        } catch (EmptyStackException e) {
+            maxTimes[processorNumber] = 0;
+        }
+        return Collections.max(Arrays.asList(ArrayUtils.toObject(maxTimes)));
+    }
+
+    private void initialiseFreeTasks() {
+        for (GraphNode task : _jGraph.vertexSet()) {
+            if (_graph.getGraph().inDegreeOf(task) == 0) {
+                task.setFree(true);
+                _freeTaskList.add(task);
+            } else {
+                task.setFree(false);
+            }
+            _taskInfo.put(task.getId(), task);
+        }
+    }
+
+    private int maxComputationalTime() {
+        int sum = 0;
+        for(GraphNode task : _jGraph.vertexSet()) {
+            sum += task.getWeight();
+        }
+        return sum / _numProcTask;
+    }
+
+    private void initaliseBottomLevel() {
+        for (GraphNode task : _jGraph.vertexSet()) {
+            if (_jGraph.outDegreeOf(task) == 0) {
+                calculateBottomLevel(task,0);
+            }
+        }
+    }
+
+    private void calculateBottomLevel(GraphNode task, int currentBottomLevel) {
+        int potential = task.getWeight() + currentBottomLevel;
+
+        if (potential >= task.getComputationalBottomLevel()) {
+            task.setComputationalBottomLevel(potential);
+
+            // For each parent, recursively calculates the computational bottom level
+            for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
+                GraphNode parent = _jGraph.getEdgeSource(edge);
+                calculateBottomLevel(parent, potential);
+            }
+        }
+    }
+
+    private int getStackMax() {
+        int max = 0;
+        for (int i = 0; i < _numProcTask; i++) {
+            try {
+                GraphNode node = _processorAllocations[i].peek();
+                if (node.getWeight() + node.getStartTime() > max) {
+                    max = node.getWeight() + node.getStartTime();
+                }
+            } catch (EmptyStackException e) {
+                // Does not need to be handled.
+            }
+        }
+        return max;
+    }
+
+    private void sanitise(int processorNumber) {
+        // Unschedules node, adds it to free task list and set it to free
+        GraphNode node = _processorAllocations[processorNumber].pop();
+        node.setFree(true);
+        node.setStartTime(-1);
+        node.setProcessor(-1);
+        _freeTaskList.add(node);
+        _taskInfo.put(node.getId(), node);
+
+        // Sets children of removed node to not free
+        for (GraphNode child : getChildren(node)) {
+            _freeTaskList.remove(child);
+            child.setFree(false);
+            _taskInfo.put(child.getId(), child);
+
+        }
+    }
+
+    private int getFreeProc() {
+        int free = 0;
+        for (int i = 0; i < _numProcTask; i++) {
+            if (_processorAllocations[i].empty()) {
+                free++;
+            }
+        }
+        return free;
+    }
+
 }

@@ -32,4 +32,15 @@ public interface IIO {
      */
     void write(Map<String, GraphNode> algorithmResultMap);
 
+    Map<String, GraphNode> getAlgorithmResultMap();
+
+    //TODO: Comments
+    int getNumberOfProcessorsForTask();
+
+    //TODO: Comments
+    int getNumberOfProcessorsForParallelAlgorithm();
+
+    //TODO: Comments
+    DisplayMode getStateOfVisualisation();
+
 }

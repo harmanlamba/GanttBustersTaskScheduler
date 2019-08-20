@@ -10,6 +10,8 @@ public class GraphNode {
     private int _weight; //Node weight
     private int _processor; //Processor assigned to node
     private int _startTime; //Node's start time on processor
+    private boolean _free;
+    private int _computationalBottomLevel;
 
     public GraphNode(String id, int weight) {
         _id = id;
@@ -30,9 +32,19 @@ public class GraphNode {
     }
 
     /**
-     * getId - getter for node id
-     * @return returns node id
+     * equals - overriding equals method
+     * @param o
+     * @return
      */
+    @Override
+    public boolean equals(Object o) {
+        return _id.equals(((GraphNode) o)._id);
+    }
+
+        /**
+         * getId - getter for node id
+         * @return returns node id
+         */
     public String getId() {
         return _id;
     }
@@ -61,5 +73,25 @@ public class GraphNode {
         return _startTime;
     }
 
+    public void setStartTime(int startTime) {
+        _startTime = startTime;
+    }
 
+    public void setProcessor(int processor) {
+        _processor = processor;
+    }
+
+    public boolean isFree() { return _free; }
+
+    public void setFree(boolean free) {
+        this._free = free;
+    }
+
+    public int getComputationalBottomLevel() {
+        return _computationalBottomLevel;
+    }
+
+    public void setComputationalBottomLevel(int computationalBottomLevel) {
+        this._computationalBottomLevel = computationalBottomLevel;
+    }
 }

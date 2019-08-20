@@ -2,9 +2,12 @@ package fileio;
 
 import exception.InputFileException;
 import exception.InvalidInputArgumentException;
+import javafx.application.Application;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
+import visualisation.FXApplication;
+
 import static utility.Utility.printUsage;
 
 import java.io.File;
@@ -23,6 +26,7 @@ public class IO implements IIO {
     private Write _write;
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
+    private DisplayMode _visualisationState = DisplayMode.COMMAND_LINE;
 
     public IO(String[] input) throws InputFileException {
         try {
@@ -98,6 +102,7 @@ public class IO implements IIO {
                 //Use visualization GUI with given file
                 case "-v":
                     //TODO Add visualisation stuff
+                    _visualisationState=DisplayMode.VISUALISE;
                     break;
                 //Set output file name (if needed)
                 case "-o":
@@ -148,6 +153,10 @@ public class IO implements IIO {
         _write.writeToPath(algorithmResultMap);
     }
 
+    public Map<String, GraphNode> getAlgorithmResultMap() {
+        return _write.getAlgorithmResultMap();
+    }
+
     /**
      * getNumberOfProcessorsForParallelAlgorithm - returns number of assigned processors of Parallel Algorithm
      * @return number of processors used
@@ -162,5 +171,9 @@ public class IO implements IIO {
      */
     public int getNumberOfProcessorsForTask() {
         return _numberOfProcessorsForTask;
+    }
+
+    public DisplayMode getStateOfVisualisation(){
+        return _visualisationState;
     }
 }

@@ -1,6 +1,5 @@
 package algorithm;
 
-import algorithm.common.utility.AlgorithmType;
 import algorithm.idastarbase.IDAStarBase;
 import algorithm.idastarparallel.IDAStarParallel;
 import algorithm.sequential.Sequential;
@@ -12,33 +11,48 @@ import graph.Graph;
  */
 public class AlgorithmBuilder {
 
+    private static AlgorithmBuilder _algorithmBuilder;
+    public AlgorithmType _algorithmType;
     private Algorithm _algorithm;
 
+    private AlgorithmBuilder() { }
+
+    public static AlgorithmBuilder getAlgorithmBuilder() {
+        if (_algorithmBuilder == null) {
+            _algorithmBuilder = new AlgorithmBuilder();
+        }
+        return _algorithmBuilder;
+    }
+
     /**
-     * Creates and stores the new instantiation of the algorithm, with the supplied fields, in the _algorithm field
-     * @param type the enum type which is to be instantiated
+     Creates and returns the new instantiation of the algorithm, depending on the number of processors to schedule tasks onto
      * @param graph is a graph of the network
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public AlgorithmBuilder(AlgorithmType type, Graph graph, int numProcTask, int numProcParallel) {
-        switch (type) {
-            case IDASTARBASE:
-                _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
-                break;
-            case IDASTARPARALLEL:
-                _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
+    public AlgorithmBuilder createAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
+        switch (numProcTask) {
+            case 1:
+                _algorithmType= AlgorithmType.SEQUENTIAL;
+                _algorithm = new Sequential(graph, numProcTask, numProcParallel);
                 break;
             default:
-                _algorithm = new Sequential(graph, numProcTask, numProcParallel);
+                if(numProcParallel > 1) {
+                    _algorithmType = AlgorithmType.IDASTARPARRALLEL;
+                    _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
+                }else {
+                    _algorithmType = AlgorithmType.IDASTARBASE;
+                    _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
+                }
         }
+        return _algorithmBuilder;
     }
 
-    /**
-     * Returns the instantiated algorithm
-     * @return the instantiated algorithm
-     */
-    public Algorithm getAlgorithm() {
+    public Algorithm getAlgorithm () {
         return _algorithm;
+    }
+
+    public AlgorithmType getAlgorithmType() {
+        return _algorithmType;
     }
 }
