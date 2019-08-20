@@ -7,12 +7,12 @@ public class ProcessorColourHelper {
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
         //TODO: As there are only 6 colours here, it throws an error if I try to schedule the tasks onto 7 processors as there is not enough colours. A better solution needs to be thought of for this.
-        add("#90EE90");
-        add("#708090");
-        add("#8A2BE2");
-        add("#FFF8DC");
-        add("#FF6347");
-        add("#00CED1");
+        add("rgb(255, 240, 140)");
+        add("rgb(188, 255, 140)");
+        add("rgb(140, 255, 192)");
+        add("rgb(140, 199, 255)");
+        add("rgb(146, 140, 255)");
+        add("rgb(255, 144, 140)");
     }};
 
     public ProcessorColourHelper(int processCount) {
