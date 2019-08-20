@@ -47,15 +47,14 @@ public class FXApplication extends Application {
 
         System.out.println("Start");
         AlgorithmTimer.getAlgorithmTimer().start();
-        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         IIO io = App._mainIO;
         //Runs the algorithm in a new thread
         new Thread() {
             public void run() {
                 io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
+                System.out.println("Finish");
             }
         }.start();
-        System.out.println("Finish");
 
 
 

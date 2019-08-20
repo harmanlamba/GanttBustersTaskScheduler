@@ -3,8 +3,11 @@ package algorithm.sequential;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,7 +15,8 @@ import java.util.Map;
  */
 public class Sequential extends Algorithm {
 
-    Map<String, GraphNode> _output;
+    private Map<String, GraphNode> _output;
+    private List<GraphNode> _topologicalOrder;
 
     /**
      * Instantiates a Sequential instance
@@ -23,6 +27,21 @@ public class Sequential extends Algorithm {
     public Sequential(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         _output = new HashMap<>();
+        _topologicalOrder = new ArrayList<>();
+    }
+
+    /**
+     * Returns the topological order of the graph
+     * @return the topological order
+     */
+    public List<GraphNode> getTopologicalOrdering() {
+        TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
+
+        while(iterator.hasNext()) {
+            GraphNode tempNode = (GraphNode) iterator.next();
+            _topologicalOrder.add(tempNode);
+        }
+        return _topologicalOrder;
     }
 
     /**
@@ -32,18 +51,13 @@ public class Sequential extends Algorithm {
      */
     @Override
     public Map<String, GraphNode> solve() {
-
-        // Gets topological order of the network graph and puts order into field
-        getTopologicalOrdering();
-        _output = new HashMap<>();
-
         // Creates output format of ordering and scheduling (start times for sequential)
         int currentTime = 0;
-        for (int i = 0; i < _order.size(); i++) {
-            GraphNode tempNode = _order.get(i);
-            GraphNode tempOutputNode = new GraphNode(tempNode, _numProcTask, currentTime);
-            _output.put(tempNode.getId(), tempOutputNode);
-            currentTime += tempNode.getWeight();
+        for (GraphNode task : getTopologicalOrdering()) {
+            task.setProcessor(0);
+            task.setStartTime(currentTime);
+            _output.put(task.getId(), task);
+            currentTime += task.getWeight();
         }
         return _output;
     }
@@ -52,5 +66,16 @@ public class Sequential extends Algorithm {
     public Map<String, GraphNode> getCurrentBestSolution() {
         // Method never called because sequential algorithm is too fast
         return _output;
+    }
+
+    @Override
+    public int getBestScheduleCost() {
+        GraphNode task = _topologicalOrder.get(_topologicalOrder.size()-1);
+        return task.getStartTime() + task.getWeight();
+    }
+
+    @Override
+    public int getCurrentLowerBound() {
+        return -1;
     }
 }
