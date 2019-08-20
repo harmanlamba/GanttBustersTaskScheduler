@@ -47,6 +47,7 @@ public class IDAStarBase extends Algorithm {
         initialiseFreeTasks();
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
+        _lowerBound -= 1;
     }
 
     @Override
@@ -55,6 +56,8 @@ public class IDAStarBase extends Algorithm {
             if (task.isFree()) {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
+                    _numberOfIterations += 1;
+                    notifyObserversOfStatistics();
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
@@ -73,6 +76,11 @@ public class IDAStarBase extends Algorithm {
     @Override
     public int getBestScheduleCost() {
         return _bestScheduleCost;
+    }
+
+    @Override
+    public int getCurrentLowerBound() {
+        return _lowerBound;
     }
 
     private Map<String, GraphNode> convertProcessorAllocationsToMap() {
@@ -138,6 +146,7 @@ public class IDAStarBase extends Algorithm {
                                 int freeProc = getFreeProc();
                                 if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
                                     // Do nothing
+                                    _branchesPruned += 1;
                                 } else {
                                     _solved = idaRecursive(freeTask, i);
                                 }
@@ -301,5 +310,4 @@ public class IDAStarBase extends Algorithm {
         }
         return free;
     }
-
 }

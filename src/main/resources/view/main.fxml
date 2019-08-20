@@ -87,17 +87,17 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="branchesBounded" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Bounded: " wrappingWidth="280.0">
+                              <Text fx:id="numberOfIterations" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Iterations: 1" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: " wrappingWidth="280.0">
+                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="statesGenerated" strokeType="OUTSIDE" strokeWidth="0.0" text="States Generated: " wrappingWidth="280.0">
+                              <Text fx:id="currentLowerBound" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

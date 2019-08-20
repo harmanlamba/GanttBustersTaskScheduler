@@ -25,4 +25,9 @@ public class IDAStarParallel extends Algorithm {
     public int getBestScheduleCost() {
         return 0;
     }
+
+    @Override
+    public int getCurrentLowerBound() {
+        return 0;
+    }
 }

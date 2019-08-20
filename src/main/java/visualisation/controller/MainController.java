@@ -48,9 +48,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: ";
 
     private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
-    private final static String BRANCHES_BOUNDED_TEXT = "Branches Bounded: ";
+    private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
-    private final static String STATES_GENERATED_TEXT = "States Generated: ";
+    private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
 
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
     private final static String START_TIME_TEXT = "00:00:00";
@@ -77,9 +77,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfProcessors;
     public Text numberOfThreads;
     public Text bestScheduleCost;
-    public Text branchesBounded;
+    public Text numberOfIterations;
     public Text branchesPruned;
-    public Text statesGenerated;
+    public Text currentLowerBound;
 
     public TabPane visualsContainer;
     public Tab graphTab;
@@ -215,10 +215,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
-    private void updateStatistics() {
-        branchesBounded.setText(BRANCHES_BOUNDED_TEXT + _observableAlgorithm.getBranchesBounded());
+    @Override
+    public void updateStatistics() {
         branchesPruned.setText(BRANCHES_PRUNED_TEXT + _observableAlgorithm.getBranchesPruned());
-        statesGenerated.setText(STATES_GENERATED_TEXT + _observableAlgorithm.getStatesGenerated());
+        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + _observableAlgorithm.getNumberOfIterations());
+        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((_observableAlgorithm.getCurrentLowerBound() == -1) ? "N/A" : _observableAlgorithm.getCurrentLowerBound()));
     }
 
     @Override

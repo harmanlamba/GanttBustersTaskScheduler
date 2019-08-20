@@ -11,9 +11,10 @@ public interface IObservable {
     void remove(IObserver e);
     void notifyObserversOfGraph();
     void notifyObserversOfTime();
+    void notifyObserversOfStatistics();
     Map<String, GraphNode> getCurrentBestSolution();
-    int getBranchesBounded();
-    int getBranchesPruned();
-    int getStatesGenerated();
     int getBestScheduleCost();
+    int getBranchesPruned();
+    int getNumberOfIterations();
+    int getCurrentLowerBound();
 }

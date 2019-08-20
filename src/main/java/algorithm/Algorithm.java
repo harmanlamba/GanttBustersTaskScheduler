@@ -20,9 +20,9 @@ public abstract class Algorithm implements IObservable {
     protected final int _numProcTask;
     protected final int _numProcParallel;
     protected List<IObserver> _observerList;
-    protected int _branchesBounded;
     protected int _branchesPruned;
-    protected int _statesGenerated;
+    protected int _numberOfIterations;
+    private int _bestScheduleCost;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -36,9 +36,9 @@ public abstract class Algorithm implements IObservable {
         _numProcTask = numProcTask;
         _numProcParallel = numProcParallel;
         _observerList = new ArrayList<>();
-        _branchesBounded = 0;
         _branchesPruned = 0;
-        _statesGenerated = 0;
+        _numberOfIterations = 1;
+        _bestScheduleCost = 0;
     }
 
     /**
@@ -81,8 +81,10 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public int getBranchesBounded() {
-        return _branchesBounded;
+    public void notifyObserversOfStatistics() {
+        for (IObserver observer : _observerList) {
+            observer.updateStatistics();
+        }
     }
 
     @Override
@@ -91,10 +93,13 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public int getStatesGenerated() {
-        return _statesGenerated;
+    public abstract int getBestScheduleCost();
+
+    @Override
+    public int getNumberOfIterations() {
+        return _numberOfIterations;
     }
 
     @Override
-    public abstract int getBestScheduleCost();
+    public abstract int getCurrentLowerBound();
 }

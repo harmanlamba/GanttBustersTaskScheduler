@@ -73,4 +73,9 @@ public class Sequential extends Algorithm {
         GraphNode task = _topologicalOrder.get(_topologicalOrder.size()-1);
         return task.getStartTime() + task.getWeight();
     }
+
+    @Override
+    public int getCurrentLowerBound() {
+        return -1;
+    }
 }
