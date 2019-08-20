@@ -101,8 +101,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _observableTimer.add(this);
     }
 
-    @Override
-    public void updateGraph() {
+    private void updateGraph() {
         Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
         //Run on another thread
         Platform.runLater(() -> {
@@ -204,8 +203,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 
-    @Override
-    public void updateTable() {
+    private void updateTable() {
         Map<String,GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
         _tablePopulationList.clear();
         //Repopulate with the new GraphNode Details
@@ -216,6 +214,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         }
     }
 
+    @Override
+    public void updateSchedulingUI() {
+        updateGraph();
+        updateTable();
+    }
 
     @Override
     public void updateTimer(String s) {
