@@ -22,11 +22,13 @@ public class App
         
         try {
             _mainIO = new IO(args);
+
+            Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
+            Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
+                    _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm(); //call algorithm graph
+
             switch(_mainIO.getStateOfVisualisation()) {
                 case COMMAND_LINE:
-                    Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-                    Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
-                            _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm(); //call algorithm graph
                     _mainIO.write(algorithm.solveAlgorithm()); //write onto output dot file
                     break;
                 default:
