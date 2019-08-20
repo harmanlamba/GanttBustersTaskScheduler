@@ -4,7 +4,6 @@ import visualisation.controller.IObservable;
 import visualisation.controller.IObserver;
 import graph.GraphNode;
 import graph.Graph;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +17,12 @@ import java.util.Map;
 public abstract class Algorithm implements IObservable {
 
     protected Graph _graph;
-    protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
-    protected List<IObserver> _observerList = new ArrayList<>();
+    protected List<IObserver> _observerList;
+    protected int _branchesBounded;
+    protected int _branchesPruned;
+    protected int _statesGenerated;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -34,6 +35,10 @@ public abstract class Algorithm implements IObservable {
         _graph = g;
         _numProcTask = numProcTask;
         _numProcParallel = numProcParallel;
+        _observerList = new ArrayList<>();
+        _branchesBounded = 0;
+        _branchesPruned = 0;
+        _statesGenerated = 0;
     }
 
     /**
@@ -49,52 +54,8 @@ public abstract class Algorithm implements IObservable {
         return outputMap;
     }
 
-    /**
-     * Sets the topological order of the graph
-     */
-    public void getTopologicalOrdering() {
-        TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
-
-        while(iterator.hasNext()) {
-            GraphNode tempNode = (GraphNode) iterator.next();
-            _order.add(tempNode);
-        }
-    }
-
-    /**
-     * Getter method for the topologically ordered graph nodes
-     * @return topologically ordered graph nodes in a List of GraphNode
-     */
-    public List<GraphNode> getOrder() {
-        return _order;
-    }
-
-    /**
-     * Getter method for the number of processors to schedule tasks to as specified by the input
-     * @return the number of processors to schedule tasks to as specified by the input
-     */
-    public int getNumProcTask() {
-        return _numProcTask;
-    }
-
-    /**
-     * Getter method for the number of processors to run the algorithm on as specified by the input
-     * @return the number of processors to run the algorithm on as specified by the input
-     */
-    public int getNumProcParallel() {
-        return _numProcParallel;
-    }
-
     public abstract Map<String,GraphNode> getCurrentBestSolution();
 
-
-    public Graph getAlgorithmGraph(){
-        return _graph;
-    }
-
-
-
-    //IObservable Overrides
     @Override
     public void add(IObserver e) {
         _observerList.add(e);
@@ -106,7 +67,7 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObserversOfGraph() { //TODO: should this contain some sort of input
+    public void notifyObserversOfGraph() {
         for (IObserver observer : _observerList) {
             observer.updateGraph();
         }
@@ -117,5 +78,20 @@ public abstract class Algorithm implements IObservable {
         for (IObserver observer : _observerList) {
             observer.stopTimer();
         }
+    }
+
+    @Override
+    public int branchesBounded() {
+        return _branchesBounded;
+    }
+
+    @Override
+    public int branchesPruned() {
+        return _branchesPruned;
+    }
+
+    @Override
+    public int statesGenerated() {
+        return _statesGenerated;
     }
 }

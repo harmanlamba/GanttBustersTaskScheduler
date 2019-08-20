@@ -3,8 +3,11 @@ package algorithm.sequential;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,24 +29,34 @@ public class Sequential extends Algorithm {
     }
 
     /**
+     * Returns the topological order of the graph
+     * @return the topological order
+     */
+    public List<GraphNode> getTopologicalOrdering() {
+        TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
+        List<GraphNode> topologicalOrder = new ArrayList<>();
+
+        while(iterator.hasNext()) {
+            GraphNode tempNode = (GraphNode) iterator.next();
+            topologicalOrder.add(tempNode);
+        }
+        return topologicalOrder;
+    }
+
+    /**
      * Method that solves the problem sequentially on one processor
      * @return A map of the nodes with their corresponding start times (string is the name of the
      * node and GraphNode contains all of the node information)
      */
     @Override
     public Map<String, GraphNode> solve() {
-
-        // Gets topological order of the network graph and puts order into field
-        getTopologicalOrdering();
-        _output = new HashMap<>();
-
         // Creates output format of ordering and scheduling (start times for sequential)
         int currentTime = 0;
-        for (int i = 0; i < _order.size(); i++) {
-            GraphNode tempNode = _order.get(i);
-            GraphNode tempOutputNode = new GraphNode(tempNode, _numProcTask, currentTime);
-            _output.put(tempNode.getId(), tempOutputNode);
-            currentTime += tempNode.getWeight();
+        for (GraphNode task : getTopologicalOrdering()) {
+            task.setProcessor(0);
+            task.setStartTime(currentTime);
+            _output.put(task.getId(), task);
+            currentTime += task.getWeight();
         }
         return _output;
     }
