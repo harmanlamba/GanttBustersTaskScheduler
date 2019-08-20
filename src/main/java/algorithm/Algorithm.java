@@ -67,7 +67,6 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObserversOfSchedulingUpdate() { //TODO: should this contain some sort of input
     public void notifyObserversOfSchedulingUpdate() {
         for (IObserver observer : _observerList) {
             observer.updateScheduleInformation();
@@ -77,7 +76,7 @@ public abstract class Algorithm implements IObservable {
     @Override
     public void notifyObserversOfAlgorithmEnding() {
         for (IObserver observer : _observerList) {
-            observer.updateSchedulingUI();
+            observer.updateScheduleInformation();
             observer.algorithmStopped();
         }
     }

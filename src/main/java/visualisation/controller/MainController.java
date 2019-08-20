@@ -125,15 +125,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public void updateScheduleInformation() {
         Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
         updateIterationInformation();
+        updateTable(); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    for (Node node : _graphStream) {
-                        //TODO: Receive and update node states via GraphUpdater
-                    }
+            Platform.runLater(() -> {
+                for (Node node : _graphStream) {
+                    //TODO: Receive and update node states via GraphUpdater
                 }
             });
         });
@@ -235,12 +234,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
             _tablePopulationList.add(node.getValue());
         }
-    }
-
-    @Override
-    public void updateSchedulingUI() {
-        updateGraph();
-        updateTable();
     }
 
     @Override
