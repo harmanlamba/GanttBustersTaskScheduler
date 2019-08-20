@@ -62,6 +62,9 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
+    public void remove(IObserver e) { _observerList.remove(e); }
+
+    @Override
     public void notifyObserversOfSchedulingUpdate() {
         for (IObserver observer : _observerList) {
             observer.updateScheduleInformation(getCurrentBestSolution());
