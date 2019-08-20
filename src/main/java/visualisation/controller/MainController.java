@@ -207,7 +207,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateTable() {
         Map<String,GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
-        //_tablePopulationList.clear();  Have to check if clear is needed TODO: Check if clear is needed
+        _tablePopulationList.clear();
         //Repopulate with the new GraphNode Details
         for(Map.Entry<String,GraphNode> node : update.entrySet()){
             //Setting the end-time for each GraphNode
