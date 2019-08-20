@@ -22,8 +22,8 @@ public class GraphManager {
         for(GraphNode node : graphNodesMap.values()){
              Node nodeGraphStream = _graphStream.addNode(node.getId());
              nodeGraphStream.addAttribute("weight",node.getWeight());
-             nodeGraphStream.addAttribute("processor","null");
-             nodeGraphStream.addAttribute("startTime","null");
+             nodeGraphStream.addAttribute("processor",node.getProcessor());
+             nodeGraphStream.addAttribute("startTime",node.getStartTime());
         }
 
         int edgeID = 0;

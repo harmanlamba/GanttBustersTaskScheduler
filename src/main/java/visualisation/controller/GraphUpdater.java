@@ -59,6 +59,7 @@ public class GraphUpdater extends Viewer {
 
         //Update nodes processor assignment
         for (Node node : nodesList) {
+            if ((int) node.getAttribute("processor") != -1) {
             String processColour = _processorColourHelper.getProcessorColour(node.getAttribute("processor")); //TODO: Run code - look at exception
             node.removeAttribute("ui.style"); //reset style
             node.addAttribute("ui.style", "text-alignment: center;\n"
@@ -66,6 +67,7 @@ public class GraphUpdater extends Viewer {
                     + "\tfill-mode: plain; fill-color:" + processColour + ";\n"
                     + "\tsize: 30px, 30px;\n"
                     + "\ttext-size: 15px; text-color: white;\n");
+            }
         }
 
         //Update nodes additional properties
