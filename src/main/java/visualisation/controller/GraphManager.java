@@ -37,6 +37,17 @@ public class GraphManager {
         }
     }
 
+    /**
+     * Updates the graphstream graph nodes with processor and start time attributes
+     * @param graphNodesMap
+     */
+    public void updateGraphStream(List<GraphNode> graphNodesMap) {
+        for (GraphNode node : graphNodesMap) {
+            _graphStream.getNode(node.getId()).setAttribute("processor", node.getProcessor());
+            _graphStream.getNode(node.getId()).setAttribute("startTime", node.getStartTime());
+        }
+    }
+
     public SingleGraph getGraph(){
         return _graphStream;
     }

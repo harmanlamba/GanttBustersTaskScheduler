@@ -38,14 +38,16 @@ import java.util.List;
 public class MainController implements IObserver, Initializable {
 
     //Private Fields
+    private IIO _io;
     private IObservable _observableAlgorithm;
+
+    private Map<String, GraphNode> _algorithmResultMap;
     private Graph _algorithmGraph;
     private SingleGraph _graphStream;
-    private IIO _io;
     private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
-    private Map<String, GraphNode> _algorithmResultMap;
     private AnimationTimer _animationTimer;
+    private ProcessorColourHelper _processColourHelper;
 
 
     //Public Control Fields from the FXML
@@ -87,6 +89,7 @@ public class MainController implements IObserver, Initializable {
 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
+        _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
         initializeGraph();
         initializeGantt();
         initializeStatistics();
@@ -120,6 +123,9 @@ public class MainController implements IObserver, Initializable {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    _graphManager.updateGraphStream(test);
+                    _graphStream = _graphManager.getGraph();
+                    _graphUpdater.updateNode(_graphStream);
                     updateGantt(test); //TODO: TEMP
                 }
             });
@@ -154,7 +160,7 @@ public class MainController implements IObserver, Initializable {
     private void initializeGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
         _graphStream = _graphManager.getGraph();
-        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD, _processColourHelper);
         _graphUpdater.enableAutoLayout();
 
         //Create graphstream view panel
@@ -162,7 +168,6 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
         _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
 
         //Assign graph using swing node

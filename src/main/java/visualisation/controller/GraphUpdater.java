@@ -17,21 +17,13 @@ import java.util.List;
 public class GraphUpdater extends Viewer {
     private Graph _graph;
     private SpriteManager _spriteManager;
-    private List<String> _processorColours = new ArrayList<>();
-    private List<String> _colours = new ArrayList<String>() {{
-        //TODO: As there are only 6 colours here, it throws an error if I try to schedule the tasks onto 7 processors as there is not enough colours. A better solution needs to be thought of for this.
-        add("#90EE90");
-        add("#708090");
-        add("#8A2BE2");
-        add("#FFF8DC");
-        add("#FF6347");
-        add("#00CED1");
-    }};
+    private ProcessorColourHelper _processorColourHelper;
 
-    public GraphUpdater(Graph graph, ThreadingModel threadingModel) {
+    public GraphUpdater(Graph graph, ThreadingModel threadingModel, ProcessorColourHelper processorColourHelper) {
         super(graph, threadingModel);
         _graph=graph;
         _spriteManager= new SpriteManager(_graph);
+        _processorColourHelper = processorColourHelper;
         initializeGraphProperties();
     }
 
@@ -61,10 +53,13 @@ public class GraphUpdater extends Viewer {
         }
     }
 
-    private void updateNode(List<Node> nodesList) {
+    public void updateNode(Graph graph) {
+        //Create nodeslist from graphstream graph
+        List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
+
         //Update nodes processor assignment
         for (Node node : nodesList) {
-            String processColour = getProcessorColour(node.getAttribute("processor"));
+            String processColour = _processorColourHelper.getProcessorColour(Integer.parseInt(node.getAttribute("processor")));
             node.removeAttribute("ui.style"); //reset style
             node.addAttribute("ui.style", "text-alignment: center;\n"
                     + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
@@ -72,22 +67,8 @@ public class GraphUpdater extends Viewer {
                     + "\tsize: 30px, 30px;\n"
                     + "\ttext-size: 15px; text-color: white;\n");
         }
+
         //Update nodes additional properties
-    }
-
-    private String getProcessorColour(int processorIndex) {
-        return _processorColours.get(processorIndex);
-    }
-
-    public void setProcessorColours(int processorCount) {
-        //If only 1 processor count, then set to main node colour
-        if (processorCount > 1) {
-            for (int i = 0; i < processorCount; i++) {
-                _processorColours.add(_colours.get(i));
-            }
-        } else {
-            _processorColours.add(_colours.get(1));
-        }
     }
 
     public void setMouseManager(ViewPanel viewPanel) {
