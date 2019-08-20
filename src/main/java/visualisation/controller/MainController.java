@@ -122,10 +122,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateScheduleInformation() {
-        Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
-        updateIterationInformation();
-        updateTable(); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+    public void updateScheduleInformation(Map<String, GraphNode> update) {
+        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
 
         //Run on another thread
         Platform.runLater(() -> {
@@ -139,12 +137,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void algorithmStopped() {
+    public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
-        algorithmStatus.setText("Status: Done");
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
-        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + _observableAlgorithm.getBestScheduleCost());
-        updateScheduleInformation();
+        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
     }
 
     private void initializeGraph() {
@@ -225,8 +221,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 
-    private void updateTable() {
-        Map<String,GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
+    private void updateTable(Map<String, GraphNode> update) {
         _tablePopulationList.clear();
         //Repopulate with the new GraphNode Details
         for(Map.Entry<String,GraphNode> node : update.entrySet()){
@@ -237,10 +232,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateIterationInformation() {
-        branchesPruned.setText(BRANCHES_PRUNED_TEXT + _observableAlgorithm.getBranchesPruned());
-        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + _observableAlgorithm.getNumberOfIterations());
-        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((_observableAlgorithm.getCurrentLowerBound() == -1) ? "N/A" : _observableAlgorithm.getCurrentLowerBound()));
+    public void updateIterationInformation(int prunedBranches, int iterations, int lowerBound) {
+        branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
+        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
+        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));
     }
 
     @Override
