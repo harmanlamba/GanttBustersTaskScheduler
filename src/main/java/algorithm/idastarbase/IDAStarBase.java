@@ -57,8 +57,7 @@ public class IDAStarBase extends Algorithm {
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
-                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
-                    notifyObserversofTable(); //TODO: This line should be put right after the notifyObserversofGraph, so same TODO as above please.
+                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }

@@ -9,8 +9,7 @@ public interface IObservable {
 
     void add(IObserver e);
     void remove(IObserver e);
-    void notifyObserversOfGraph();
-    void notifyObserversofTable();
+    void notifyObserversOfSchedulingUpdate();
     void notifyObserversOfTime();
     Graph getAlgorithmGraph();
     Map<String, GraphNode> getCurrentBestSolution();

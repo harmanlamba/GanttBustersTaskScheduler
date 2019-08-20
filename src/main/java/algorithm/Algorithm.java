@@ -106,9 +106,10 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void notifyObserversOfGraph() { //TODO: should this contain some sort of input
+    public void notifyObserversOfSchedulingUpdate() { //TODO: should this contain some sort of input
         for (IObserver observer : _observerList) {
             observer.updateGraph();
+            observer.updateTable();
         }
     }
 
@@ -116,13 +117,6 @@ public abstract class Algorithm implements IObservable {
     public void notifyObserversOfTime() {
         for (IObserver observer : _observerList) {
             observer.stopTimer();
-        }
-    }
-
-    @Override
-    public void notifyObserversofTable() {
-        for (IObserver observer : _observerList) {
-            observer.updateTable();
         }
     }
 }
