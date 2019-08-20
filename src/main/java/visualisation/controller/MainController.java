@@ -186,7 +186,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeStatistics() {
         algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
+        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
         numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
