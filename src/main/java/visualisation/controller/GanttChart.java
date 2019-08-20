@@ -22,27 +22,34 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttChart<X,Y> extends XYChart<X,Y> {
 
-    public static class ExtraData {
+    public static class Properties {
 
-        public long length;
-        public String styleClass;
-        public ExtraData(long lengthMs, String styleClass) {
+        public long _length;
+        public String _styleClass;
+        public String _style;
+
+        public Properties(long lengthMs, String style) {
             super();
-            this.length = lengthMs;
-            this.styleClass = styleClass;
+            _length = lengthMs;
+            _styleClass = "gantt-border";
+            _style = style;
         }
         public long getLength() {
-            return length;
+            return _length;
         }
         public void setLength(long length) {
-            this.length = length;
+            _length = length;
         }
         public String getStyleClass() {
-            return styleClass;
+            return _styleClass;
+        }
+        public String getStyle() {
+            return _style;
         }
         public void setStyleClass(String styleClass) {
-            this.styleClass = styleClass;
+            _styleClass = styleClass;
         }
+        public void setStyle(String style) { _style = style; }
     }
 
     private double blockHeight = 10;
@@ -59,12 +66,16 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         setData(data);
     }
 
-    private static String getStyleClass( Object obj) {
-        return ((ExtraData) obj).getStyleClass();
+    private static String getStyleClass(Object obj) {
+        return ((Properties) obj).getStyleClass();
     }
 
-    private static double getLength( Object obj) {
-        return ((ExtraData) obj).getLength();
+    private static String getStyle(Object obj) {
+        return ((Properties) obj).getStyle();
+    }
+
+    private static double getLength(Object obj) {
+        return ((Properties) obj).getLength();
     }
 
     @Override protected void layoutPlotChildren() {
@@ -163,8 +174,8 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             item.setNode(container);
         }
 
-        container.getStyleClass().add( getStyleClass( item.getExtraValue()));
-
+        container.getStyleClass().add( getStyleClass(item.getExtraValue()));
+        container.setStyle(getStyle(item.getExtraValue()));
         return container;
     }
 

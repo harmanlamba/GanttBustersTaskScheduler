@@ -6,8 +6,7 @@
   -fx-background-color: #ffffff;
 }
 
-.status-red {
-  -fx-background-color: #f05171;
+.gantt-border {
   -fx-border-color: white;
   -fx-border-width: 1;
 }

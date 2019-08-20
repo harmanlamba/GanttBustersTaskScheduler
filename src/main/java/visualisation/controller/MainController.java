@@ -143,7 +143,7 @@ public class MainController implements IObserver, Initializable {
         for (String processor : processors) {
             for (GraphNode graphNode : test) {
                 if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.ExtraData(graphNode.getWeight(), "status-red")));
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color: #f0f0f0")));
                 }
             }
         }
