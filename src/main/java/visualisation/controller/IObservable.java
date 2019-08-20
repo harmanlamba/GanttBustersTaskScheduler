@@ -10,7 +10,11 @@ public interface IObservable {
     void add(IObserver e);
     void remove(IObserver e);
     void notifyObserversOfSchedulingUpdate();
-    void notifyObserversOfTime();
-    Graph getAlgorithmGraph();
+    void notifyObserversOfAlgorithmEnding();
+    void notifyObserversOfIterationChange();
     Map<String, GraphNode> getCurrentBestSolution();
+    int getBestScheduleCost();
+    int getBranchesPruned();
+    int getNumberOfIterations();
+    int getCurrentLowerBound();
 }

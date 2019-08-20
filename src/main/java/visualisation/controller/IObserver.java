@@ -1,7 +1,8 @@
 package visualisation.controller;
 
 public interface IObserver {
-    void updateSchedulingUI();
-    void stopTimer();
+    void updateScheduleInformation();
+    void algorithmStopped();
+    void updateIterationInformation();
 }
 

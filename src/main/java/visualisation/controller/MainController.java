@@ -35,6 +35,27 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
+    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
+    private final static String ALGORITHM_STATUS_INPROGRESS_TEXT = "In progress";
+    private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
+
+    private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
+
+    //TODO: The string needs to be changed into something that is less confusing
+    private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
+    private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: ";
+    private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: ";
+
+    private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
+    private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
+    private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
+    private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
+
+    private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
+    private final static String START_TIME_TEXT = "00:00:00";
+
+
+
     //Private Fields
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
@@ -46,7 +67,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private ITimerObservable _observableTimer;
     private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
 
-
     //Public Control Fields from the FXML
     public HBox mainContainer;
     public VBox statsContainer;
@@ -56,12 +76,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfTasks;
     public Text numberOfProcessors;
     public Text numberOfThreads;
-    public Text currentBestSchedule;
-    public Text branchesBounded;
+    public Text bestScheduleCost;
+    public Text numberOfIterations;
     public Text branchesPruned;
-    public Text statesGenerated;
-    public TabPane visualsContainer;
+    public Text currentLowerBound;
 
+    public TabPane visualsContainer;
     public Tab graphTab;
     public Pane graphPane;
     public SwingNode swingNode;
@@ -101,8 +121,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _observableTimer.add(this);
     }
 
-    private void updateGraph() {
+    @Override
+    public void updateScheduleInformation() {
         Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
+        updateIterationInformation();
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
@@ -118,11 +140,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void stopTimer() {
+    public void algorithmStopped() {
         _observableTimer.stop();
         algorithmStatus.setText("Status: Done");
-        updateGraph();
-        updateTable();
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
+        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + _observableAlgorithm.getBestScheduleCost());
+        updateScheduleInformation();
     }
 
     private void initializeGraph() {
@@ -187,12 +210,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeStatistics() {
-        algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
-        numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
-        numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
-        numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
-        timeElapsedText.setText("Time Elapsed: 00:00:00");
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_INPROGRESS_TEXT);
+        algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
+        numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
+        numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
+        numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
     private void initializeTable() {
@@ -221,7 +244,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateTimer(String s) {
-        timeElapsedText.setText("Time Elapsed: " + s);
+    public void updateIterationInformation() {
+        branchesPruned.setText(BRANCHES_PRUNED_TEXT + _observableAlgorithm.getBranchesPruned());
+        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + _observableAlgorithm.getNumberOfIterations());
+        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((_observableAlgorithm.getCurrentLowerBound() == -1) ? "N/A" : _observableAlgorithm.getCurrentLowerBound()));
+    }
+
+    @Override
+    public void updateTimer(String time) {
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
     }
 }

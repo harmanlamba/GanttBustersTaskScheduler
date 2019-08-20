@@ -162,7 +162,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             container = new StackPane();
             item.setNode(container);
         }
-
         container.getStyleClass().add( getStyleClass( item.getExtraValue()));
 
         return container;

@@ -28,10 +28,6 @@ public class GraphNode {
         _startTime =  startTime;
     }
 
-    public GraphNode(GraphNode node, int processor, int startTime ){
-        this(node._id,node._weight,processor,startTime); //Node write, assigns appropriate processor and startTime
-    }
-
     /**
      * equals - overriding equals method
      * @param o
