@@ -86,7 +86,8 @@ public abstract class Algorithm implements IObservable {
     }
 
     /**
-     * Getter method which retrieves the best optimal solution for the scheduling based on the algorithm applied
+     * Getter method which retrieves the current best solution for the scheduling based on the algorithm applied
+     * but may not necessarily be the most optimal solution (used for visualisation purposes)
      * @return a map of Strings mapping to GraphNodes containing the nodes' scheduling information
      */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
