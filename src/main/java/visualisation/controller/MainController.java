@@ -36,6 +36,22 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
+    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
+    private final static String ALGORITHM_STATUS_INPROGRESS_TEXT = "In progress";
+    private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
+
+    private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
+
+    //TODO: The string needs to be changed into something that is less confusing
+    private final static String NUMBER_OF_TASKS = "Number of Tasks: ";
+    private final static String NUMBER_OF_PROCESSORS = "Number of Processors: ";
+    private final static String NUMBER_OF_THREADS = "Number of Threads: ";
+
+    private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
+    private final static String START_TIME_TEXT = "00:00:00";
+
+
+
     //Private Fields
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
@@ -45,7 +61,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
     private ITimerObservable _observableTimer;
-
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -119,7 +134,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void stopTimer() {
         _observableTimer.stop();
-        algorithmStatus.setText("Status: Done");
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
         updateGraph();
     }
 
@@ -185,16 +200,16 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeStatistics() {
-        algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
-        numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
-        numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
-        numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
-        timeElapsedText.setText("Time Elapsed: 00:00:00");
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_INPROGRESS_TEXT);
+        algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
+        numberOfTasks.setText(NUMBER_OF_TASKS + _io.getNodeMap().size());
+        numberOfProcessors.setText(NUMBER_OF_PROCESSORS + _io.getNumberOfProcessorsForTask());
+        numberOfThreads.setText(NUMBER_OF_THREADS + _io.getNumberOfProcessorsForParallelAlgorithm());
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
     @Override
-    public void updateTimer(String s) {
-        timeElapsedText.setText("Time Elapsed: " + s);
+    public void updateTimer(String time) {
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
     }
 }
