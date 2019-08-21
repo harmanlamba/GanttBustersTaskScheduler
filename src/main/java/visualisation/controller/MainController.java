@@ -214,10 +214,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeTable() {
-        taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("_id"));
-        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_startTime"));
-        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_endTime"));
-        assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("_processor")));
+        taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 

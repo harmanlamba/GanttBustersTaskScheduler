@@ -70,6 +70,10 @@ public class GraphNode {
         return _startTime;
     }
 
+    public int getEndTime() {
+        return _endTime;
+    }
+
     public void setStartTime(int startTime) {
         _startTime = startTime;
     }
@@ -96,24 +100,5 @@ public class GraphNode {
         this._computationalBottomLevel = computationalBottomLevel;
     }
 
-    //Framework Specific Auto Generated Getters for the Table Population
-    public String get_id() {
-        return _id;
-    }
 
-    public int get_weight() {
-        return _weight;
-    }
-
-    public int get_processor() {
-        return _processor;
-    }
-
-    public int get_startTime() {
-        return _startTime;
-    }
-
-    public int get_endTime() {
-        return _endTime;
-    }
 }
