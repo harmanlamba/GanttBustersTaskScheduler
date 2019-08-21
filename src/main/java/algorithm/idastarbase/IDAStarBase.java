@@ -15,6 +15,7 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
+    private static final int UPDATE_GRAPH_ITERATION_ROLLOVER = 1000000;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
@@ -26,6 +27,7 @@ public class IDAStarBase extends Algorithm {
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
     private int _bestScheduleCost; // Stores the cost of the optimal schedule
     private Stack<GraphNode>[] _processorAllocations; // Stack array holding tasks scheduled to the processors
+    private int _updateGraphIteration;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -47,7 +49,7 @@ public class IDAStarBase extends Algorithm {
         initialiseFreeTasks();
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
-        _lowerBound -= 1;
+        _updateGraphIteration = 0;
     }
 
     /**
@@ -208,6 +210,10 @@ public class IDAStarBase extends Algorithm {
                             } else {
                                 _solved = idaRecursive(freeTask, i);
                             }
+                            if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
+                                notifyObserversOfSchedulingUpdate();
+                            }
+                            _updateGraphIteration += 1;
                             if (_solved) {
                                 break;
                             }
