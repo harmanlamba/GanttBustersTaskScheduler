@@ -15,6 +15,8 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
+    private static final int UPDATE_GRAPH_ITERATION_ROLLOVER = 1000000;
+
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
     private Map<String, GraphNode> _taskInfo;
     private List<GraphNode> _freeTaskList;
@@ -26,6 +28,7 @@ public class IDAStarBase extends Algorithm {
     private int _idle = 0;
     private int _bestScheduleCost;
     private Stack<GraphNode>[] _processorAllocations;
+    private int _updateGraphIteration;
 
     /**
      * Constructor for IDAStarBase to instantiate the object
@@ -48,6 +51,7 @@ public class IDAStarBase extends Algorithm {
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
         _lowerBound -= 1;
+        _updateGraphIteration = 0;
     }
 
     @Override
@@ -61,7 +65,6 @@ public class IDAStarBase extends Algorithm {
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
-                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -153,6 +156,10 @@ public class IDAStarBase extends Algorithm {
                             } else {
                                 _solved = idaRecursive(freeTask, i);
                             }
+                            if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
+                                notifyObserversOfSchedulingUpdate();
+                            }
+                            _updateGraphIteration += 1;
                             if (_solved) {
                                 break;
                             }
