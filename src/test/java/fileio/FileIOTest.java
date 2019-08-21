@@ -2,6 +2,7 @@ package fileio;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
@@ -26,6 +27,8 @@ public class FileIOTest {
     private String[] _file5;
     private String[] _invalidFormat;
     private String[] _missingNode;
+    private String[] _negativeEdgeWeight;
+    private String[] _negativeNodeWeight;
 
     @Before
     public void setup() {
@@ -36,6 +39,8 @@ public class FileIOTest {
         _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "1"};
         _invalidFormat = new String[]{"src/main/resources/e6.dot", "1", "-o", "me", "-p", "2"};
         _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
+        _negativeEdgeWeight = new String[]{"src/main/resources/e8.dot", "2", "-o", "me", "-p", "1"};
+        _negativeNodeWeight = new String[]{"src/main/resources/e9.dot", "2", "-o", "me", "-p", "1"};
     }
 
     /**
@@ -119,6 +124,33 @@ public class FileIOTest {
             assertEquals(e.getMessage(),"Node has not been instantiated");
         }
     }
+
+    /**
+     * BVA testing of a negative edge weight in the input file.
+     */
+    @Test
+    public void testNegativeEdgeWeight() {
+        try {
+            sequentialTestHelper(_negativeEdgeWeight);
+            assert(false);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Invalid Format");
+        }
+    }
+
+    /**
+     * BVA testing of a negative node weight in the input file.
+     */
+    @Test
+    public void testNegativeNodeWeight() {
+        try {
+            sequentialTestHelper(_negativeNodeWeight);
+            assert(false);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Invalid Format");
+        }
+    }
+
 
     // TODO: Apply regex to output DOT files to check for the correct format
     @Test
