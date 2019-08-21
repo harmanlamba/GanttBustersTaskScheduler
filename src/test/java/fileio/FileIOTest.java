@@ -29,6 +29,8 @@ public class FileIOTest {
     private String[] _missingNode;
     private String[] _negativeEdgeWeight;
     private String[] _negativeNodeWeight;
+    private String[] _ownExample1;
+
 
     @Before
     public void setup() {
@@ -41,6 +43,7 @@ public class FileIOTest {
         _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
         _negativeEdgeWeight = new String[]{"src/main/resources/e8.dot", "2", "-o", "me", "-p", "1"};
         _negativeNodeWeight = new String[]{"src/main/resources/e9.dot", "2", "-o", "me", "-p", "1"};
+        _ownExample1 = new String[]{"src/main/resources/e10.dot", "2", "-o", "me", "-p", "1"};
     }
 
     /**
