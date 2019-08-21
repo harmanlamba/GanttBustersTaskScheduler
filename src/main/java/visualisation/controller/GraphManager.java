@@ -22,8 +22,8 @@ public class GraphManager {
         for(GraphNode node : graphNodesMap.values()){
              Node nodeGraphStream = _graphStream.addNode(node.getId());
              nodeGraphStream.addAttribute("weight",node.getWeight());
-             nodeGraphStream.addAttribute("processor","null");
-             nodeGraphStream.addAttribute("startTime","null");
+             nodeGraphStream.addAttribute("processor",node.getProcessor());
+             nodeGraphStream.addAttribute("startTime",node.getStartTime());
         }
 
         int edgeID = 0;
@@ -34,6 +34,17 @@ public class GraphManager {
             Edge edgeGraphStream = _graphStream.addEdge(Integer.toString(edgeID),tempParentNode, tempChildNode, true); //True = directed edge
             edgeGraphStream.addAttribute("weight", edge.getEdgeWeight());
 
+        }
+    }
+
+    /**
+     * Updates the graphstream graph nodes with processor and start time attributes
+     * @param graphNodesMap
+     */
+    public void updateGraphStream(List<GraphNode> graphNodesMap) {
+        for (GraphNode node : graphNodesMap) {
+            _graphStream.getNode(node.getId()).setAttribute("processor", node.getProcessor());
+            _graphStream.getNode(node.getId()).setAttribute("startTime", node.getStartTime());
         }
     }
 

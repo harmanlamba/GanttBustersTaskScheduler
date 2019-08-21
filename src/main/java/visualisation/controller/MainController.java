@@ -5,6 +5,7 @@ import app.App;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -64,6 +65,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
+    private AnimationTimer _animationTimer;
+    private ProcessorColourHelper _processColourHelper;
     private ITimerObservable _observableTimer;
     private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
 
@@ -88,6 +91,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     public Tab taskTab;
     public Pane ganttPane;
+    private GanttChart<Number, String> ganttChart;
 
     public Tab resultTab;
     public TableView<GraphNode> scheduleResultsTable;
@@ -106,6 +110,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
+        _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
         initializeGraph();
         initializeGantt();
         initializeStatistics();
@@ -124,16 +129,42 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateScheduleInformation(Map<String, GraphNode> update) {
         updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+        List<GraphNode> test = new ArrayList<>(update.values());
 
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
-            Platform.runLater(() -> {
-                for (Node node : _graphStream) {
-                    //TODO: Receive and update node states via GraphUpdater
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    for (Node node : _graphStream) {
+                        _graphManager.updateGraphStream(test);
+                        _graphStream = _graphManager.getGraph();
+                        _graphUpdater.updateNode(_graphStream);
+                        updateGantt(test); //TODO: TEMP
+                    }
                 }
             });
         });
+    }
+
+    //TODO: Call for every task allocated to a processor
+    public void updateGantt(List<GraphNode> test) {
+        List<String> processors = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            processors.add(Integer.toString(i));
+        }
+
+        XYChart.Series series1 = new XYChart.Series();
+        for (String processor : processors) {
+            for (GraphNode graphNode : test) {
+                String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
+                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour)));
+                }
+            }
+        }
+        ganttChart.getData().addAll(series1);
     }
 
     @Override
@@ -146,7 +177,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private void initializeGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
         _graphStream = _graphManager.getGraph();
-        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD, _processColourHelper);
         _graphUpdater.enableAutoLayout();
 
         //Create graphstream view panel
@@ -154,8 +185,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -166,12 +196,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeGantt() {
-        _algorithmResultMap = _io.getAlgorithmResultMap();
-
         //Gantt chart initialize
         final NumberAxis xAxis = new NumberAxis();
         final CategoryAxis yAxis = new CategoryAxis();
-        final GanttChart<Number, String> ganttChart = new GanttChart<>(xAxis, yAxis);
+        ganttChart = new GanttChart<>(xAxis, yAxis);
         ganttPane.getChildren().add(ganttChart);
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
@@ -183,25 +211,18 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.setBlockHeight(60);
 
         //y axis (processor count)
-        List<String> machines = new ArrayList<>();
+        List<String> processors = new ArrayList<>();
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
-            machines.add("Processor " + Integer.toString(i));
+            processors.add(Integer.toString(i));
         }
         yAxis.setLabel("");
         yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.observableList(machines));
+        yAxis.setCategories(FXCollections.observableList(processors));
 
         //x axis (xValue=Starttime, lengthMs=Worktime)
         xAxis.setLabel("Start time (s)");
         xAxis.setMinorTickCount(10);
-        for (String processor : machines) {
-            XYChart.Series series1 = new XYChart.Series();
-            series1.getData().add(new XYChart.Data(0, processor, new GanttChart.ExtraData(1, "status-red")));
-            series1.getData().add(new XYChart.Data(1, processor, new GanttChart.ExtraData(2, "status-red")));
-            series1.getData().add(new XYChart.Data(3, processor, new GanttChart.ExtraData(3, "status-red")));
-            series1.getData().add(new XYChart.Data(6, processor, new GanttChart.ExtraData(4, "status-red")));
-            ganttChart.getData().addAll(series1);
-        }
+
     }
 
     private void initializeStatistics() {
