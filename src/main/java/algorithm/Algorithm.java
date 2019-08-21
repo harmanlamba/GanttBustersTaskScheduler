@@ -4,7 +4,6 @@ import visualisation.controller.IObservable;
 import visualisation.controller.IObserver;
 import graph.GraphNode;
 import graph.Graph;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +17,12 @@ import java.util.Map;
 public abstract class Algorithm implements IObservable {
 
     protected Graph _graph;
-    protected List<GraphNode> _order = new ArrayList<>();   // The topological order of the graph
     protected final int _numProcTask;
     protected final int _numProcParallel;
-    protected List<IObserver> _observerList = new ArrayList<>();
+    protected List<IObserver> _observerList;
+    protected int _branchesPruned;
+    protected int _numberOfIterations;
+    private int _bestScheduleCost;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -34,6 +35,10 @@ public abstract class Algorithm implements IObservable {
         _graph = g;
         _numProcTask = numProcTask;
         _numProcParallel = numProcParallel;
+        _observerList = new ArrayList<>();
+        _branchesPruned = 0;
+        _numberOfIterations = 1;
+        _bestScheduleCost = 0;
     }
 
     /**
@@ -43,46 +48,14 @@ public abstract class Algorithm implements IObservable {
      */
     public abstract Map<String, GraphNode> solve();
 
+    /**
+     * Method that begins the algorithm to start solving the scheduling problem
+     * @return
+     */
     public Map<String,GraphNode> solveAlgorithm(){
         Map<String, GraphNode> outputMap = solve();
-        notifyObserversOfTime();
+        notifyObserversOfAlgorithmEnding();
         return outputMap;
-    }
-
-    /**
-     * Sets the topological order of the graph
-     */
-    public void getTopologicalOrdering() {
-        TopologicalOrderIterator iterator = new TopologicalOrderIterator(_graph.getGraph());
-
-        while(iterator.hasNext()) {
-            GraphNode tempNode = (GraphNode) iterator.next();
-            _order.add(tempNode);
-        }
-    }
-
-    /**
-     * Getter method for the topologically ordered graph nodes
-     * @return topologically ordered graph nodes in a List of GraphNode
-     */
-    public List<GraphNode> getOrder() {
-        return _order;
-    }
-
-    /**
-     * Getter method for the number of processors to schedule tasks to as specified by the input
-     * @return the number of processors to schedule tasks to as specified by the input
-     */
-    public int getNumProcTask() {
-        return _numProcTask;
-    }
-
-    /**
-     * Getter method for the number of processors to run the algorithm on as specified by the input
-     * @return the number of processors to run the algorithm on as specified by the input
-     */
-    public int getNumProcParallel() {
-        return _numProcParallel;
     }
 
     /**
@@ -92,37 +65,46 @@ public abstract class Algorithm implements IObservable {
      */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
 
-    /**
-     * Getter method for the task dependency graph containing node and edge weights
-     * @return a graph object containing the dependency information
-     */
-    public Graph getAlgorithmGraph(){
-        return _graph;
-    }
-
-
-    //IObservable Overrides
     @Override
     public void add(IObserver e) {
         _observerList.add(e);
     }
 
     @Override
-    public void remove(IObserver e) {
-        _observerList.remove(e);
-    }
+    public void remove(IObserver e) { _observerList.remove(e); }
 
     @Override
-    public void notifyObserversOfGraph() { //TODO: should this contain some sort of input
+    public void notifyObserversOfSchedulingUpdate() {
         for (IObserver observer : _observerList) {
-            observer.updateGraph();
+            observer.updateScheduleInformation(getCurrentBestSolution());
         }
     }
 
     @Override
-    public void notifyObserversOfTime() {
+    public void notifyObserversOfAlgorithmEnding() {
         for (IObserver observer : _observerList) {
-            observer.stopTimer();
+            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateScheduleInformation(getCurrentBestSolution());
+            observer.algorithmStopped(getBestScheduleCost());
         }
     }
+
+    @Override
+    public void notifyObserversOfIterationChange() {
+        for (IObserver observer : _observerList) {
+            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
+        }
+    }
+
+    /**
+     * Getter method for the cost of the optimal solution
+     * @return returns the cost of the optimal solution
+     */
+    protected abstract int getBestScheduleCost();
+
+    /**
+     * Getter method for the current lower bound
+     * @return returns the current lower bound to compare during algorithm iterations
+     */
+    protected abstract int getCurrentLowerBound();
 }

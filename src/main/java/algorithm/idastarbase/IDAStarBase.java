@@ -18,11 +18,13 @@ public class IDAStarBase extends Algorithm {
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
+    private int _numberOfTasks; // Number of nodes/tasks in the graph
     private int _lowerBound; // Current lower bound to find solution against
     private int _nextLowerBound = -1; // Next lower bound to be assigned to _lowerBound
     private boolean _solved; // Represents whether the optimal solution has been found
     private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
+    private int _bestScheduleCost; // Stores the cost of the optimal schedule
     private Stack<GraphNode>[] _processorAllocations; // Stack array holding tasks scheduled to the processors
 
     /**
@@ -36,6 +38,7 @@ public class IDAStarBase extends Algorithm {
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
+        _numberOfTasks = _jGraph.vertexSet().size();
         _solved = false;
         _processorAllocations = new Stack[numProcTask];
         for (int i=0; i < numProcTask; i++) {
@@ -44,6 +47,7 @@ public class IDAStarBase extends Algorithm {
         initialiseFreeTasks();
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
+        _lowerBound -= 1;
     }
 
     /**
@@ -54,12 +58,14 @@ public class IDAStarBase extends Algorithm {
     public Map<String, GraphNode> solve() {
         for (GraphNode task : _taskInfo.values()) { // For every task that is ready to be scheduled
             if (task.isFree()) {
-                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel()); // Calculates the lower bound
+                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) { // If the optimal solution has not already been found
+                    _numberOfIterations += 1;
+                    notifyObserversOfIterationChange();
                     _solved = idaRecursive(task, 0); // Schedules the task
                     _lowerBound = _nextLowerBound; // Increments the lower bound
                     _nextLowerBound = -1;
-                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
+                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -77,6 +83,24 @@ public class IDAStarBase extends Algorithm {
     }
 
     /**
+     * Getter method for the cost/finish time of the optimal scheduling
+     * @return returns an integer representing the optimal finish time
+     */
+    @Override
+    public int getBestScheduleCost() {
+        return _bestScheduleCost;
+    }
+
+    /**
+     * Getter method for the current lower bound in the IDA Star algorithm
+     * @return returns an integer of the representing the current lower bound
+     */
+    @Override
+    public int getCurrentLowerBound() {
+        return _lowerBound;
+    }
+
+    /**
      * Method that converts the stack array containing tasks scheduled onto processors into a node id, GraphNode mapping
      * that is required for output (visualisation)
      * @return
@@ -88,11 +112,16 @@ public class IDAStarBase extends Algorithm {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
         }
 
+        _bestScheduleCost = 0;
+
         Map<String, GraphNode> optimal = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
                 GraphNode task = copyOfStacks[i].pop();
                 optimal.put(task.getId(), task);
+                if (task.getStartTime() + task.getWeight() > _bestScheduleCost) {
+                    _bestScheduleCost = task.getStartTime() + task.getWeight();
+                }
             }
         }
         return optimal;
@@ -171,8 +200,8 @@ public class IDAStarBase extends Algorithm {
                             if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
                                 int freeProc = getFreeProc();
                                 if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
-                                    // If there is more than 1 free processor and the loop is trying to schedule the task onto a homogeneous processor
-                                    // Do not assign the task as it is a redundant check (a similar branch has already been checked before)
+                                    // Do nothing
+                                    _branchesPruned += 1;
                                 } else {
                                     _solved = idaRecursive(freeTask, i);
                                 }
@@ -295,7 +324,9 @@ public class IDAStarBase extends Algorithm {
         }
     }
 
-    // Calculates a part of one of the load balance cost function (ratio of node weight to processor)
+    /**
+     * Calculates a part of one of the load balance cost function (ratio of node weight to processor)
+     */
     private int maxComputationalTime() {
         int sum = 0;
         for(GraphNode task : _jGraph.vertexSet()) {
@@ -304,8 +335,10 @@ public class IDAStarBase extends Algorithm {
         return sum / _numProcTask;
     }
 
-    // Calculates bottom level (cost function) of all nodes, starting from the leaves of DAG
-    // and recursively calculating up the DAG
+    /**
+     * Calculates bottom level (cost function) of all nodes, starting from the leaves of DAG
+     * and recursively calculating up the DAG
+     */
     private void initaliseBottomLevel() {
         for (GraphNode task : _jGraph.vertexSet()) {
             if (_jGraph.outDegreeOf(task) == 0) { // Calculate bottom level for a leaf
@@ -314,6 +347,11 @@ public class IDAStarBase extends Algorithm {
         }
     }
 
+    /**
+     * Recursive function used to calculate computational bottom level
+     * @param task - task to calculate bottom level for
+     * @param currentBottomLevel - the current bottom level cost of the task
+     */
     private void calculateBottomLevel(GraphNode task, int currentBottomLevel) {
         int potential = task.getWeight() + currentBottomLevel;
 

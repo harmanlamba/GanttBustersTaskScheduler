@@ -10,25 +10,36 @@ public class GraphNode {
     private int _weight; // Node weight
     private int _processor; // Processor assigned to node
     private int _startTime; // Node's start time on processor
-    private boolean _free; // Represents whether the task is ready to be scheduled when using the IDA Star algorithms
-    private int _computationalBottomLevel; // A cost function representing the critical path cost from the current node
+    private int _endTime; // Node's finish time on processor
+    private boolean _free; // Represents whether the task is ready to be scheduled when using the IDA Star algorithm
+    private int _computationalBottomLevel;  // A cost function representing the critical path cost from the current node
 
+    // Constructors to create GraphNode objects
+
+    /**
+     * GraphNode constructor
+     * @param id - string ID of the node
+     * @param weight - weight of the node
+     */
     public GraphNode(String id, int weight) {
         _id = id;
         _weight = weight;
-        _processor = -1; // Default processor value
-        _startTime = -1; // Default startTime value
+        _processor = -1; //Default processor value
+        _startTime = -1; //Default startTime value
     }
 
+    /**
+     * GraphNode constructor
+     * @param id - string ID of the node
+     * @param weight - weight of the node
+     * @param processor - processor number the node is assigned to
+     * @param startTime - start time of the scheduled node
+     */
     public GraphNode(String id, int weight, int processor, int startTime){
         _id = id;
         _weight = weight;
         _processor = processor;
         _startTime =  startTime;
-    }
-
-    public GraphNode(GraphNode node, int processor, int startTime){
-        this(node._id,node._weight,processor,startTime); // Node write, assigns appropriate processor and startTime
     }
 
     /**
@@ -74,10 +85,17 @@ public class GraphNode {
     }
 
     /**
-     * setStartTime - setter for node id's start time on the processor assignment
+     * setStartTime - setter for node id's start time on the processor assigned
      */
     public void setStartTime(int startTime) {
         _startTime = startTime;
+    }
+
+    /**
+     * setEndTime - setter for node id's end time on the processor assigned
+     */
+    public void setEndTime(int endTime){
+        _endTime = endTime;
     }
 
     /**
@@ -115,5 +133,26 @@ public class GraphNode {
      */
     public void setComputationalBottomLevel(int computationalBottomLevel) {
         this._computationalBottomLevel = computationalBottomLevel;
+    }
+
+    //Framework Specific Auto Generated Getters for the Table Population
+    public String get_id() {
+        return _id;
+    }
+
+    public int get_weight() {
+        return _weight;
+    }
+
+    public int get_processor() {
+        return _processor;
+    }
+
+    public int get_startTime() {
+        return _startTime;
+    }
+
+    public int get_endTime() {
+        return _endTime;
     }
 }
