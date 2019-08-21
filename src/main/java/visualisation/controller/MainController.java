@@ -23,6 +23,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import visualisation.controller.Table.MockGraphNode;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.timer.ITimerObservable;
 import visualisation.controller.timer.ITimerObserver;
@@ -67,7 +68,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private AnimationTimer _animationTimer;
     private ProcessorColourHelper _processColourHelper;
     private ITimerObservable _observableTimer;
-    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
+    private ObservableList<MockGraphNode> _tablePopulationList = FXCollections.observableArrayList();
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -93,11 +94,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GanttChart<Number, String> ganttChart;
 
     public Tab resultTab;
-    public TableView<GraphNode> scheduleResultsTable;
-    public TableColumn<GraphNode, String> taskIDColumn;
-    public TableColumn<GraphNode, Integer> startTimeColumn;
-    public TableColumn<GraphNode, Integer> endTimeColumn;
-    public TableColumn<GraphNode, Integer> assignedProcessorColumn;
+    public TableView<MockGraphNode> scheduleResultsTable;
+    public TableColumn<MockGraphNode, String> taskIDColumn;
+    public TableColumn<MockGraphNode, Integer> startTimeColumn;
+    public TableColumn<MockGraphNode, Integer> endTimeColumn;
+    public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
 
     public MainController(){
 
@@ -259,26 +260,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         for(GraphNode node : updateValues){
             //Setting the end-time for each GraphNode
             int tempColorIndex = node.getProcessor();
-            node.setEndTime(node.getStartTime() + node.getWeight());
+
             if(node.getStartTime() != -1){ //TODO: Debug and see why -1 are still being added
-                taskIDColumn.setCellFactory(cell -> {
-                    return new TableCell<GraphNode,String>() {
-                        @Override
-                        protected void updateItem(String item, boolean empty) {
-                                super.updateItem(item, empty);
-                                if(item==null){
-                                    setText(null);
-                                    setStyle("");
-                                }else{
-                                    setText(item);
-                                    String color = _processColourHelper.getProcessorColour(node.getProcessor());
-                                    //TODO: See why colors are not assigned differently
-                                    setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
-                                }
-                        }
-                    };
-                });
-                _tablePopulationList.add(node);
+//                taskIDColumn.setCellFactory(cell -> {
+//
+//                });
+                _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
 
         }
