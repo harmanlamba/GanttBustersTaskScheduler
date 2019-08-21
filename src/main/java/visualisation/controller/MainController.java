@@ -55,8 +55,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
     private final static String START_TIME_TEXT = "00:00:00";
 
-
-
     //Private Fields
     private IObservable _observableAlgorithm;
     private Graph _algorithmGraph;
@@ -205,10 +203,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //ganttchart fx properties
         ganttChart.setPrefWidth(640);
+        ganttChart.setPrefHeight(450);
         ganttChart.setLayoutX(20);
         ganttChart.setLayoutY(40);
         ganttChart.setLegendVisible(false);
-        ganttChart.setBlockHeight(60);
+        ganttChart.setBlockHeight(40);
 
         //y axis (processor count)
         List<String> processors = new ArrayList<>();
@@ -216,12 +215,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             processors.add(Integer.toString(i));
         }
         yAxis.setLabel("");
-        yAxis.setTickLabelGap(10);
+        yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
 
         //x axis (xValue=Starttime, lengthMs=Worktime)
         xAxis.setLabel("Start time (s)");
-        xAxis.setMinorTickCount(10);
+        xAxis.setMinorTickCount(20);
 
     }
 
