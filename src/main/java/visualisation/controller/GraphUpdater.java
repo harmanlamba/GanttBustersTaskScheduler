@@ -53,7 +53,7 @@ public class GraphUpdater extends Viewer {
         }
     }
 
-    public void updateNode(Graph graph) {
+    public void updateGraph(Graph graph) {
         //Create nodeslist from graphstream graph
         List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
 
