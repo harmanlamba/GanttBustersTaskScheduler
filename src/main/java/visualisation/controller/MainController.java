@@ -254,30 +254,31 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void updateTable(Map<String, GraphNode> update) {
         _tablePopulationList.clear();
+        List<GraphNode> updateValues = new ArrayList<>(update.values());
         //Repopulate with the new GraphNode Details
-        for(Map.Entry<String,GraphNode> node : update.entrySet()){
+        for(GraphNode node : updateValues){
             //Setting the end-time for each GraphNode
-            node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
-            if(node.getValue().getStartTime() != -1){
-                taskIDColumn.setCellFactory(column -> {
+            int tempColorIndex = node.getProcessor();
+            node.setEndTime(node.getStartTime() + node.getWeight());
+            if(node.getStartTime() != -1){
+                taskIDColumn.setCellFactory(cell -> {
                     return new TableCell<GraphNode,String>() {
                         @Override
                         protected void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-
-                            if(item==null || empty){
-                                setText(null);
-                                setStyle("");
-                            }else{
-                                setText(item);
-                                setStyle("-fx-border-color:" + _processColourHelper.getProcessorColour(node.getValue().getProcessor())+ "; -fx-border-width: 0 0 0 5;");
-                            }
-
-
+                                super.updateItem(item, empty);
+                                if(item==null){
+                                    setText(null);
+                                    setStyle("");
+                                }else{
+                                    setText(item);
+                                    String color = _processColourHelper.getProcessorColour(node.getProcessor());
+                                    //TODO: See why colors are not assigned differently
+                                    setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
+                                }
                         }
                     };
                 });
-                _tablePopulationList.add(node.getValue());
+                _tablePopulationList.add(node);
             }
 
         }
