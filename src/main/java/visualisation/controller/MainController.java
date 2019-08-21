@@ -95,7 +95,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
-    public TableColumn<MockGraphNode, String> taskIDColumn;
+    public TableColumn<MockGraphNode, MockGraphNode> taskIDColumn;
     public TableColumn<MockGraphNode, Integer> startTimeColumn;
     public TableColumn<MockGraphNode, Integer> endTimeColumn;
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
@@ -245,7 +245,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
+        Comparator<MockGraphNode> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1.getId()), Integer.parseInt(o2.getId()));
         taskIDColumn.setComparator(stringToIntComparator);
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -258,12 +258,20 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         List<GraphNode> updateValues = new ArrayList<>(update.values());
         //Repopulate with the new GraphNode Details
         for(GraphNode node : updateValues){
-            //Setting the end-time for each GraphNode
-            int tempColorIndex = node.getProcessor();
-
-            if(node.getStartTime() != -1){ //TODO: Debug and see why -1 are still being added
-//                taskIDColumn.setCellFactory(cell -> {
-//
+            if(node.getStartTime() != -1){
+//                taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,MockGraphNode>() {
+//                    @Override
+//                    protected void updateItem(MockGraphNode item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        if(empty){
+//                            setText(null);
+//                        }else{
+//                            setText(item.getId());
+//                            String color = _processColourHelper.getProcessorColour(node.getProcessor());
+//                            //TODO: See why colors are not assigned differently
+//                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
+//                        }
+//                    }
 //                });
                 _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
