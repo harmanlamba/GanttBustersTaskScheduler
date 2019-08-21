@@ -6,8 +6,14 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +50,18 @@ public class FileIOTest {
         _negativeEdgeWeight = new String[]{"src/main/resources/e8.dot", "2", "-o", "me", "-p", "1"};
         _negativeNodeWeight = new String[]{"src/main/resources/e9.dot", "2", "-o", "me", "-p", "1"};
         _ownExample1 = new String[]{"src/main/resources/e10.dot", "2", "-o", "me", "-p", "1"};
+    }
+
+    /**
+     * Delete files after all tests execute
+     */
+    @AfterClass
+    public static void deleteOutputFile()  {
+        File file;
+        for (int i = 1; i < 11; i++) {
+            file = new File("src/main/resources/me"+i+".dot");
+            file.delete();
+        }
     }
 
     /**
