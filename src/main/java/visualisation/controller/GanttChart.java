@@ -115,7 +115,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         }
                         rectangle.setWidth( getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         rectangle.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
-
                         y -= getBlockHeight() / 2.0;
 
                         region.setShape(null);
