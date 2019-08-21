@@ -10,3 +10,7 @@
   -fx-border-color: white;
   -fx-border-width: 1;
 }
+
+.table-column{
+  -fx-alignment: CENTER;
+}

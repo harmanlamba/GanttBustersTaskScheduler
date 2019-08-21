@@ -4,16 +4,19 @@ import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import app.App;
 import fileio.IIO;
-import graph.Graph;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.MainController;
+
+import java.util.concurrent.TimeUnit;
 
 public class FXApplication extends Application {
 
@@ -41,6 +44,19 @@ public class FXApplication extends Application {
                 System.exit(0);
             }
         });
+
+        System.out.println("Start");
+        AlgorithmTimer.getAlgorithmTimer().start();
+        IIO io = App._mainIO;
+        //Runs the algorithm in a new thread
+        new Thread(() -> {
+            io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
+            System.out.println("Finish");
+        }).start();
+
+
+
+
     }
 
     //TODO: Override stop() method to stop algorithm

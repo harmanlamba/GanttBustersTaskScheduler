@@ -24,6 +24,7 @@ public class IDAStarBase extends Algorithm {
     private boolean _solved;
     private int _maxCompTime;
     private int _idle = 0;
+    private int _bestScheduleCost;
     private Stack<GraphNode>[] _processorAllocations;
 
     /**
@@ -46,6 +47,7 @@ public class IDAStarBase extends Algorithm {
         initialiseFreeTasks();
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
+        _lowerBound -= 1;
     }
 
     @Override
@@ -54,10 +56,12 @@ public class IDAStarBase extends Algorithm {
             if (task.isFree()) {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) {
+                    _numberOfIterations += 1;
+                    notifyObserversOfIterationChange();
                     _solved = idaRecursive(task, 0);
                     _lowerBound = _nextLowerBound;
                     _nextLowerBound = -1;
-                    notifyObserversOfGraph(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
+                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -69,6 +73,16 @@ public class IDAStarBase extends Algorithm {
         return convertProcessorAllocationsToMap();
     }
 
+    @Override
+    public int getBestScheduleCost() {
+        return _bestScheduleCost;
+    }
+
+    @Override
+    public int getCurrentLowerBound() {
+        return _lowerBound;
+    }
+
     private Map<String, GraphNode> convertProcessorAllocationsToMap() {
 
         //TODO: deep copy the _processorAllocations
@@ -77,11 +91,16 @@ public class IDAStarBase extends Algorithm {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
         }
 
+        _bestScheduleCost = 0;
+
         Map<String, GraphNode> optimal = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
                 GraphNode task = copyOfStacks[i].pop();
                 optimal.put(task.getId(), task);
+                if (task.getStartTime() + task.getWeight() > _bestScheduleCost) {
+                    _bestScheduleCost = task.getStartTime() + task.getWeight();
+                }
             }
         }
         return optimal;
@@ -127,6 +146,7 @@ public class IDAStarBase extends Algorithm {
                                 int freeProc = getFreeProc();
                                 if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
                                     // Do nothing
+                                    _branchesPruned += 1;
                                 } else {
                                     _solved = idaRecursive(freeTask, i);
                                 }
@@ -290,5 +310,4 @@ public class IDAStarBase extends Algorithm {
         }
         return free;
     }
-
 }
