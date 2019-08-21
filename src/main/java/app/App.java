@@ -3,7 +3,6 @@ package app;
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import exception.InputFileException;
-import fileio.DisplayMode;
 import fileio.IIO;
 import fileio.IO;
 import graph.Graph;
@@ -14,8 +13,7 @@ import visualisation.FXApplication;
 /**
  * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path.
  */
-public class App
-{
+public class App {
     public static IIO _mainIO;
 
     public static void main( String[] args ) {
@@ -36,10 +34,8 @@ public class App
                     Application.launch(FXApplication.class);
             }
 
-
         } catch (InputFileException e) {
             Utility.printUsage();
         }
-
     }
 }
