@@ -111,10 +111,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
-        initializeGraph();
-        initializeGantt();
-        initializeStatistics();
-        initializeTable();
 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
         // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
@@ -124,6 +120,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _observableAlgorithm.add(this);
         _observableTimer = AlgorithmTimer.getAlgorithmTimer();
         _observableTimer.add(this);
+
+        initializeGraph();
+        initializeGantt();
+        initializeStatistics();
+        initializeTable();
     }
 
     @Override
@@ -222,7 +223,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //x axis (xValue=Starttime, lengthMs=Worktime)
         xAxis.setLabel("Start time (s)");
         xAxis.setMinorTickCount(10);
-
+        System.out.println(_observableAlgorithm.getMaximumPossibleCost());
+        xAxis.setUpperBound(_observableAlgorithm.getMaximumPossibleCost());
     }
 
     private void initializeStatistics() {
