@@ -260,7 +260,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             //Setting the end-time for each GraphNode
             int tempColorIndex = node.getProcessor();
             node.setEndTime(node.getStartTime() + node.getWeight());
-            if(node.getStartTime() != -1){
+            if(node.getStartTime() != -1){ //TODO: Debug and see why -1 are still being added
                 taskIDColumn.setCellFactory(cell -> {
                     return new TableCell<GraphNode,String>() {
                         @Override
