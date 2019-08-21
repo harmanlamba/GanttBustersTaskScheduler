@@ -90,6 +90,13 @@ public class GraphNode {
     public void setStartTime(int startTime) {
         _startTime = startTime;
     }
+  
+    /**
+     * setEndTime - getter for the node ID's end time on the processor assigned
+     */
+    public int getEndTime() {
+        return _endTime;
+    }
 
     /**
      * setEndTime - setter for node id's end time on the processor assigned
@@ -135,24 +142,5 @@ public class GraphNode {
         this._computationalBottomLevel = computationalBottomLevel;
     }
 
-    //Framework Specific Auto Generated Getters for the Table Population
-    public String get_id() {
-        return _id;
-    }
 
-    public int get_weight() {
-        return _weight;
-    }
-
-    public int get_processor() {
-        return _processor;
-    }
-
-    public int get_startTime() {
-        return _startTime;
-    }
-
-    public int get_endTime() {
-        return _endTime;
-    }
 }
