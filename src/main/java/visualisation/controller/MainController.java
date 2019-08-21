@@ -169,7 +169,7 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
