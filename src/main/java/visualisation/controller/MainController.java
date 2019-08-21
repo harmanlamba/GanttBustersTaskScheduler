@@ -5,6 +5,7 @@ import app.App;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -128,6 +129,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateScheduleInformation(Map<String, GraphNode> update) {
         updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+        List<GraphNode> test = new ArrayList<>(update.values());
 
         //Run on another thread
         Platform.runLater(() -> {
@@ -136,10 +138,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 @Override
                 public void run() {
                     for (Node node : _graphStream) {
-                        _graphManager.updateGraphStream(update.values());
+                        _graphManager.updateGraphStream(test);
                         _graphStream = _graphManager.getGraph();
                         _graphUpdater.updateNode(_graphStream);
-                        updateGantt(update.values()); //TODO: TEMP
+                        updateGantt(test); //TODO: TEMP
                     }
                 }
             });
