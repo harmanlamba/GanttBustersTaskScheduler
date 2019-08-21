@@ -49,12 +49,10 @@ public class FXApplication extends Application {
         AlgorithmTimer.getAlgorithmTimer().start();
         IIO io = App._mainIO;
         //Runs the algorithm in a new thread
-        new Thread() {
-            public void run() {
-                io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
-                System.out.println("Finish");
-            }
-        }.start();
+        new Thread(() -> {
+            io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
+            System.out.println("Finish");
+        }).start();
 
 
 

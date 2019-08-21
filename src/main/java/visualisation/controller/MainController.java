@@ -2,17 +2,16 @@ package visualisation.controller;
 
 import algorithm.AlgorithmBuilder;
 import app.App;
-import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.scene.chart.*;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -66,6 +65,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GraphUpdater _graphUpdater;
     private Map<String, GraphNode> _algorithmResultMap;
     private ITimerObservable _observableTimer;
+    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -90,10 +90,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Pane ganttPane;
 
     public Tab resultTab;
-    public JFXTreeTableView<?> scheduleResultsTable;
-    public TreeTableColumn<?, ?> taskIDColumn;
-    public TreeTableColumn<?, ?> startTimeColumn;
-    public TreeTableColumn<?, ?> assignedProcessorColumn;
+    public TableView<GraphNode> scheduleResultsTable;
+    public TableColumn<GraphNode, String> taskIDColumn;
+    public TableColumn<GraphNode, Integer> startTimeColumn;
+    public TableColumn<GraphNode, Integer> endTimeColumn;
+    public TableColumn<GraphNode, Integer> assignedProcessorColumn;
 
     public MainController(){
 
@@ -108,6 +109,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         initializeGraph();
         initializeGantt();
         initializeStatistics();
+        initializeTable();
 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
         // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
@@ -120,29 +122,25 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateScheduleInformation() {
-        Map<String, GraphNode> update = _observableAlgorithm.getCurrentBestSolution();
-        updateIterationInformation();
+    public void updateScheduleInformation(Map<String, GraphNode> update) {
+        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+
         //Run on another thread
         Platform.runLater(() -> {
             //update graph visualization using runnable
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    for (Node node : _graphStream) {
-                        //TODO: Receive and update node states via GraphUpdater
-                    }
+            Platform.runLater(() -> {
+                for (Node node : _graphStream) {
+                    //TODO: Receive and update node states via GraphUpdater
                 }
             });
         });
     }
 
     @Override
-    public void algorithmStopped() {
+    public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
-        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + _observableAlgorithm.getBestScheduleCost());
-        updateScheduleInformation();
+        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
     }
 
     private void initializeGraph() {
@@ -215,11 +213,29 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
+    private void initializeTable() {
+        taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("_id"));
+        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_startTime"));
+        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("_endTime"));
+        assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("_processor")));
+        scheduleResultsTable.setItems(_tablePopulationList);
+    }
+
+    private void updateTable(Map<String, GraphNode> update) {
+        _tablePopulationList.clear();
+        //Repopulate with the new GraphNode Details
+        for(Map.Entry<String,GraphNode> node : update.entrySet()){
+            //Setting the end-time for each GraphNode
+            node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
+            _tablePopulationList.add(node.getValue());
+        }
+    }
+
     @Override
-    public void updateIterationInformation() {
-        branchesPruned.setText(BRANCHES_PRUNED_TEXT + _observableAlgorithm.getBranchesPruned());
-        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + _observableAlgorithm.getNumberOfIterations());
-        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((_observableAlgorithm.getCurrentLowerBound() == -1) ? "N/A" : _observableAlgorithm.getCurrentLowerBound()));
+    public void updateIterationInformation(int prunedBranches, int iterations, int lowerBound) {
+        branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
+        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
+        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));
     }
 
     @Override

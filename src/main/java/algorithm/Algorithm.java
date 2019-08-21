@@ -62,44 +62,32 @@ public abstract class Algorithm implements IObservable {
     }
 
     @Override
-    public void remove(IObserver e) {
-        _observerList.remove(e);
-    }
+    public void remove(IObserver e) { _observerList.remove(e); }
 
     @Override
     public void notifyObserversOfSchedulingUpdate() {
         for (IObserver observer : _observerList) {
-            observer.updateScheduleInformation();
+            observer.updateScheduleInformation(getCurrentBestSolution());
         }
     }
 
     @Override
     public void notifyObserversOfAlgorithmEnding() {
         for (IObserver observer : _observerList) {
-            observer.algorithmStopped();
+            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateScheduleInformation(getCurrentBestSolution());
+            observer.algorithmStopped(getBestScheduleCost());
         }
     }
 
     @Override
     public void notifyObserversOfIterationChange() {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation();
+            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
         }
     }
 
-    @Override
-    public int getBranchesPruned() {
-        return _branchesPruned;
-    }
+    protected abstract int getBestScheduleCost();
 
-    @Override
-    public abstract int getBestScheduleCost();
-
-    @Override
-    public int getNumberOfIterations() {
-        return _numberOfIterations;
-    }
-
-    @Override
-    public abstract int getCurrentLowerBound();
+    protected abstract int getCurrentLowerBound();
 }
