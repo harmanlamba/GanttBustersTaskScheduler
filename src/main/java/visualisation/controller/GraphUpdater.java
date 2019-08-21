@@ -46,8 +46,8 @@ public class GraphUpdater extends Viewer {
         int edgeCount = _graph.getEdgeCount();
         for (int i = 0; i < edgeCount; i++) {
             Edge edge = _graph.getEdge(i);
-            edge.addAttribute("ui.style", "fill-mode: plain; fill-color: grey;\n"
-                    + "\ttext-size: 15px; text-color: black;\n"
+            edge.addAttribute("ui.style", "fill-mode: plain; fill-color: black;\n"
+                    + "\ttext-size: 18px; text-color: black;\n"
                     + "\ttext-alignment: along;\n");
             edge.addAttribute("ui.label",edge.getAttribute("weight") + "");
         }
@@ -63,10 +63,10 @@ public class GraphUpdater extends Viewer {
             String processColour = _processorColourHelper.getProcessorColour(node.getAttribute("processor")); //TODO: Run code - look at exception
             node.removeAttribute("ui.style"); //reset style
             node.addAttribute("ui.style", "text-alignment: center;\n"
-                    + "\tstroke-mode: plain; stroke-color:grey; stroke-width: 5px;\n"
+                    + "\tstroke-mode: plain; stroke-color:white; stroke-width: 3px;\n"
                     + "\tfill-mode: plain; fill-color:" + processColour + ";\n"
-                    + "\tsize: 30px, 30px;\n"
-                    + "\ttext-size: 15px; text-color: white;\n");
+                    + "\tsize: 40px, 40px;\n"
+                    + "\ttext-size: 18px; text-color: white;\n");
             }
         }
 
