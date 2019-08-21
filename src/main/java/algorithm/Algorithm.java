@@ -48,12 +48,21 @@ public abstract class Algorithm implements IObservable {
      */
     public abstract Map<String, GraphNode> solve();
 
+    /**
+     * Method that begins the algorithm to start solving the scheduling problem
+     * @return
+     */
     public Map<String,GraphNode> solveAlgorithm(){
         Map<String, GraphNode> outputMap = solve();
         notifyObserversOfAlgorithmEnding();
         return outputMap;
     }
 
+    /**
+     * Getter method which retrieves the current best solution for the scheduling based on the algorithm applied
+     * but may not necessarily be the most optimal solution (used for visualisation purposes)
+     * @return a map of Strings mapping to GraphNodes containing the nodes' scheduling information
+     */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
 
     @Override
@@ -87,7 +96,15 @@ public abstract class Algorithm implements IObservable {
         }
     }
 
+    /**
+     * Getter method for the cost of the optimal solution
+     * @return returns the cost of the optimal solution
+     */
     protected abstract int getBestScheduleCost();
 
+    /**
+     * Getter method for the current lower bound
+     * @return returns the current lower bound to compare during algorithm iterations
+     */
     protected abstract int getCurrentLowerBound();
 }
