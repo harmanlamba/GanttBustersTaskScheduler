@@ -50,7 +50,6 @@ public class IDAStarBase extends Algorithm {
         initialiseFreeTasks();
         initaliseBottomLevel();
         _maxCompTime = maxComputationalTime();
-        _lowerBound -= 1;
         _updateGraphIteration = 0;
     }
 
