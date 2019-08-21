@@ -236,6 +236,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
+        taskIDColumn.setComparator(stringToIntComparator);
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
