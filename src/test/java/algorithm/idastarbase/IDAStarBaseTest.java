@@ -1,4 +1,4 @@
-package app;
+package algorithm.idastarbase;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;

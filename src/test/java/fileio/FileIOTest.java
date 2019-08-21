@@ -1,4 +1,4 @@
-package app;
+package fileio;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
