@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -148,12 +149,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     //TODO: Call for every task allocated to a processor
     public void updateGantt(List<GraphNode> test) {
+        XYChart.Series series1 = new XYChart.Series();
+        ganttChart.getData().clear();
+
         List<String> processors = new ArrayList<>();
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
         }
 
-        XYChart.Series series1 = new XYChart.Series();
         for (String processor : processors) {
             for (GraphNode graphNode : test) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
@@ -195,8 +198,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeGantt() {
         //Gantt chart initialize
-        final NumberAxis xAxis = new NumberAxis();
-        final CategoryAxis yAxis = new CategoryAxis();
+        NumberAxis xAxis = new NumberAxis();
+        CategoryAxis yAxis = new CategoryAxis();
         ganttChart = new GanttChart<>(xAxis, yAxis);
         ganttPane.getChildren().add(ganttChart);
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
@@ -208,6 +211,16 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.setLayoutY(40);
         ganttChart.setLegendVisible(false);
         ganttChart.setBlockHeight(40);
+        ganttChart.setAlternativeRowFillVisible(false);
+        ganttChart.setHorizontalGridLinesVisible(false);
+        ganttChart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+
+        //x axis (xValue=Starttime, lengthMs=Worktime)
+        xAxis.setLabel("Start time (s)");
+        xAxis.setTickUnit(50);
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(450);
 
         //y axis (processor count)
         List<String> processors = new ArrayList<>();
@@ -217,10 +230,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         yAxis.setLabel("");
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
-
-        //x axis (xValue=Starttime, lengthMs=Worktime)
-        xAxis.setLabel("Start time (s)");
-        xAxis.setMinorTickCount(20);
 
     }
 

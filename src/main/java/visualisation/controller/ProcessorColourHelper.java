@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 public class ProcessorColourHelper {
-    private final static int MAXMIMUM_COLOURS = 14;
+    private final static int MAXMIMUM_COLOURS_NUM = 14;
+    private final static String UNASSIGNED_COLOUR = "#000000";
     private Random rand = new Random();
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
@@ -31,7 +32,11 @@ public class ProcessorColourHelper {
     }
 
     public String getProcessorColour(int processorIndex) {
-        return _processorColours.get(processorIndex);
+        if (processorIndex != -1) {
+            return _processorColours.get(processorIndex);
+        } else {
+            return UNASSIGNED_COLOUR;
+        }
     }
 
     private void setProcessorColours(int processorCount) {
@@ -39,7 +44,7 @@ public class ProcessorColourHelper {
         int randomColourNumber = rand.nextInt(100);
         if (processorCount > 1) {
             for (int i = 0; i < processorCount; i++) {
-                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS));
+                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM));
             }
         } else {
             _processorColours.add(_colours.get(1));
