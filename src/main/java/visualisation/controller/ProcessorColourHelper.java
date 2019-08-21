@@ -41,7 +41,7 @@ public class ProcessorColourHelper {
 
     private void setProcessorColours(int processorCount) {
         //If only 1 processor count, then set to main node colour
-        int randomColourNumber = rand.nextInt(100);
+        int randomColourNumber = rand.nextInt(MAXMIMUM_COLOURS_NUM);
         if (processorCount > 1) {
             for (int i = 0; i < processorCount; i++) {
                 _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM));

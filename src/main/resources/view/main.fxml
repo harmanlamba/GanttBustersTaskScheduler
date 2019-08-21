@@ -13,6 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.Button?>
 <VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
@@ -21,7 +22,7 @@
                <children>
                   <VBox fx:id="statsContainer" prefHeight="200.0" prefWidth="300.0" stylesheets="@stylesheet.css">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="STATISTICS" textAlignment="CENTER" wrappingWidth="280.0">
+                        <Text fx:id="stats" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="280.0">
                            <font>
                               <Font size="22.0" />
                            </font>
@@ -31,11 +32,15 @@
                         </Text>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
+                              <VBox fx:id="statusPane" >
+                                 <VBox fx:id="statusBackground" minHeight="10.0">
+                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: " wrappingWidth="280.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Text>
+                                 </VBox>
+                              </VBox>
                            </children>
                            <VBox.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -43,6 +48,11 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
+                              <Text fx:id="fileNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Running: " wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
                               <Text fx:id="algorithmTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
@@ -111,13 +121,13 @@
                   </VBox>
                   <TabPane fx:id="visualsContainer" prefHeight="600.0" prefWidth="700.0" stylesheets="@stylesheet.css" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab fx:id="graphTab" text="Search Graph">
+                      <Tab fx:id="graphTab" text="Search graph">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <VBox prefHeight="560.0" prefWidth="700.0">
                                        <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SEARCH GRAPH" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="searchGraph" strokeType="OUTSIDE" strokeWidth="0.0" text="Search graph" textAlignment="CENTER" wrappingWidth="700.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -135,13 +145,13 @@
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                      <Tab fx:id="taskTab" text="Task Schedule">
+                      <Tab fx:id="taskTab" text="Task schedule">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <VBox prefHeight="560.0" prefWidth="700.0">
                                        <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TASK SCHEDULE" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="taskSchedule" strokeType="OUTSIDE" strokeWidth="0.0" text="Task schedule" textAlignment="CENTER" wrappingWidth="700.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -159,13 +169,13 @@
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                        <Tab fx:id="resultTab" text="Schedule Results">
+                        <Tab fx:id="resultTab" text="Schedule results">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <VBox prefHeight="560.0" prefWidth="682.0">
                                        <children>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SCHEDULE RESULTS" textAlignment="CENTER" wrappingWidth="680.0">
+                                          <Text fx:id="scheduleResults" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule results" textAlignment="CENTER" wrappingWidth="680.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>

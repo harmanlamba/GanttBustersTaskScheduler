@@ -45,6 +45,11 @@ public interface IIO {
     int getNumberOfProcessorsForParallelAlgorithm();
 
     /*
+    Gets file name for GUI text
+     */
+    String getFileName();
+
+    /*
     Gets the display mode type as specified by the input
      */
     DisplayMode getStateOfVisualisation();

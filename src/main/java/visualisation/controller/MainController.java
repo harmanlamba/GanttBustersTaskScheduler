@@ -11,8 +11,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -41,6 +43,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String ALGORITHM_STATUS_INPROGRESS_TEXT = "In progress";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
 
+    private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
 
     //TODO: The string needs to be changed into something that is less confusing
@@ -72,7 +75,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     //Public Control Fields from the FXML
     public HBox mainContainer;
     public VBox statsContainer;
+    public VBox statusPane;
     public Text algorithmStatus;
+    public Text fileNameText;
     public Text algorithmTypeText;
     public Text timeElapsedText;
     public Text numberOfTasks;
@@ -91,6 +96,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Tab taskTab;
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
+    public Button physicButton;
 
     public Tab resultTab;
     public TableView<GraphNode> scheduleResultsTable;
@@ -128,50 +134,28 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     @Override
     public void updateScheduleInformation(Map<String, GraphNode> update) {
-        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
-        List<GraphNode> test = new ArrayList<>(update.values());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //update graph visualization using runnable
+                List<GraphNode> test = new ArrayList<>(update.values());
 
-        //Run on another thread
-        Platform.runLater(() -> {
-            //update graph visualization using runnable
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    for (Node node : _graphStream) {
-                        _graphManager.updateGraphStream(test);
-                        _graphStream = _graphManager.getGraph();
-                        _graphUpdater.updateNode(_graphStream);
-                        updateGantt(test); //TODO: TEMP
-                    }
-                }
-            });
-        });
-    }
+                updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                _graphManager.updateGraphStream(test);
+                _graphStream = _graphManager.getGraph();
+                _graphUpdater.updateGraph(_graphStream);
 
-    //TODO: Call for every task allocated to a processor
-    public void updateGantt(List<GraphNode> test) {
-        XYChart.Series series1 = new XYChart.Series();
-        ganttChart.getData().clear();
-
-        List<String> processors = new ArrayList<>();
-        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
-            processors.add(Integer.toString(i));
-        }
-
-        for (String processor : processors) {
-            for (GraphNode graphNode : test) {
-                String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
-                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour)));
+                for (Node node : _graphStream) {
+                    updateGantt(test); //TODO: TEMP
                 }
             }
-        }
-        ganttChart.getData().addAll(series1);
+        });
     }
 
     @Override
     public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
+        statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
     }
@@ -187,7 +171,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -221,7 +205,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         xAxis.setTickUnit(50);
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
-        xAxis.setUpperBound(450);
+        xAxis.setUpperBound(_observableAlgorithm.getMaximumPossibleCost());
+        xAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
 
         //y axis (processor count)
         List<String> processors = new ArrayList<>();
@@ -231,15 +216,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         yAxis.setLabel("");
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
+        yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
 
-        //x axis (xValue=Starttime, lengthMs=Worktime)
-        xAxis.setLabel("Start time (s)");
-        xAxis.setMinorTickCount(10);
-        xAxis.setUpperBound(_observableAlgorithm.getMaximumPossibleCost());
+
     }
 
     private void initializeStatistics() {
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_INPROGRESS_TEXT);
+        fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
         algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
         numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
@@ -253,7 +237,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
-    }
+     }
 
     private void updateTable(Map<String, GraphNode> update) {
         _tablePopulationList.clear();
@@ -263,6 +247,27 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
             _tablePopulationList.add(node.getValue());
         }
+    }
+
+    //TODO: Call for every task allocated to a processor
+    public void updateGantt(List<GraphNode> test) {
+        XYChart.Series series1 = new XYChart.Series();
+        ganttChart.getData().clear();
+
+        List<String> processors = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            processors.add(Integer.toString(i));
+        }
+
+        for (String processor : processors) {
+            for (GraphNode graphNode : test) {
+                String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
+                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour)));
+                }
+            }
+        }
+        ganttChart.getData().addAll(series1);
     }
 
     @Override

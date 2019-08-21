@@ -33,9 +33,11 @@ public class FXApplication extends Application {
         Parent root = loader.load();
 
         //Show stage
-        primaryStage.setTitle("Visualization screen");
-        primaryStage.setScene(new Scene(root, 990, 590)); //total window size
+        Scene scene = new Scene(root, 990, 590);
+        scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono&display=swap");
+        primaryStage.setScene(scene); //total window size
         primaryStage.setResizable(false);
+        primaryStage.setTitle("Visualization screen");
         primaryStage.show();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
