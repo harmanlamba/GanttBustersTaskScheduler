@@ -2,11 +2,9 @@ package fileio;
 
 import exception.InputFileException;
 import exception.InvalidInputArgumentException;
-import javafx.application.Application;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
-import visualisation.FXApplication;
 
 import static utility.Utility.printUsage;
 
