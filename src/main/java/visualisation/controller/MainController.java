@@ -67,7 +67,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private ProcessorColourHelper _processColourHelper;
     private ITimerObservable _observableTimer;
     private ObservableList<MockGraphNode> _tablePopulationList = FXCollections.observableArrayList();
-    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
     private SelectedTab _currentTab;
     private Map<String, GraphNode> _latestUpdateMap;
 
@@ -197,7 +196,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
