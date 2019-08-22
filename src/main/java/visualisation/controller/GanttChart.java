@@ -32,12 +32,14 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         public long _length;
         public String _styleClass;
         public String _style;
+        public String _taskId;
 
-        public Properties(long lengthMs, String style) {
+        public Properties(long lengthMs, String style, String taskId) {
             super();
             _length = lengthMs;
             _styleClass = "gantt-border";
             _style = style;
+            _taskId = taskId;
         }
         public long getLength() {
             return _length;
@@ -55,6 +57,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             _styleClass = styleClass;
         }
         public void setStyle(String style) { _style = style; }
+        public String getTaskId() { return _taskId; }
     }
 
     private double blockHeight = 10;
@@ -83,6 +86,8 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         return ((Properties) obj).getLength();
     }
 
+    private static String getTaskId(Object obj) { return ((Properties) obj).getTaskId(); }
+
     @Override protected void layoutPlotChildren() {
 
         for (int seriesIndex=0; seriesIndex < getData().size(); seriesIndex++) {
@@ -103,6 +108,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
                         //TODO: HELP ME CENTRE THE TEXT INSIDE THE REGION
+                        region.getChildren().add(new Text(getTaskId(item.getExtraValue())));
 
                         if (region.getShape() == null) {
                             rectangle = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());

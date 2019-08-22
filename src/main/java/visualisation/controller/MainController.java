@@ -312,7 +312,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             for (GraphNode graphNode : test) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
                 if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour)));
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour, graphNode.getId())));
                 }
             }
         }
