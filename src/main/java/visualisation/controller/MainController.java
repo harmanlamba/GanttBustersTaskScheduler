@@ -263,6 +263,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             processorList.add(String.valueOf(i));
         }
 
+        
         legendListView.setItems(processorList);
         legendListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
