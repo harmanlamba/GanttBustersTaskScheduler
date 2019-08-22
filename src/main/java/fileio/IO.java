@@ -2,11 +2,9 @@ package fileio;
 
 import exception.InputFileException;
 import exception.InvalidInputArgumentException;
-import javafx.application.Application;
 import utility.Utility;
 import graph.GraphEdge;
 import graph.GraphNode;
-import visualisation.FXApplication;
 
 import static utility.Utility.printUsage;
 
@@ -27,6 +25,7 @@ public class IO implements IIO {
     private int _numberOfProcessorsForParallelAlgorithm;
     private int _numberOfProcessorsForTask;
     private DisplayMode _visualisationState = DisplayMode.COMMAND_LINE;
+    private String _inputFileName = "";
 
     public IO(String[] input) throws InputFileException {
         try {
@@ -54,6 +53,7 @@ public class IO implements IIO {
         _numberOfProcessorsForParallelAlgorithm = 0;
         _numberOfProcessorsForTask = 1;
         String nameOfInputFile = args[0];
+
         String nameOfOutputFile = "";
         String parentPath = ".";
 
@@ -67,7 +67,9 @@ public class IO implements IIO {
             String[] fileNameSplit = file.getName().split("\\.");
             nameOfInputFile = parentPath + "/" + file.getName();
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
+            _inputFileName = file.getName(); //Set text file name
             nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
+
         } else {
             throw new FileNotFoundException("File not found - please verify name");
         }
@@ -101,7 +103,6 @@ public class IO implements IIO {
                     break;
                 //Use visualization GUI with given file
                 case "-v":
-                    //TODO Add visualisation stuff
                     _visualisationState=DisplayMode.VISUALISE;
                     break;
                 //Set output file name (if needed)
@@ -163,6 +164,11 @@ public class IO implements IIO {
      */
     public int getNumberOfProcessorsForParallelAlgorithm() {
         return _numberOfProcessorsForParallelAlgorithm;
+    }
+
+    @Override
+    public String getFileName() {
+        return _inputFileName;
     }
 
     /**

@@ -10,5 +10,4 @@ public class InputFileException extends Exception {
     public InputFileException(String exceptionMessage) {
         super(exceptionMessage);
     }
-
 }

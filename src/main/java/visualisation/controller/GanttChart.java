@@ -7,14 +7,19 @@ import java.util.List;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ValueAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 
 /**
@@ -22,27 +27,34 @@ import javafx.scene.shape.Rectangle;
  */
 public class GanttChart<X,Y> extends XYChart<X,Y> {
 
-    public static class ExtraData {
+    public static class Properties {
 
-        public long length;
-        public String styleClass;
-        public ExtraData(long lengthMs, String styleClass) {
+        public long _length;
+        public String _styleClass;
+        public String _style;
+
+        public Properties(long lengthMs, String style) {
             super();
-            this.length = lengthMs;
-            this.styleClass = styleClass;
+            _length = lengthMs;
+            _styleClass = "gantt-border";
+            _style = style;
         }
         public long getLength() {
-            return length;
+            return _length;
         }
         public void setLength(long length) {
-            this.length = length;
+            _length = length;
         }
         public String getStyleClass() {
-            return styleClass;
+            return _styleClass;
+        }
+        public String getStyle() {
+            return _style;
         }
         public void setStyleClass(String styleClass) {
-            this.styleClass = styleClass;
+            _styleClass = styleClass;
         }
+        public void setStyle(String style) { _style = style; }
     }
 
     private double blockHeight = 10;
@@ -59,12 +71,16 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         setData(data);
     }
 
-    private static String getStyleClass( Object obj) {
-        return ((ExtraData) obj).getStyleClass();
+    private static String getStyleClass(Object obj) {
+        return ((Properties) obj).getStyleClass();
     }
 
-    private static double getLength( Object obj) {
-        return ((ExtraData) obj).getLength();
+    private static String getStyle(Object obj) {
+        return ((Properties) obj).getStyle();
+    }
+
+    private static double getLength(Object obj) {
+        return ((Properties) obj).getLength();
     }
 
     @Override protected void layoutPlotChildren() {
@@ -82,26 +98,25 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                     continue;
                 }
                 Node block = item.getNode();
-                Rectangle ellipse;
+                Rectangle rectangle;
                 if (block != null) {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
+                        //TODO: HELP ME CENTRE THE TEXT INSIDE THE REGION
+
                         if (region.getShape() == null) {
-                            ellipse = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());
+                            rectangle = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());
                         } else if (region.getShape() instanceof Rectangle) {
-                            ellipse = (Rectangle)region.getShape();
+                            rectangle = (Rectangle)region.getShape();
                         } else {
                             return;
                         }
-                        ellipse.setWidth( getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
-                        ellipse.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
+                        rectangle.setWidth( getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
+                        rectangle.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         y -= getBlockHeight() / 2.0;
 
-                        // Note: workaround for RT-7689 - saw this in ProgressControlSkin
-                        // The region doesn't update itself when the shape is mutated in place, so we
-                        // null out and then restore the shape in order to force invalidation.
                         region.setShape(null);
-                        region.setShape(ellipse);
+                        region.setShape(rectangle);
                         region.setScaleShape(false);
                         region.setCenterShape(false);
                         region.setCacheShape(false);
@@ -163,8 +178,8 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             item.setNode(container);
         }
 
-        container.getStyleClass().add( getStyleClass( item.getExtraValue()));
-
+        container.getStyleClass().add( getStyleClass(item.getExtraValue()));
+        container.setStyle(getStyle(item.getExtraValue()));
         return container;
     }
 
