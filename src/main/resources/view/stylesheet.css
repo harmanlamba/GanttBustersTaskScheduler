@@ -6,8 +6,120 @@
   -fx-background-color: #ffffff;
 }
 
-.status-red {
-  -fx-background-color: #f05171;
+.gantt-border {
   -fx-border-color: white;
   -fx-border-width: 1;
+}
+
+.table-column{
+  -fx-alignment: CENTER;
+}
+
+.table-row-cell:filled:selected {
+  -fx-background: -fx-control-inner-background ;
+  -fx-background-color: -fx-table-cell-border-color, -fx-background ;
+  -fx-background-insets: 0, 0 0 1 0 ;
+  -fx-table-cell-border-color: derive(-fx-color, 0%);
+  -fx-border-width: 0;
+}
+
+.table-row-cell:odd:filled:selected {
+  -fx-background: -fx-control-inner-background-alt ;
+  -fx-border-width: 0;
+}
+
+/*
+FONT SETTING
+ */
+#fileNameText {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#stats {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#searchGraph {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#algorithmStatus {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#algorithmTypeText {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#timeElapsedText {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#numberOfTasks {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#statusPane {
+  -fx-min-width: 50%;
+  -fx-border-radius: 10;
+  -fx-border-width: 3;
+  -fx-border-color: #dedede;
+  -fx-background-radius: 10;
+  -fx-background-color: #dedede;
+}
+
+#numberOfProcessors {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#numberOfThreads {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#bestScheduleCost {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#numberOfIterations {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+
+#branchesPruned {
+  -fx-font-family: 'Space Mono', monospace;
+
+}
+
+#currentLowerBound {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#graphTab {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#taskTab {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#taskSchedule {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#resultTab {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#scheduleResults {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#scheduleResultsTable {
+  -fx-font-family: 'Space Mono', monospace;
 }

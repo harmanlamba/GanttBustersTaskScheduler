@@ -1,20 +1,23 @@
 package visualisation.controller;
 
-import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import app.App;
-import com.jfoenix.controls.JFXTreeTableView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.geometry.NodeOrientation;
+import javafx.geometry.Pos;
 import javafx.scene.chart.*;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -24,57 +27,81 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import visualisation.controller.timer.AlgorithmTimer;
+import visualisation.controller.timer.ITimerObservable;
+import visualisation.controller.timer.ITimerObserver;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.*;
 import java.util.List;
 
-public class MainController implements IObserver, Initializable {
+public class MainController implements IObserver, ITimerObserver, Initializable {
+
+    //TODO: The strings may need to be changed into something that is less confusing
+    private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
+    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
+    private final static String ALGORITHM_STATUS_INPROGRESS_TEXT = "In progress";
+    private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
+    private final static String ALGORITHM_FILE_TEXT = "Running: ";
+    private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
+    private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: "; //this one
+    private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: "; //this one
+    private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
+    private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
+    private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
+    private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
+    private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
+    private final static String START_TIME_TEXT = "00:00:00";
 
     //Private Fields
     private IObservable _observableAlgorithm;
-    private Graph _algorithmGraph;
     private SingleGraph _graphStream;
     private IIO _io;
     private GraphManager _graphManager;
     private GraphUpdater _graphUpdater;
-    private Map<String, GraphNode> _algorithmResultMap;
-    private AnimationTimer _animationTimer;
+    private ProcessorColourHelper _processColourHelper;
+    private ITimerObservable _observableTimer;
+    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
+    private SelectedTab _currentTab;
+    private Map<String, GraphNode> _latestUpdateMap;
 
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
     public VBox statsContainer;
+    public VBox statusPane;
     public Text algorithmStatus;
+    public Text fileNameText;
     public Text algorithmTypeText;
     public Text timeElapsedText;
     public Text numberOfTasks;
     public Text numberOfProcessors;
     public Text numberOfThreads;
-    public Text currentBestSchedule;
-    public Text branchesBounded;
+    public Text bestScheduleCost;
+    public Text numberOfIterations;
     public Text branchesPruned;
-    public Text statesGenerated;
-    public TabPane visualsContainer;
+    public Text currentLowerBound;
 
+    public TabPane visualsContainer;
     public Tab graphTab;
     public Pane graphPane;
     public SwingNode swingNode;
 
     public Tab taskTab;
     public Pane ganttPane;
+    private GanttChart<Number, String> ganttChart;
+    public Button physicButton;
 
     public Tab resultTab;
-    public JFXTreeTableView<?> scheduleResultsTable;
-    public TreeTableColumn<?, ?> taskIDColumn;
-    public TreeTableColumn<?, ?> startTimeColumn;
-    public TreeTableColumn<?, ?> assignedProcessorColumn;
+    public TableView<GraphNode> scheduleResultsTable;
+    public TableColumn<GraphNode, String> taskIDColumn;
+    public TableColumn<GraphNode, Integer> startTimeColumn;
+    public TableColumn<GraphNode, Integer> endTimeColumn;
+    public TableColumn<GraphNode, Integer> assignedProcessorColumn;
 
     public MainController(){
 
@@ -86,57 +113,81 @@ public class MainController implements IObserver, Initializable {
 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
-        initializeGraph();
-        initializeGantt();
-        initializeStatistics();
+        _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
         // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
         // somehow to make this not an issue
         //Algorithm
-        Graph graph = new Graph(_io.getNodeMap(), _io.getEdgeList()); //create graph from nodes and edges
-        Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph, _io.getNumberOfProcessorsForTask(), _io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();  //call algorithm graph
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
-        algorithmTypeText.setText(algorithmTypeText.getText() + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType());
-        _algorithmGraph = _observableAlgorithm.getAlgorithmGraph();
-        algorithm.add(this);
-        startTimer();
-        //Runs the algorithm in a new thread
-        new Thread() {
-            public void run() {
-                _io.write(algorithm.solveAlgorithm());
-            }
-        }.start();
+        _observableAlgorithm.add(this);
+        _observableTimer = AlgorithmTimer.getAlgorithmTimer();
+        _observableTimer.add(this);
+
+        initializeTabSelectionModel();
+        initializeViews();
     }
 
-    @Override
-    public void updateGraph() {
-        _observableAlgorithm.getCurrentBestSolution();
-        //Run on another thread
-        Platform.runLater(() -> {
-            //update graph visualization using runnable
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    for (Node node : _graphStream) {
-                        //TODO: Receive and update node states via GraphUpdater
-                    }
+    private void initializeViews() {
+        initializeStatistics();
+        initializeGraph();
+        initializeGantt();
+        initializeTable();
+    }
+
+    private void initializeTabSelectionModel() {
+        _currentTab = SelectedTab.GRAPH;
+        visualsContainer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
+                _currentTab = SelectedTab.values()[visualsContainer.getSelectionModel().getSelectedIndex()];
+                if (oldValue != newValue) {
+                    updateScheduleInformation(_latestUpdateMap);
                 }
-            });
+            }
         });
     }
 
     @Override
-    public void stopTimer() {
-        algorithmStatus.setText("Status: Done");
-        _animationTimer.stop();
-        _algorithmResultMap = _observableAlgorithm.getCurrentBestSolution();
+    public void updateScheduleInformation(Map<String, GraphNode> update) {
+        _latestUpdateMap = update;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //update graph visualization using runnable
+                List<GraphNode> test = new ArrayList<>(update.values());
+
+                switch (_currentTab) {
+                    case TABLE:
+                        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                        break;
+                    case GANTT:
+                        for (Node node : _graphStream) {
+                            updateGantt(test); //TODO: TEMP
+                        }
+                        break;
+                    default: //graph
+                        _graphManager.updateGraphStream(test);
+                        _graphStream = _graphManager.getGraph();
+                        _graphUpdater.updateGraph(_graphStream);
+
+                }
+            }
+        });
+    }
+
+    @Override
+    public void algorithmStopped(int bestCost) {
+        _observableTimer.stop();
+        statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
+        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
     }
 
     private void initializeGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
         _graphStream = _graphManager.getGraph();
-        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        _graphUpdater = new GraphUpdater(_graphStream, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD, _processColourHelper);
         _graphUpdater.enableAutoLayout();
 
         //Create graphstream view panel
@@ -144,8 +195,7 @@ public class MainController implements IObserver, Initializable {
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setProcessorColours(_io.getNumberOfProcessorsForTask());
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes
+        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -156,105 +206,103 @@ public class MainController implements IObserver, Initializable {
     }
 
     private void initializeGantt() {
-        _algorithmResultMap = _io.getAlgorithmResultMap();
-
         //Gantt chart initialize
-        final NumberAxis xAxis = new NumberAxis();
-        final CategoryAxis yAxis = new CategoryAxis();
-        final GanttChart<Number, String> ganttChart = new GanttChart<>(xAxis, yAxis);
+        NumberAxis xAxis = new NumberAxis();
+        CategoryAxis yAxis = new CategoryAxis();
+        ganttChart = new GanttChart<>(xAxis, yAxis);
         ganttPane.getChildren().add(ganttChart);
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
         //ganttchart fx properties
         ganttChart.setPrefWidth(640);
+        ganttChart.setPrefHeight(450);
         ganttChart.setLayoutX(20);
         ganttChart.setLayoutY(40);
         ganttChart.setLegendVisible(false);
-        ganttChart.setBlockHeight(60);
-
-        //y axis (processor count)
-        List<String> machines = new ArrayList<>();
-        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
-            machines.add("Processor " + Integer.toString(i));
-        }
-        yAxis.setLabel("");
-        yAxis.setTickLabelGap(10);
-        yAxis.setCategories(FXCollections.observableList(machines));
+        ganttChart.setBlockHeight(40);
+        ganttChart.setAlternativeRowFillVisible(false);
+        ganttChart.setHorizontalGridLinesVisible(false);
+        ganttChart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         //x axis (xValue=Starttime, lengthMs=Worktime)
         xAxis.setLabel("Start time (s)");
-        xAxis.setMinorTickCount(10);
-        for (String processor : machines) {
-            XYChart.Series series1 = new XYChart.Series();
-            series1.getData().add(new XYChart.Data(0, processor, new GanttChart.ExtraData(1, "status-red")));
-            series1.getData().add(new XYChart.Data(1, processor, new GanttChart.ExtraData(2, "status-red")));
-            series1.getData().add(new XYChart.Data(3, processor, new GanttChart.ExtraData(3, "status-red")));
-            series1.getData().add(new XYChart.Data(6, processor, new GanttChart.ExtraData(4, "status-red")));
-            ganttChart.getData().addAll(series1);
+        xAxis.setTickUnit(50);
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(_observableAlgorithm.getMaximumPossibleCost());
+        xAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
+
+        //y axis (processor count)
+        List<String> processors = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            processors.add(Integer.toString(i));
         }
+        yAxis.setLabel("");
+        yAxis.setTickLabelGap(20);
+        yAxis.setCategories(FXCollections.observableList(processors));
+        yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
+
+
     }
 
     private void initializeStatistics() {
-        algorithmStatus.setText(algorithmStatus.getText() + "In progress");
-        numberOfTasks.setText(numberOfTasks.getText() + _io.getNodeMap().size());
-        numberOfProcessors.setText(numberOfProcessors.getText() + _io.getNumberOfProcessorsForTask());
-        numberOfThreads.setText(numberOfThreads.getText() + _io.getNumberOfProcessorsForParallelAlgorithm());
+        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_INPROGRESS_TEXT);
+        fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
+        algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
+        numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
+        numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
+        numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
-    //TODO: Refactor this stuff out
-    public void setTimerStatistic(long currentTime) {
-        Platform.runLater(() -> {
+    private void initializeTable() {
+        taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
+        scheduleResultsTable.setItems(_tablePopulationList);
+     }
 
-            long minutes = (currentTime / 60000);
-            long seconds = ((currentTime - minutes * 60) / 1000);
-            long milliseconds = (currentTime - minutes * 60 - seconds * 1000) / 10;
-
-            String minutesText ="";
-            String secondsText = "";
-            String millisecondsText = "";
-            if (seconds % 60 < 10) { //Fix seconds
-                secondsText = "0" + seconds % 60;
-            } else {
-                secondsText = Long.toString(seconds % 60);
-            }
-
-            if (minutes < 10) {//Fix minutes
-                minutesText = "0" + minutes;
-            } else {
-                minutesText = Long.toString(minutes);
-            }
-
-            if (milliseconds < 10) {
-                millisecondsText = "00" + millisecondsText;
-            } else {
-                millisecondsText = Long.toString(milliseconds);
-            }
-
-            timeElapsedText.setText("Time Elapsed: " + minutesText + " : " + secondsText + " : " + millisecondsText);
-        });
+    private void updateTable(Map<String, GraphNode> update) {
+        _tablePopulationList.clear();
+        //Repopulate with the new GraphNode Details
+        for(Map.Entry<String,GraphNode> node : update.entrySet()){
+            //Setting the end-time for each GraphNode
+            node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
+            _tablePopulationList.add(node.getValue());
+        }
     }
 
-    //TODO: Refactor this crap outta here
-    public void startTimer() {
-        _animationTimer = new AnimationTimer() {
-            private long timestamp;
-            private long time = 0;
-            @Override
-            public void start() {
-                // current time adjusted by remaining time from last run
-                timestamp = System.currentTimeMillis();
-                super.start();
-            }
-            @Override
-            public void handle(long now) {
-                long newTime = System.currentTimeMillis();
-                if (timestamp <= newTime) {
-                    time += (newTime - timestamp);
-                    timestamp += (newTime - timestamp);
-                    setTimerStatistic(time);
+    //TODO: Call for every task allocated to a processor
+    public void updateGantt(List<GraphNode> test) {
+        XYChart.Series series1 = new XYChart.Series();
+        ganttChart.getData().clear();
+
+        List<String> processors = new ArrayList<>();
+        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
+            processors.add(Integer.toString(i));
+        }
+
+        for (String processor : processors) {
+            for (GraphNode graphNode : test) {
+                String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
+                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour)));
                 }
             }
-        };
-        _animationTimer.start(); //start timer
+        }
+        ganttChart.getData().addAll(series1);
+    }
+
+    @Override
+    public void updateIterationInformation(int prunedBranches, int iterations, int lowerBound) {
+        branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
+        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
+        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));
+    }
+
+    @Override
+    public void updateTimer(String time) {
+        timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
     }
 }
