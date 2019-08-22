@@ -174,4 +174,8 @@ public class GraphUpdater extends Viewer {
         };
         viewPanel.setMouseManager(manager);
     }
+
+    public void unsetMouseManager(ViewPanel viewPanel) {
+        viewPanel.setMouseManager(null);
+    }
 }

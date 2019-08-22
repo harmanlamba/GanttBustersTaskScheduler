@@ -27,6 +27,7 @@ public class App {
 
             switch(_mainIO.getStateOfVisualisation()) {
                 case COMMAND_LINE:
+                    System.out.println("Running...");
                     _mainIO.write(algorithm.solveAlgorithm()); //write onto output dot file
                     break;
                 default:
