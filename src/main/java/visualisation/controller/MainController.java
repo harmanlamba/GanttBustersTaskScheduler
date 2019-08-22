@@ -12,6 +12,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.chart.*;
@@ -100,7 +102,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Tab taskTab;
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
-    public Button physicButton;
+    public Button spriteButton;
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
@@ -247,8 +249,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
-
-
     }
 
     private void initializeStatistics() {
@@ -288,7 +288,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            //TODO: See why colors are not assigned differently
                             setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.1 0 5;");
                         }
                     }
@@ -298,7 +297,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         }
     }
 
-    //TODO: Call for every task allocated to a processor
     public void updateGantt(List<GraphNode> test) {
         XYChart.Series series1 = new XYChart.Series();
         ganttChart.getData().clear();
