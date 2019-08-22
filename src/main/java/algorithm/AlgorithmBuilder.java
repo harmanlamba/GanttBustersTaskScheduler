@@ -1,5 +1,6 @@
 package algorithm;
 
+import algorithm.bbastarbase.BBAStarBase;
 import algorithm.idastarbase.IDAStarBase;
 import algorithm.idastarparallel.IDAStarParallel;
 import algorithm.sequential.Sequential;
@@ -42,7 +43,7 @@ public class AlgorithmBuilder {
                     _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
                 } else {
                     _algorithmType = AlgorithmType.IDASTARBASE;
-                    _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
+                    _algorithm = new BBAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
         return _algorithmBuilder;
