@@ -1,16 +1,11 @@
 package visualisation.controller.table;
 
-import app.App;
+
 import com.jfoenix.controls.JFXListCell;
-import graph.GraphNode;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import visualisation.controller.ProcessorColourHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class LegendCell extends JFXListCell<String> {
     private HBox hBox  = new HBox();
