@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
@@ -138,7 +138,7 @@
                                           <Pane fx:id="graphPane" prefHeight="633.0" prefWidth="700.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
-                                                <Button layoutX="14.0" layoutY="491.0" mnemonicParsing="false" text="Toggle jiggly" />
+                                                <Button layoutX="14.0" layoutY="478.0" mnemonicParsing="false" text="Toggle jiggly" />
                                              </children>
                                           </Pane>
                                        </children>
