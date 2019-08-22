@@ -12,6 +12,7 @@ import java.util.*;
 
 public class BBAStarBase extends Algorithm {
 
+    private final static int DEPTH_OF_STATES_TO_STORE = 40;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
@@ -55,7 +56,9 @@ public class BBAStarBase extends Algorithm {
 
             Set<Stack<Temp>> temp = new HashSet<>(convertProessorAllocationsToTemp());
             if (!_previousStates.contains(temp)) {
-                _previousStates.add(temp);
+                if (_depth < DEPTH_OF_STATES_TO_STORE) {
+                    _previousStates.add(temp);
+                }
 
                 if (_freeTaskList.isEmpty() && _depth == _numTasks) {
                     int cost = getCostOfCurrentAllocation();
@@ -92,6 +95,7 @@ public class BBAStarBase extends Algorithm {
         }
     }
 
+    // TODO: change temp to an array of strings with two indices for speedup
     private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
         Set<Stack<Temp>> output = new HashSet<>();
         for (int i=0; i < _numProcTask; i++) {
