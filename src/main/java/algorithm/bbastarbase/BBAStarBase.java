@@ -19,6 +19,7 @@ public class BBAStarBase extends Algorithm {
     private List<Stack<GraphNode>> _processorAllocation;
     private int _depth;
     private int _numTasks;
+    private Set<Set<Stack<GraphNode>>> _previousStates;
 
     //Constructor
     public BBAStarBase(Graph graph, int numProcTask, int numProcParallel) {
@@ -29,6 +30,7 @@ public class BBAStarBase extends Algorithm {
         _upperBound = initializeUpperBound();
         _depth = 0;
         _numTasks = _graph.get_vertexMap().size();
+        _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
         for (int i = 0; i < numProcTask; i++) {
             _processorAllocation.add(new Stack<GraphNode>());
@@ -48,21 +50,36 @@ public class BBAStarBase extends Algorithm {
             task.setFree(false);
             _taskInfo.put(task.getId(), task);
             _processorAllocation.get(processor).push(task);
-
             updateFreeTasks(task);
 
-            if (_freeTaskList.isEmpty() && _depth == _numTasks) {
-                int cost = getCostOfCurrentAllocation();
-                if (cost < _upperBound) {
-                    _upperBound = cost;
-                    assignCurrentBestSolution();
-                    notifyObserversOfSchedulingUpdate();
-                }
-            } else {
-                for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
-                    if (freeTask.isFree()) {
-                        for (int i=0; i < _numProcTask; i++) {
-                            recursive(freeTask, i);
+            Set<Stack<GraphNode>> temp = new HashSet<>(_processorAllocation);
+            if (!_previousStates.contains(temp)) {
+                _previousStates.add(temp);
+
+                if (_freeTaskList.isEmpty() && _depth == _numTasks) {
+                    int cost = getCostOfCurrentAllocation();
+                    if (cost < _upperBound) {
+                        _upperBound = cost;
+                        System.out.println(cost);
+                        assignCurrentBestSolution();
+                        notifyObserversOfSchedulingUpdate();
+                    }
+                } else {
+                    for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
+                        if (freeTask.isFree()) {
+                            for (int i = 0; i < _numProcTask; i++) {
+                                if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
+                                    int freeProc = getFreeProc();
+                                    if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
+                                        // Do nothing
+                                        _branchesPruned += 1;
+                                    } else {
+                                        recursive(freeTask, i);
+                                    }
+                                } else {
+                                    recursive(freeTask, i);
+                                }
+                            }
                         }
                     }
                 }
@@ -214,8 +231,15 @@ public class BBAStarBase extends Algorithm {
     @Override protected int getBestScheduleCost() {
         return _upperBound;
     }
-
-
+    private int getFreeProc() {
+        int free = 0;
+        for (int i = 0; i < _numProcTask; i++) {
+            if (_processorAllocation.get(i).empty()) {
+                free++;
+            }
+        }
+        return free;
+    }
 
 
 }
