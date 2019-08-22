@@ -222,10 +222,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
         //ganttchart fx properties
-        ganttChart.setPrefWidth(640);
-        ganttChart.setPrefHeight(450);
-        ganttChart.setLayoutX(20);
-        ganttChart.setLayoutY(40);
+        ganttChart.setPrefWidth(650);
+        ganttChart.setPrefHeight(500);
+        ganttChart.setLayoutX(10);
+        ganttChart.setLayoutY(10);
         ganttChart.setLegendVisible(false);
         ganttChart.setBlockHeight(40);
         ganttChart.setAlternativeRowFillVisible(false);
@@ -245,7 +245,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
         }
-        yAxis.setLabel("");
+        yAxis.setLabel("Processor(s)");
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
