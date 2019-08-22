@@ -27,6 +27,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import visualisation.controller.table.MockGraphNode;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.timer.ITimerObservable;
 import visualisation.controller.timer.ITimerObserver;
@@ -65,7 +66,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private GraphUpdater _graphUpdater;
     private ProcessorColourHelper _processColourHelper;
     private ITimerObservable _observableTimer;
-    private ObservableList<GraphNode> _tablePopulationList = FXCollections.observableArrayList();
+    private ObservableList<MockGraphNode> _tablePopulationList = FXCollections.observableArrayList();
     private SelectedTab _currentTab;
     private Map<String, GraphNode> _latestUpdateMap;
 
@@ -97,11 +98,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Button physicButton;
 
     public Tab resultTab;
-    public TableView<GraphNode> scheduleResultsTable;
-    public TableColumn<GraphNode, String> taskIDColumn;
-    public TableColumn<GraphNode, Integer> startTimeColumn;
-    public TableColumn<GraphNode, Integer> endTimeColumn;
-    public TableColumn<GraphNode, Integer> assignedProcessorColumn;
+    public TableView<MockGraphNode> scheduleResultsTable;
+    public TableColumn<MockGraphNode, String> taskIDColumn;
+    public TableColumn<MockGraphNode, Integer> startTimeColumn;
+    public TableColumn<MockGraphNode, Integer> endTimeColumn;
+    public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
 
     public MainController(){
 
@@ -159,7 +160,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
                 switch (_currentTab) {
                     case TABLE:
-                        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                        updateTable(test); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
                         break;
                     case GANTT:
                         for (Node node : _graphStream) {
@@ -195,7 +196,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -257,19 +258,38 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
+        taskIDColumn.setComparator(stringToIntComparator);
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
      }
 
-    private void updateTable(Map<String, GraphNode> update) {
+    private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
+        Map<String,String> colorMap =  new HashMap<>();
         //Repopulate with the new GraphNode Details
-        for(Map.Entry<String,GraphNode> node : update.entrySet()){
-            //Setting the end-time for each GraphNode
-            node.getValue().setEndTime(node.getValue().getStartTime() + node.getValue().getWeight());
-            _tablePopulationList.add(node.getValue());
+        for(GraphNode node : update){
+            if(node.getStartTime() != -1){
+                MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
+                colorMap.put(tempMockGraphNode.getId(),_processColourHelper.getProcessorColour(tempMockGraphNode.getProcessor()));
+                taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(empty){
+                            setText(null);
+                        }else{
+                            setText(item);
+                            String color = colorMap.get(item);
+                            //TODO: See why colors are not assigned differently
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
+                        }
+                    }
+                });
+                _tablePopulationList.add(tempMockGraphNode);
+            }
         }
     }
 
