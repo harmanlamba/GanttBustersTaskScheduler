@@ -107,9 +107,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                 if (block != null) {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
-                        Text text = new Text(getTaskId(item.getExtraValue()));
-                        region.getChildren().add(text);
-                        //TODO: HELP ME CENTRE THE TEXT INSIDE THE REGION
 
                         if (region.getShape() == null) {
                             rectangle = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());
@@ -127,6 +124,15 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         region.setScaleShape(false);
                         region.setCenterShape(false);
                         region.setCacheShape(false);
+
+                        //TODO: I actually can't get it to center. Help me Obi-Wan Kenobi you're my only hope
+                        region.setMaxHeight(rectangle.getHeight());
+                        region.setMinHeight(rectangle.getHeight());
+                        region.setPrefHeight(rectangle.getHeight());
+                        Text text = new Text(getTaskId(item.getExtraValue())); //don't delete
+                        text.setTextAlignment(TextAlignment.CENTER);
+                        region.setAlignment(Pos.CENTER);
+                        region.getChildren().add(text); //don't delete
 
                         block.setLayoutX(x);
                         block.setLayoutY(y);
