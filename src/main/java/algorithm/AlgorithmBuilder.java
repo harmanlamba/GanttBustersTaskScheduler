@@ -2,6 +2,7 @@ package algorithm;
 
 import algorithm.idastarbase.IDAStarBase;
 import algorithm.idastarparallel.IDAStarParallel;
+import algorithm.idastarparallel.IDAStarParallelRecursive;
 import algorithm.sequential.Sequential;
 import graph.Graph;
 
