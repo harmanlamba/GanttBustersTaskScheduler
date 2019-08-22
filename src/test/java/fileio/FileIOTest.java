@@ -1,22 +1,30 @@
-package app;
+package fileio;
+
+import algorithm.Algorithm;
+import algorithm.AlgorithmBuilder;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+import exception.InputFileException;
+import fileio.IO;
+import graph.Graph;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import algorithm.Algorithm;
-import algorithm.AlgorithmBuilder;
-import exception.InputFileException;
-import fileio.IO;
-import graph.Graph;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
- * AppTest - testing the input and output of dot files. If exceptions have been caught from some exception (usually found
- * in the dot file), the tests will fail.
+ * Tests the reading and writing of DOT files.
+ * Invalid DOT file inputs will be read and will produce specific error messages.
+ * Valid DOT file inputs will be read and will run an arbitrary algorithm (as specified in setup) in order
+ * to test the writing of files, which are subject to manual confirmation of file creation.
  */
-public class AppTest 
-{
+public class FileIOTest {
     //File arrays for input file locations
     private String[] _file1;
     private String[] _file2;
@@ -25,6 +33,9 @@ public class AppTest
     private String[] _file5;
     private String[] _invalidFormat;
     private String[] _missingNode;
+    private String[] _negativeEdgeWeight;
+    private String[] _negativeNodeWeight;
+    private String[] _ownExample1;
 
     @Before
     public void setup() {
@@ -35,48 +46,59 @@ public class AppTest
         _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "1"};
         _invalidFormat = new String[]{"src/main/resources/e6.dot", "1", "-o", "me", "-p", "2"};
         _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
+        _negativeEdgeWeight = new String[]{"src/main/resources/e8.dot", "2", "-o", "me", "-p", "1"};
+        _negativeNodeWeight = new String[]{"src/main/resources/e9.dot", "2", "-o", "me", "-p", "1"};
+        _ownExample1 = new String[]{"src/main/resources/e10.dot", "2", "-o", "me", "-p", "1"};
+    }
+
+    /**
+     * Delete files after all tests execute
+     */
+    @AfterClass
+    public static void deleteOutputFile()  {
+        File file;
+        for (int i = 1; i < 6; i++) {
+            file = new File("src/main/resources/me"+i+".dot");
+            file.delete();
+        }
     }
 
     /**
      * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
      * @param file - dot file input file location
      */
-    private void sequentialTestHelper(String[] file) throws InputFileException {
+    private void idaStarTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();
         io.write(algorithm.solve());
-
     }
 
     @Test
     public void testE1File() {
         try {
-            sequentialTestHelper(_file1);
+            idaStarTestHelper(_file1);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
         }
-
     }
 
     @Test
     public void testE2File() {
         try {
-            sequentialTestHelper(_file2);
+            idaStarTestHelper(_file2);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
         }
     }
 
-
-
     @Test
     public void testE3File() {
         try {
-            sequentialTestHelper(_file3);
+            idaStarTestHelper(_file3);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -86,7 +108,7 @@ public class AppTest
     @Test
     public void testE4File() {
         try {
-            sequentialTestHelper(_file4);
+            idaStarTestHelper(_file4);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -96,7 +118,7 @@ public class AppTest
     @Test
     public void testE5File() {
         try {
-            sequentialTestHelper(_file5);
+            idaStarTestHelper(_file5);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -106,7 +128,7 @@ public class AppTest
     @Test
     public void testInvalidFormat() {
         try {
-            sequentialTestHelper(_invalidFormat);
+            idaStarTestHelper(_invalidFormat);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Invalid Format");
@@ -116,10 +138,44 @@ public class AppTest
     @Test
     public void testMissingNodes() {
         try {
-            sequentialTestHelper(_missingNode);
+            idaStarTestHelper(_missingNode);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Node has not been instantiated");
         }
     }
+
+    /**
+     * BVA testing of a negative edge weight in the input file.
+     */
+    @Test
+    public void testNegativeEdgeWeight() {
+        try {
+            idaStarTestHelper(_negativeEdgeWeight);
+            assert(false);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Invalid Format");
+        }
+    }
+
+    /**
+     * BVA testing of a negative node weight in the input file.
+     */
+    @Test
+    public void testNegativeNodeWeight() {
+        try {
+            idaStarTestHelper(_negativeNodeWeight);
+            assert(false);
+        } catch(InputFileException e) {
+            assertEquals(e.getMessage(),"Invalid Format");
+        }
+    }
+
+
+    // TODO: Apply regex to output DOT files to check for the correct format
+    @Test
+    public void testOutputFileFormat() {
+
+    }
+
 }
