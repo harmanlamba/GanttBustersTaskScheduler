@@ -3,6 +3,7 @@ package algorithm.bbastarbase;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
+import graph.Temp;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -19,7 +20,7 @@ public class BBAStarBase extends Algorithm {
     private List<Stack<GraphNode>> _processorAllocation;
     private int _depth;
     private int _numTasks;
-    private Set<Set<Stack<GraphNode>>> _previousStates;
+    private Set<Set<Stack<Temp>>> _previousStates;
 
     //Constructor
     public BBAStarBase(Graph graph, int numProcTask, int numProcParallel) {
@@ -40,7 +41,7 @@ public class BBAStarBase extends Algorithm {
 
     private void recursive(GraphNode task, int processor) {
         int startTime = getStartTime(task, processor);
-        if (startTime + task.getWeight() < _upperBound) {
+        if (startTime + task.getWeight() <= _upperBound) {
             _depth += 1;
 
             // Assigns task to processor
@@ -52,13 +53,13 @@ public class BBAStarBase extends Algorithm {
             _processorAllocation.get(processor).push(task);
             updateFreeTasks(task);
 
-            Set<Stack<GraphNode>> temp = new HashSet<>(_processorAllocation);
+            Set<Stack<Temp>> temp = new HashSet<>(convertProessorAllocationsToTemp());
             if (!_previousStates.contains(temp)) {
                 _previousStates.add(temp);
 
                 if (_freeTaskList.isEmpty() && _depth == _numTasks) {
                     int cost = getCostOfCurrentAllocation();
-                    if (cost < _upperBound) {
+                    if (cost <= _upperBound) {
                         _upperBound = cost;
                         System.out.println(cost);
                         assignCurrentBestSolution();
@@ -68,17 +69,17 @@ public class BBAStarBase extends Algorithm {
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
                         if (freeTask.isFree()) {
                             for (int i = 0; i < _numProcTask; i++) {
-                                if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
-                                    int freeProc = getFreeProc();
-                                    if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
-                                        // Do nothing
-                                        _branchesPruned += 1;
-                                    } else {
+//                                if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
+//                                    int freeProc = getFreeProc();
+//                                    if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
+//                                        // Do nothing
+//                                        _branchesPruned += 1;
+//                                    } else {
                                         recursive(freeTask, i);
-                                    }
-                                } else {
-                                    recursive(freeTask, i);
-                                }
+//                                    }
+//                                } else {
+//                                    recursive(freeTask, i);
+//                                }
                             }
                         }
                     }
@@ -89,6 +90,19 @@ public class BBAStarBase extends Algorithm {
 
 
         }
+    }
+
+    private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
+        Set<Stack<Temp>> output = new HashSet<>();
+        for (int i=0; i < _numProcTask; i++) {
+            List<GraphNode> temp = new ArrayList<>(_processorAllocation.get(i));
+            Stack<Temp> stack = new Stack<>();
+            for (GraphNode task : temp) {
+                stack.push(new Temp(task.getId(), task.getStartTime()));
+            }
+            output.add(stack);
+        }
+        return output;
     }
 
 
@@ -109,6 +123,7 @@ public class BBAStarBase extends Algorithm {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
             max += task.getWeight();
         }
+        System.out.println(max);
         return max;
     }
     @Override protected int getCurrentLowerBound() {
