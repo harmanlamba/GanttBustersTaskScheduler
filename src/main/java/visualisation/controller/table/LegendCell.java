@@ -1,0 +1,51 @@
+package visualisation.controller.table;
+
+import app.App;
+import com.jfoenix.controls.JFXListCell;
+import graph.GraphNode;
+import javafx.scene.control.Label;
+import javafx.scene.layout.*;
+import visualisation.controller.ProcessorColourHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class LegendCell extends JFXListCell<String> {
+    private HBox hBox  = new HBox();
+    private Label label = new Label("(empty)");
+    private Pane spacerPane = new Pane();
+    private Pane colorPane = new Pane();
+    private ProcessorColourHelper _processColourHelper;
+
+
+
+
+    public LegendCell(ProcessorColourHelper processorColorHelper){
+        super();
+        _processColourHelper = processorColorHelper;
+        hBox.getChildren().addAll(label, spacerPane,colorPane);
+        hBox.setHgrow(spacerPane, Priority.ALWAYS);
+        hBox.setHgrow(colorPane,Priority.ALWAYS);
+        colorPane.setBackground(Background.EMPTY);
+
+    }
+
+
+    @Override
+    protected void updateItem(String item, boolean empty) {
+        super.updateItem(item, empty);
+        setText(null);
+        if(empty){
+
+        }else{
+            label.setText(item!=null ? item : "<null>");
+            String color = _processColourHelper.getProcessorColour(Integer.parseInt(item));
+            String style = "-fx-background-color: " + color + ";"+"";
+            System.out.println(style);
+            colorPane.setStyle(style);
+            setGraphic(hBox);
+        }
+    }
+}

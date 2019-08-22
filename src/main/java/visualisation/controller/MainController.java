@@ -2,6 +2,7 @@ package visualisation.controller;
 
 import algorithm.AlgorithmBuilder;
 import app.App;
+import com.jfoenix.controls.JFXListView;
 import fileio.IIO;
 import graph.Graph;
 import graph.GraphNode;
@@ -23,10 +24,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import visualisation.controller.table.LegendCell;
 import visualisation.controller.table.MockGraphNode;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.timer.ITimerObservable;
@@ -109,6 +112,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public TableColumn<MockGraphNode, Integer> endTimeColumn;
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
 
+    public JFXListView<String> legendListView;
+
     public MainController(){
 
     }
@@ -136,6 +141,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeViews() {
         initializeStatistics();
+        initializeLegend();
         initializeGraph();
         initializeGantt();
         initializeTable();
@@ -249,6 +255,20 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
 
 
+    }
+
+    private void initializeLegend(){
+        ObservableList<String> processorList = FXCollections.observableArrayList();
+        for(int i=0 ; i < _io.getNumberOfProcessorsForTask(); i++){
+            processorList.add(String.valueOf(i));
+        }
+        legendListView.setItems(processorList);
+        legendListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new LegendCell(_processColourHelper);
+            }
+        });
     }
 
     private void initializeStatistics() {
