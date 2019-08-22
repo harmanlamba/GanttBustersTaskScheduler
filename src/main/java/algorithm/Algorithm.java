@@ -107,4 +107,12 @@ public abstract class Algorithm implements IObservable {
      * @return returns the current lower bound to compare during algorithm iterations
      */
     protected abstract int getCurrentLowerBound();
+
+    public int getMaximumPossibleCost() {
+        int max = 0;
+        for (GraphNode node : _graph.get_vertexMap().values()) {
+            max += node.getWeight();
+        }
+        return max;
+    }
 }

@@ -7,4 +7,5 @@ public interface IObservable {
     void notifyObserversOfSchedulingUpdate();
     void notifyObserversOfAlgorithmEnding();
     void notifyObserversOfIterationChange();
+    int getMaximumPossibleCost();
 }
