@@ -1,4 +1,4 @@
-package visualisation.controller.Table;
+package visualisation.controller.table;
 
 public class MockGraphNode {
     private String _id; // Unique node id

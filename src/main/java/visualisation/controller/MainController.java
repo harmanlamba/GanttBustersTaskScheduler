@@ -23,7 +23,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
-import visualisation.controller.Table.MockGraphNode;
+import visualisation.controller.table.MockGraphNode;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.timer.ITimerObservable;
 import visualisation.controller.timer.ITimerObserver;
@@ -95,7 +95,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
-    public TableColumn<MockGraphNode, MockGraphNode> taskIDColumn;
+    public TableColumn<MockGraphNode, String> taskIDColumn;
     public TableColumn<MockGraphNode, Integer> startTimeColumn;
     public TableColumn<MockGraphNode, Integer> endTimeColumn;
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
@@ -128,8 +128,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     @Override
     public void updateScheduleInformation(Map<String, GraphNode> update) {
-        updateTable(update); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+
         List<GraphNode> test = new ArrayList<>(update.values());
+        updateTable(test); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
 
         //Run on another thread
         Platform.runLater(() -> {
@@ -245,7 +246,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        Comparator<MockGraphNode> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1.getId()), Integer.parseInt(o2.getId()));
+        Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
         taskIDColumn.setComparator(stringToIntComparator);
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -253,29 +254,30 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 
-    private void updateTable(Map<String, GraphNode> update) {
+    private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
-        List<GraphNode> updateValues = new ArrayList<>(update.values());
         //Repopulate with the new GraphNode Details
-        for(GraphNode node : updateValues){
+        for(GraphNode node : update){
             if(node.getStartTime() != -1){
-//                taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,MockGraphNode>() {
-//                    @Override
-//                    protected void updateItem(MockGraphNode item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if(empty){
-//                            setText(null);
-//                        }else{
-//                            setText(item.getId());
-//                            String color = _processColourHelper.getProcessorColour(node.getProcessor());
-//                            //TODO: See why colors are not assigned differently
-//                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
-//                        }
-//                    }
-//                });
-                _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
+                MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
+                System.out.print(node.getProcessor());
+                taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,String>() {
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(empty){
+                            setText(null);
+                        }else{
+                            setText(item);
+                            System.out.print(" -> " + tempMockGraphNode.getProcessor() + "\n");
+                            String color = _processColourHelper.getProcessorColour(1);
+                            //TODO: See why colors are not assigned differently
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
+                        }
+                    }
+                });
+                _tablePopulationList.add(tempMockGraphNode);
             }
-
         }
     }
 
