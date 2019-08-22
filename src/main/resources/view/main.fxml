@@ -4,7 +4,6 @@
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -126,15 +125,7 @@
                         </VBox>
                         <VBox prefHeight="181.0" prefWidth="300.0">
                            <children>
-                              <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                                <content>
-                                  <AnchorPane>
-                                       <children>
-                                          <JFXListView fx:id="legendListView" prefHeight="190.0" prefWidth="280.0" />
-                                       </children>
-                                    </AnchorPane>
-                                </content>
-                              </ScrollPane>
+                              <JFXListView fx:id="legendListView" prefHeight="190.0" prefWidth="280.0" />
                            </children>
                         </VBox>
                      </children>
