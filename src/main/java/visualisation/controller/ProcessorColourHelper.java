@@ -11,20 +11,20 @@ public class ProcessorColourHelper {
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
         //14 available colours
-        add("#ed5a5a");
-        add("#5aed95");
-        add("#ed975a");
-        add("#5ab0ed");
-        add("#ede65a");
-        add("#f5a38e");
-        add("#77ed5a");
-        add("#c15aed");
-        add("#5acbed");
-        add("#9f5aed");
-        add("#735aed");
-        add("#c6ed5a");
-        add("#ed735a");
-        add("#edd55a");
+        add("#ff8a8a");
+        add("#b18aff");
+        add("#ffb18a");
+        add("#8e8aff");
+        add("#ffd88a");
+        add("#8aa9ff");
+        add("#fff18a");
+        add("#8ac1ff");
+        add("#efff8a");
+        add("#8adaff");
+        add("#ccff8a");
+        add("#8af5ff");
+        add("#9aff8a");
+        add("#8affb9");
     }};
 
     public ProcessorColourHelper(int processCount) {
