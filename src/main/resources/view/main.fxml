@@ -35,7 +35,7 @@
                            <children>
                               <VBox fx:id="statusPane" prefHeight="44.0" prefWidth="280.0">
                                  <VBox fx:id="statusBackground" minHeight="10.0">
-                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: " wrappingWidth="280.0">
+                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: In progress" wrappingWidth="280.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -59,7 +59,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: " wrappingWidth="280.0">
+                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -93,7 +93,7 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: " wrappingWidth="280.0">
+                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: -" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -149,7 +149,6 @@
                                           <Pane fx:id="graphPane" prefHeight="633.0" prefWidth="700.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
-                                                <Button layoutX="14.0" layoutY="478.0" mnemonicParsing="false" text="Toggle jiggly" />
                                              </children>
                                           </Pane>
                                        </children>
