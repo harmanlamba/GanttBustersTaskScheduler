@@ -200,7 +200,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //Create graphstream view panel
         ViewPanel viewPanel = _graphUpdater.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
+        viewPanel.setMinimumSize(new Dimension(650,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
         //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
@@ -209,8 +209,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         SwingUtilities.invokeLater(() -> {
             swingNode.setContent(viewPanel);
         });
-        swingNode.setLayoutX(5);
-        swingNode.setLayoutY(5);
+        swingNode.setLayoutX(10);
+        swingNode.setLayoutY(10);
     }
 
     private void initializeGantt() {
