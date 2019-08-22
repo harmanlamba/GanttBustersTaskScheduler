@@ -107,8 +107,9 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                 if (block != null) {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
+                        Text text = new Text(getTaskId(item.getExtraValue()));
+                        region.getChildren().add(text);
                         //TODO: HELP ME CENTRE THE TEXT INSIDE THE REGION
-                        region.getChildren().add(new Text(getTaskId(item.getExtraValue())));
 
                         if (region.getShape() == null) {
                             rectangle = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());
