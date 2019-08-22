@@ -2,6 +2,7 @@ package algorithm.idastarbase;
 
 import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
+import algorithm.bbastarbase.BBAStarBase;
 import algorithm.idastarbase.IDAStarBase;
 import exception.InputFileException;
 import fileio.IO;
@@ -84,7 +85,7 @@ public class IDAStarBaseTest {
     private Map<String, GraphNode> getIDAStarSolution(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        IDAStarBase algorithm = new IDAStarBase(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        BBAStarBase algorithm = new BBAStarBase(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         return algorithm.solve();
     }
 
