@@ -23,6 +23,7 @@ public abstract class Algorithm implements IObservable {
     protected int _branchesPruned;
     protected int _numberOfIterations;
     private int _bestScheduleCost;
+    protected ArrayList<Graph> _graphStore;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -33,6 +34,16 @@ public abstract class Algorithm implements IObservable {
      */
     public Algorithm(Graph g, int numProcTask, int numProcParallel) {
         _graph = g;
+        _numProcTask = numProcTask;
+        _numProcParallel = numProcParallel;
+        _observerList = new ArrayList<>();
+        _branchesPruned = 0;
+        _numberOfIterations = 1;
+        _bestScheduleCost = 0;
+    }
+
+    public Algorithm(ArrayList<Graph> g, int numProcTask, int numProcParallel) {
+        _graphStore = g;
         _numProcTask = numProcTask;
         _numProcParallel = numProcParallel;
         _observerList = new ArrayList<>();
