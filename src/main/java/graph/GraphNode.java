@@ -10,7 +10,6 @@ public class GraphNode {
     private int _weight; // Node weight
     private int _processor; // Processor assigned to node
     private int _startTime; // Node's start time on processor
-    private int _endTime; // Node's finish time on processor
     private boolean _free; // Represents whether the task is ready to be scheduled when using the IDA Star algorithm
     private int _computationalBottomLevel;  // A cost function representing the critical path cost from the current node
 
@@ -89,20 +88,6 @@ public class GraphNode {
      */
     public void setStartTime(int startTime) {
         _startTime = startTime;
-    }
-  
-    /**
-     * setEndTime - getter for the node ID's end time on the processor assigned
-     */
-    public int getEndTime() {
-        return _endTime;
-    }
-
-    /**
-     * setEndTime - setter for node id's end time on the processor assigned
-     */
-    public void setEndTime(int endTime){
-        _endTime = endTime;
     }
 
     /**
