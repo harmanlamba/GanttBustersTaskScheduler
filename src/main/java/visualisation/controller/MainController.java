@@ -57,7 +57,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
     private final static String START_TIME_TEXT = "00:00:00";
     private final static String CURRENT_MEMORY_USAGE = "Memory Usage: ";
-    private final static int KB_TO_MB_CONVERSION_RATE = 1000;
+    private final static int KB_TO_MB_CONVERSION_RATE = 1000000;
     private final static String MB_TEXT = " MB";
 
 
