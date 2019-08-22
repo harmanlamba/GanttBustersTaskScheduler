@@ -57,6 +57,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
     private final static String START_TIME_TEXT = "00:00:00";
+    private final static String CURRENT_MEMORY_USAGE = "Memory Usage: ";
+    private final static int KB_TO_MB_CONVERSION_RATE = 1000000;
+    private final static String MB_TEXT = " MB";
+
 
     //Private Fields
     private IObservable _observableAlgorithm;
@@ -86,6 +90,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfIterations;
     public Text branchesPruned;
     public Text currentLowerBound;
+    public Text currentMemoryUsage;
 
     public TabPane visualsContainer;
     public Tab graphTab;
@@ -319,6 +324,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
         numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
         currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));
+        // Get memory usage in MBs
+        long memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / KB_TO_MB_CONVERSION_RATE;
+        currentMemoryUsage.setText(CURRENT_MEMORY_USAGE + memoryUsage + MB_TEXT);
     }
 
     @Override

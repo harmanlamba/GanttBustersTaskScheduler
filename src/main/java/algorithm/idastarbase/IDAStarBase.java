@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class IDAStarBase extends Algorithm {
 
-    private static final int UPDATE_GRAPH_ITERATION_ROLLOVER = 1000000;
+    private static final int UPDATE_GRAPH_ITERATION_ROLLOVER = 5000000;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
