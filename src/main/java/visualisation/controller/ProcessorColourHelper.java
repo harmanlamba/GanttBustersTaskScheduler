@@ -16,15 +16,15 @@ public class ProcessorColourHelper {
         add("#ed975a");
         add("#5ab0ed");
         add("#ede65a");
-        add("#5aeded");
+        add("#f5a38e");
         add("#77ed5a");
         add("#c15aed");
         add("#5acbed");
         add("#9f5aed");
         add("#735aed");
-        add("#735aed");
-        add("#ed5a92");
         add("#c6ed5a");
+        add("#ed735a");
+        add("#edd55a");
     }};
 
     public ProcessorColourHelper(int processCount) {
