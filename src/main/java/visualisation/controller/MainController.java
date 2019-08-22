@@ -45,7 +45,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     //TODO: The strings may need to be changed into something that is less confusing
     private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
     private final static String ALGORITHM_STATUS_TEXT = "Status: ";
-    private final static String ALGORITHM_STATUS_INPROGRESS_TEXT = "In progress";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
@@ -56,7 +55,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
     private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
-    private final static String START_TIME_TEXT = "00:00:00";
     private final static String CURRENT_MEMORY_USAGE = "Memory Usage: ";
     private final static int KB_TO_MB_CONVERSION_RATE = 1000000;
     private final static String MB_TEXT = " MB";
@@ -201,7 +199,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+//        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -252,13 +250,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeStatistics() {
-        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_INPROGRESS_TEXT);
         fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
         algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
         numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
-        timeElapsedText.setText(TIME_ELAPSED_TEXT + START_TIME_TEXT);
     }
 
     private void initializeTable() {
