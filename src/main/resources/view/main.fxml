@@ -143,7 +143,6 @@
                                           <Pane fx:id="graphPane" prefHeight="633.0" prefWidth="700.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
-                                                <Button layoutX="14.0" layoutY="478.0" mnemonicParsing="false" text="Toggle jiggly" />
                                              </children>
                                           </Pane>
                                        </children>

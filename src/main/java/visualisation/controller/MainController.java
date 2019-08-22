@@ -71,6 +71,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private ObservableList<MockGraphNode> _tablePopulationList = FXCollections.observableArrayList();
     private SelectedTab _currentTab;
     private Map<String, GraphNode> _latestUpdateMap;
+    private ViewPanel _viewPanel;
 
 
     //Public Control Fields from the FXML
@@ -186,6 +187,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
+        _graphUpdater.unsetMouseManager(_viewPanel);
+
     }
 
     private void initializeGraph() {
@@ -195,15 +198,16 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _graphUpdater.enableAutoLayout();
 
         //Create graphstream view panel
-        ViewPanel viewPanel = _graphUpdater.addDefaultView(false);
-        viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
-        viewPanel.setOpaque(false);
-        viewPanel.setBackground(Color.white);
-//        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        _viewPanel = _graphUpdater.addDefaultView(false);
+        _viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
+        _viewPanel.setOpaque(false);
+        _viewPanel.setBackground(Color.white);
+        _graphUpdater.setMouseManager(_viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
-            swingNode.setContent(viewPanel);
+            swingNode.setContent(_viewPanel);
         });
         swingNode.setLayoutX(5);
         swingNode.setLayoutY(5);
