@@ -100,6 +100,8 @@ public class GraphUpdater extends Viewer {
                 sprite.attachToNode(node.getId());
 
             } else { //Reset style -> no processor assigned
+                node.removeAttribute("ui.style");
+                _spriteManager.removeSprite(node.getId());
                 node.addAttribute("ui.style", DEFAULT_NODE_STYLE);
             }
         }
