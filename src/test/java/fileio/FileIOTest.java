@@ -37,7 +37,6 @@ public class FileIOTest {
     private String[] _negativeNodeWeight;
     private String[] _ownExample1;
 
-
     @Before
     public void setup() {
         _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "1"};
@@ -58,7 +57,7 @@ public class FileIOTest {
     @AfterClass
     public static void deleteOutputFile()  {
         File file;
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < 6; i++) {
             file = new File("src/main/resources/me"+i+".dot");
             file.delete();
         }
@@ -68,7 +67,7 @@ public class FileIOTest {
      * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
      * @param file - dot file input file location
      */
-    private void sequentialTestHelper(String[] file) throws InputFileException {
+    private void idaStarTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
@@ -79,7 +78,7 @@ public class FileIOTest {
     @Test
     public void testE1File() {
         try {
-            sequentialTestHelper(_file1);
+            idaStarTestHelper(_file1);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -89,7 +88,7 @@ public class FileIOTest {
     @Test
     public void testE2File() {
         try {
-            sequentialTestHelper(_file2);
+            idaStarTestHelper(_file2);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -99,7 +98,7 @@ public class FileIOTest {
     @Test
     public void testE3File() {
         try {
-            sequentialTestHelper(_file3);
+            idaStarTestHelper(_file3);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -109,7 +108,7 @@ public class FileIOTest {
     @Test
     public void testE4File() {
         try {
-            sequentialTestHelper(_file4);
+            idaStarTestHelper(_file4);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -119,7 +118,7 @@ public class FileIOTest {
     @Test
     public void testE5File() {
         try {
-            sequentialTestHelper(_file5);
+            idaStarTestHelper(_file5);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -129,7 +128,7 @@ public class FileIOTest {
     @Test
     public void testInvalidFormat() {
         try {
-            sequentialTestHelper(_invalidFormat);
+            idaStarTestHelper(_invalidFormat);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Invalid Format");
@@ -139,7 +138,7 @@ public class FileIOTest {
     @Test
     public void testMissingNodes() {
         try {
-            sequentialTestHelper(_missingNode);
+            idaStarTestHelper(_missingNode);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Node has not been instantiated");
@@ -152,7 +151,7 @@ public class FileIOTest {
     @Test
     public void testNegativeEdgeWeight() {
         try {
-            sequentialTestHelper(_negativeEdgeWeight);
+            idaStarTestHelper(_negativeEdgeWeight);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Invalid Format");
@@ -165,7 +164,7 @@ public class FileIOTest {
     @Test
     public void testNegativeNodeWeight() {
         try {
-            sequentialTestHelper(_negativeNodeWeight);
+            idaStarTestHelper(_negativeNodeWeight);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Invalid Format");

@@ -117,16 +117,6 @@ public class IDAStarBaseTest {
         assertEquals(IDAStar.getCurrentBestSolution(), new HashMap<>());
     }
 
-    /**
-     * Tests for the correct instantiation of a IDASTar object
-     */
-    @Test
-    public void testInstantiation() {
-        IDAStarBase IDAStar = IDAStarBaseInstance();
-        assertEquals(IDAStar.getNumProcTask(), NUM_TASK_PROC);
-        assertEquals(IDAStar.getNumProcParallel(), NUM_PARALLEL_PROC);
-    }
-
     @Test
     public void testE1SolutionWithoutIODependency() {
         int[] startTimes = new int[] {0, 5, 11, 22, 16, 15, 20};
