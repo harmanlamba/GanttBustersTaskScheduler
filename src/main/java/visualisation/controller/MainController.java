@@ -271,7 +271,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         Map<String,String> colorMap =  new HashMap<>();
         //Repopulate with the new GraphNode Details
         for(GraphNode node : update){
-            if(node.getStartTime() != -1){
+            if(node.getStartTime() != -1 && node.getProcessor() != -1){
                 MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
                 colorMap.put(tempMockGraphNode.getId(),_processColourHelper.getProcessorColour(tempMockGraphNode.getProcessor()));
                 taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,String>() {
@@ -284,11 +284,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                             setText(item);
                             String color = colorMap.get(item);
                             //TODO: See why colors are not assigned differently
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.1 0 5;");
                         }
                     }
                 });
-                _tablePopulationList.add(tempMockGraphNode);
+                _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
         }
     }
