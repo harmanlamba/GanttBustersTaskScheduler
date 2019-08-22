@@ -43,7 +43,6 @@ public class LegendCell extends JFXListCell<String> {
             label.setText(item!=null ? item : "<null>");
             String color = _processColourHelper.getProcessorColour(Integer.parseInt(item));
             String style = "-fx-background-color: " + color + ";"+"";
-            System.out.println(style);
             colorPane.setStyle(style);
             setGraphic(hBox);
         }
