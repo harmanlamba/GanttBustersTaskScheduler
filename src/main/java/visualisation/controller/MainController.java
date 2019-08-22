@@ -256,11 +256,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
+        Map<String,String> colorMap =  new HashMap<>();
         //Repopulate with the new GraphNode Details
         for(GraphNode node : update){
             if(node.getStartTime() != -1){
                 MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
-                System.out.print(node.getProcessor());
+                colorMap.put(tempMockGraphNode.getId(),_processColourHelper.getProcessorColour(tempMockGraphNode.getProcessor()));
                 taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,String>() {
                     @Override
                     protected void updateItem(String item, boolean empty) {
@@ -269,8 +270,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                             setText(null);
                         }else{
                             setText(item);
-                            System.out.print(" -> " + tempMockGraphNode.getProcessor() + "\n");
-                            String color = _processColourHelper.getProcessorColour(1);
+                            String color = colorMap.get(item);
                             //TODO: See why colors are not assigned differently
                             setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 5;");
                         }
