@@ -102,12 +102,12 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
+                              <Text fx:id="currentLowerBound" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="currentLowerBound" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
+                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
