@@ -59,7 +59,7 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: " wrappingWidth="280.0">
+                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -93,7 +93,7 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: " wrappingWidth="280.0">
+                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: -" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -150,6 +150,7 @@
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
                                                 <Button fx:id="spriteButton" layoutX="6.0" layoutY="482.0" mnemonicParsing="false" text="Test" />
+
                                              </children>
                                           </Pane>
                                        </children>
