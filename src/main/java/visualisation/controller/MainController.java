@@ -19,8 +19,10 @@ import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -47,9 +49,8 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
-    //TODO: The strings may need to be changed into something that is less confusing
     private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
-    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
+    private final static String ALGORITHM_STATUS_TEXT = "Status: In Process";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
@@ -105,6 +106,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
     public Button spriteButton;
+    public Button floppyButton;
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
@@ -127,9 +129,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
 
-        //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
-        // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
-        // somehow to make this not an issue
         //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
@@ -195,8 +194,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
         algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
-        _graphUpdater.unsetMouseManager(_viewPanel);
-
     }
 
     private void initializeGraph() {
@@ -210,7 +207,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
         _viewPanel.setOpaque(false);
         _viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(_viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        _graphUpdater.setMouseManager(_viewPanel);
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -218,6 +215,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         });
         swingNode.setLayoutX(10);
         swingNode.setLayoutY(10);
+
+        //Assign button icons
+        Image spriteImage = new Image(getClass().getResourceAsStream("/images/sprite.png"));
+        spriteButton.setGraphic(new ImageView(spriteImage));
+        Image floppyImage = new Image(getClass().getResourceAsStream("/images/floppy.png"));
+        floppyButton.setGraphic(new ImageView(floppyImage));
     }
 
     private void initializeGantt() {
@@ -351,5 +354,15 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateTimer(String time) {
         timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
+    }
+
+    @FXML
+    public void toggleSprite(ActionEvent event) {
+        _graphUpdater.toggleSprites(_graphStream);
+    }
+
+    @FXML
+    public void toggleFloppy(ActionEvent event) {
+        _graphUpdater.toggleMouseManager(_viewPanel);
     }
 }

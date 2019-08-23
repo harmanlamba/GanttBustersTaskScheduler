@@ -35,7 +35,7 @@
                            <children>
                               <VBox fx:id="statusPane">
                                  <VBox fx:id="statusBackground" minHeight="10.0" prefWidth="287.0">
-                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: " textAlignment="CENTER" wrappingWidth="280.0">
+                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: In Progress" textAlignment="CENTER" wrappingWidth="280.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -149,8 +149,8 @@
                                           <Pane fx:id="graphPane" prefHeight="633.0" prefWidth="700.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
-                                                <Button fx:id="spriteButton" layoutX="6.0" layoutY="482.0" mnemonicParsing="false" text="Test" />
-
+                                                <Button fx:id="spriteButton" layoutX="597.0" layoutY="482.0" mnemonicParsing="false" onAction="#toggleSprite" />
+                                                <Button fx:id="floppyButton" layoutX="641.0" layoutY="482.0" mnemonicParsing="false" onAction="#toggleFloppy" />
                                              </children>
                                           </Pane>
                                        </children>
