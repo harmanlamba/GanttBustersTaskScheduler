@@ -13,6 +13,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.chart.*;
@@ -102,7 +104,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Tab taskTab;
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
-    public Button physicButton;
+    public Button spriteButton;
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
@@ -210,13 +212,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _viewPanel.setBackground(Color.white);
         _graphUpdater.setMouseManager(_viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
-
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
             swingNode.setContent(_viewPanel);
         });
-        swingNode.setLayoutX(5);
-        swingNode.setLayoutY(5);
+        swingNode.setLayoutX(10);
+        swingNode.setLayoutY(10);
     }
 
     private void initializeGantt() {
@@ -228,10 +229,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
         //ganttchart fx properties
-        ganttChart.setPrefWidth(640);
-        ganttChart.setPrefHeight(450);
-        ganttChart.setLayoutX(20);
-        ganttChart.setLayoutY(40);
+        ganttChart.setPrefWidth(650);
+        ganttChart.setPrefHeight(500);
+        ganttChart.setLayoutX(10);
+        ganttChart.setLayoutY(10);
         ganttChart.setLegendVisible(false);
         ganttChart.setBlockHeight(40);
         ganttChart.setAlternativeRowFillVisible(false);
@@ -251,12 +252,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
         }
-        yAxis.setLabel("");
+        yAxis.setLabel("Processor(s)");
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
-
-
     }
 
     private void initializeLegend(){
@@ -310,7 +309,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            //TODO: See why colors are not assigned differently
                             setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.1 0 5;");
                         }
                     }
@@ -320,7 +318,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         }
     }
 
-    //TODO: Call for every task allocated to a processor
     public void updateGantt(List<GraphNode> test) {
         XYChart.Series series1 = new XYChart.Series();
         ganttChart.getData().clear();
