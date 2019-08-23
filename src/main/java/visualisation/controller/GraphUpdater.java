@@ -30,7 +30,7 @@ public class GraphUpdater extends Viewer {
     private Graph _graph;
     private SpriteManager _spriteManager;
     private ProcessorColourHelper _processorColourHelper;
-    private boolean isShowSprite = false;
+    private boolean isShowSprite = true;
 
     public GraphUpdater(Graph graph, ThreadingModel threadingModel, ProcessorColourHelper processorColourHelper) {
         super(graph, threadingModel);
@@ -53,8 +53,6 @@ public class GraphUpdater extends Viewer {
         for (Node node : _graph) {
             node.setAttribute("ui.label", node.getId() + "");
             node.addAttribute("ui.style", DEFAULT_NODE_STYLE);
-
-            //Set sprites to node
             _spriteManager.addSprite(node.getId());
         }
 
@@ -80,7 +78,6 @@ public class GraphUpdater extends Viewer {
         //Create nodeslist from graphstream graph
         List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
 
-        //Update nodes processor assignment
         for (Node node : nodesList) {
             if ((int) node.getAttribute("processor") != -1) {
                 //Update nodes colours (for processor allocation)
