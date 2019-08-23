@@ -17,22 +17,14 @@ import java.util.ArrayList;
  */
 public class App {
     public static IIO _mainIO;
-    public static ArrayList<Graph> _graphStore = new ArrayList<>();
 
     public static void main( String[] args ) {
         
         try {
             _mainIO = new IO(args);
 
-            for (int i = 0; i< _mainIO.getNumberOfProcessorsForParallelAlgorithm(); i++) {
-                IO tempIO = new IO(args);
-                Graph graph = new Graph(tempIO.getNodeMap(), tempIO.getEdgeList()); //create graph from nodes and edges
-                _graphStore.add(graph);
-            }
-
-
-//            Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
-            Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(_graphStore,
+            Graph graph = new Graph(_mainIO.getNodeMap(), _mainIO.getEdgeList()); //create graph from nodes and edges
+            Algorithm algorithm = AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
                     _mainIO.getNumberOfProcessorsForTask(), _mainIO.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm(); //call algorithm graph
 
             switch(_mainIO.getStateOfVisualisation()) {

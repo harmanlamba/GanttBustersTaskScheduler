@@ -1,15 +1,10 @@
 package algorithm.idastarparallel;
 
 import algorithm.Algorithm;
-import app.App;
 import graph.Graph;
 import graph.GraphNode;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
-import org.jgrapht.graph.EdgeReversedGraph;
 
 import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 
 public class IDAStarParallel extends Algorithm {
@@ -23,7 +18,7 @@ public class IDAStarParallel extends Algorithm {
      * @param numProcTask     is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public IDAStarParallel(ArrayList<Graph> g, int numProcTask, int numProcParallel) {
+    public IDAStarParallel(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
     }
 
@@ -35,7 +30,7 @@ public class IDAStarParallel extends Algorithm {
 
         for (int i = 0; i < _numProcParallel; i++) {
 
-            IDAStarParallelRecursive potentialSolution = new IDAStarParallelRecursive(_graphStore.get(i), _numProcTask, _numProcParallel);
+            IDAStarParallelRecursive potentialSolution = new IDAStarParallelRecursive(_graph, _numProcTask, _numProcParallel);
             solutionsList.add(potentialSolution);
 
             threadList.add(new Thread(potentialSolution));

@@ -33,11 +33,11 @@ public class AlgorithmBuilder {
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public AlgorithmBuilder createAlgorithm(ArrayList<Graph> graph, int numProcTask, int numProcParallel) {
+    public AlgorithmBuilder createAlgorithm(Graph graph, int numProcTask, int numProcParallel) {
         switch (numProcTask) {
             case 1:
                 _algorithmType = AlgorithmType.SEQUENTIAL;
-                _algorithm = new Sequential(graph.get(0), numProcTask, numProcParallel);
+                _algorithm = new Sequential(graph, numProcTask, numProcParallel);
                 break;
             default:
                 if (numProcParallel > 1) {
@@ -45,7 +45,7 @@ public class AlgorithmBuilder {
                     _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
                 } else {
                     _algorithmType = AlgorithmType.IDASTARBASE;
-                    _algorithm = new IDAStarBase(graph.get(0), numProcTask, numProcParallel);
+                    _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
         return _algorithmBuilder;

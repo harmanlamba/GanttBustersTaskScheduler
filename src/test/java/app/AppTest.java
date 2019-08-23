@@ -27,15 +27,14 @@ public class AppTest
     private String[] _file5;
     private String[] _invalidFormat;
     private String[] _missingNode;
-    private ArrayList<Graph> _graphStore;
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "5"};
-        _file2 = new String[]{"src/main/resources/e2.dot", "2", "-o", "me2", "-p", "5"};
-        _file3 = new String[]{"src/main/resources/e3.dot", "2", "-o", "me3", "-p", "5"};
-        _file4 = new String[]{"src/main/resources/e4.dot", "2", "-o", "me4", "-p", "5"};
-        _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "5"};
+        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "4"};
+        _file2 = new String[]{"src/main/resources/e2.dot", "2", "-o", "me2", "-p", "4"};
+        _file3 = new String[]{"src/main/resources/e3.dot", "2", "-o", "me3", "-p", "4"};
+        _file4 = new String[]{"src/main/resources/e4.dot", "2", "-o", "me4", "-p", "4"};
+        _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "4"};
         _invalidFormat = new String[]{"src/main/resources/e6.dot", "1", "-o", "me", "-p", "2"};
         _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
     }
@@ -46,16 +45,8 @@ public class AppTest
      */
     private void sequentialTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
-
-        _graphStore = new ArrayList<>();
-        for (int i = 0; i< io.getNumberOfProcessorsForParallelAlgorithm(); i++) {
-            IO tempIO = new IO(file);
-            Graph graph = new Graph(tempIO.getNodeMap(), tempIO.getEdgeList()); //create graph from nodes and edges
-            _graphStore.add(graph);
-        }
-
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(_graphStore,
+        Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();
         io.write(algorithm.solve());
 
