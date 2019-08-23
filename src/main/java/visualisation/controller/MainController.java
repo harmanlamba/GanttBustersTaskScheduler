@@ -50,7 +50,7 @@ import java.util.List;
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
     private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
-    private final static String ALGORITHM_STATUS_TEXT = "Status: In Process";
+    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
@@ -175,7 +175,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         break;
                     case GANTT:
                         for (Node node : _graphStream) {
-                            updateGantt(test); //TODO: TEMP
+                            updateGantt(test);
                         }
                         break;
                     default: //graph
@@ -267,7 +267,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             processorList.add(String.valueOf(i));
         }
 
-        
         legendListView.setItems(processorList);
         legendListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
@@ -293,7 +292,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
-     }
+    }
 
     private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();

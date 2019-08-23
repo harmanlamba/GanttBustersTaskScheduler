@@ -15,13 +15,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="root" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
             <HBox fx:id="mainContainer" prefHeight="600.0" prefWidth="1000.0">
                <children>
-                  <VBox fx:id="statsContainer" prefHeight="200.0" prefWidth="300.0" stylesheets="@stylesheet.css">
+                  <VBox fx:id="statsContainer" prefHeight="622.0" prefWidth="316.0" stylesheets="@stylesheet.css">
                      <children>
                         <Text fx:id="stats" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="280.0">
                            <font>
@@ -33,8 +33,8 @@
                         </Text>
                         <VBox prefWidth="100.0">
                            <children>
-                              <VBox fx:id="statusPane">
-                                 <VBox fx:id="statusBackground" minHeight="10.0" prefWidth="287.0">
+                              <VBox fx:id="statusPane" prefHeight="40.0" prefWidth="288.0">
+                                 <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">
                                     <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: In Progress" textAlignment="CENTER" wrappingWidth="280.0">
                                        <font>
                                           <Font size="16.0" />
@@ -44,7 +44,7 @@
                               </VBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="10.0" left="10.0" right="10.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -64,9 +64,14 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
+                              <Text fx:id="currentMemoryUsage" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="15.0" left="10.0" right="10.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -88,7 +93,7 @@
                               </Text>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="15.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -113,22 +118,41 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="currentMemoryUsage" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="280.0">
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="12.0" left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefHeight="176.0" prefWidth="317.0">
+                           <children>
+                              <Text fx:id="legendText" strokeType="OUTSIDE" strokeWidth="0.0" text="Legend:" wrappingWidth="241.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
+                                 <VBox.margin>
+                                    <Insets bottom="4.0" left="10.0" />
+                                 </VBox.margin>
                               </Text>
+                              <HBox alignment="CENTER_LEFT" prefHeight="157.0" prefWidth="308.0">
+                                 <children>
+                                    <JFXListView fx:id="legendListView" prefHeight="150.0" prefWidth="342.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin></JFXListView>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets />
                            </VBox.margin>
                         </VBox>
-                        <VBox prefHeight="132.0" prefWidth="300.0">
-                           <children>
-                              <JFXListView fx:id="legendListView" prefHeight="190.0" prefWidth="280.0" />
-                           </children>
-                        </VBox>
                      </children>
+                     <HBox.margin>
+                        <Insets bottom="-2.0" />
+                     </HBox.margin>
                   </VBox>
                   <TabPane fx:id="visualsContainer" prefHeight="600.0" prefWidth="700.0" stylesheets="@stylesheet.css" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -196,13 +220,16 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <TableView fx:id="scheduleResultsTable" prefHeight="521.0" prefWidth="688.0" stylesheets="@stylesheet.css">
+                                          <TableView fx:id="scheduleResultsTable" prefHeight="510.0" prefWidth="700.0" stylesheets="@stylesheet.css">
                                             <columns>
                                               <TableColumn id="taskIDColumn" fx:id="taskIDColumn" editable="false" prefWidth="170.0" style="-fx-alignment: CENTER;" text="Task ID" />
-                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="170.0" text="Start Time" />
-                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="170.0" text="End Time" />
+                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="169.0" text="Start Time" />
+                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="169.0" text="End Time" />
                                                 <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="174.0" text="Assigned Processor" />
                                             </columns>
+                                             <VBox.margin>
+                                                <Insets top="8.0" />
+                                             </VBox.margin>
                                           </TableView>
                                        </children>
                                     </VBox>
