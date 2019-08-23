@@ -30,7 +30,10 @@ public class GraphUpdater extends Viewer {
     private Graph _graph;
     private SpriteManager _spriteManager;
     private ProcessorColourHelper _processorColourHelper;
-    private boolean isShowSprite = true;
+
+    //Toggle properties
+    private boolean isShowSprite = false;
+    private boolean isShowFloppy = false;
 
     public GraphUpdater(Graph graph, ThreadingModel threadingModel, ProcessorColourHelper processorColourHelper) {
         super(graph, threadingModel);
@@ -95,19 +98,23 @@ public class GraphUpdater extends Viewer {
                                 + "\ttext-color: white;\n");
 
                 //Update nodes information using Sprites
-                if (isShowSprite) {
-                    Sprite sprite = _spriteManager.getSprite(node.getId());
-                    sprite.removeAttribute("ui.hide"); //show sprite
-                    sprite.addAttribute("ui.label",
-                            "Start time: " + node.getAttribute("startTime") + "s");
-                    sprite.addAttribute("ui.style",
-                            "\ttext-alignment: under;\n"
-                                    + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
-                                    + "\ttext-background-color: rgba(222,222,222,100);\n"
-                                    + "\ttext-background-mode: rounded-box;\n"
-                                    + "\tpadding: 3px;\n"
-                                    + "\ttext-size: 15px;\n");
-                    sprite.attachToNode(node.getId());
+                Sprite sprite = _spriteManager.getSprite(node.getId());
+                sprite.addAttribute("ui.label",
+                        "Start time: " + node.getAttribute("startTime") + "s");
+                sprite.addAttribute("ui.style",
+                        "\ttext-alignment: under;\n"
+                                + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
+                                + "\ttext-background-color: rgba(222,222,222,100);\n"
+                                + "\ttext-background-mode: rounded-box;\n"
+                                + "\tpadding: 3px;\n"
+                                + "\ttext-size: 15px;\n");
+                sprite.attachToNode(node.getId());
+
+                //Handle sprite display
+                if (!isShowSprite) {
+                    _spriteManager.getSprite(node.getId()).addAttribute("ui.hide");
+                } else {
+                    _spriteManager.getSprite(node.getId()).removeAttribute("ui.hide");
                 }
 
             } else { //Reset style -> no processor assigned
@@ -127,8 +134,24 @@ public class GraphUpdater extends Viewer {
         isShowSprite = !isShowSprite; //enable sprites in updateGraph
         List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
 
-        for (Node node : nodesList) {
-            _spriteManager.getSprite(node.getId()).addAttribute("ui.hide");
+        if (!isShowSprite) {
+            for (Node node : nodesList) {
+                _spriteManager.getSprite(node.getId()).addAttribute("ui.hide");
+            }
+        } else {
+            for (Node node : nodesList) {
+                _spriteManager.getSprite(node.getId()).removeAttribute("ui.hide");
+            }
+        }
+    }
+
+    public void toggleMouseManager(ViewPanel viewPanel) {
+        isShowFloppy = !isShowFloppy;
+
+        if (isShowFloppy) {
+            viewPanel.setMouseManager(null);
+        } else {
+            setMouseManager(viewPanel);
         }
     }
 
@@ -137,40 +160,40 @@ public class GraphUpdater extends Viewer {
      * @param viewPanel
      */
     public void setMouseManager(ViewPanel viewPanel) {
-        MouseManager manager = new DefaultMouseManager() {
+        if (!isShowFloppy) {
+            MouseManager manager = new DefaultMouseManager() {
 
-            @Override
-            public void mouseDragged(MouseEvent event) {
-            }
+                @Override
+                public void mouseDragged(MouseEvent event) {
+                }
 
-            @Override
-            protected void mouseButtonPress(MouseEvent event) {
-                super.mouseButtonPress(event);
-            }
+                @Override
+                protected void mouseButtonPress(MouseEvent event) {
+                    super.mouseButtonPress(event);
+                }
 
-            @Override
-            public void mouseClicked(MouseEvent event) {
-                super.mouseClicked(event);
-            }
+                @Override
+                public void mouseClicked(MouseEvent event) {
+                    super.mouseClicked(event);
+                }
 
-            @Override
-            public void mousePressed(MouseEvent event) {
-                super.mousePressed(event);
-                // if you need object of Node pressed, following code will help you, curElement is already defined at DefaultMouseManager.
-                curElement = view.findNodeOrSpriteAt(event.getX(), event.getY());
+                @Override
+                public void mousePressed(MouseEvent event) {
+                    super.mousePressed(event);
+                    // if you need object of Node pressed, following code will help you, curElement is already defined at DefaultMouseManager.
+                    curElement = view.findNodeOrSpriteAt(event.getX(), event.getY());
 //                if (curElement != null) {
 //                    Node node = graph.getNode(curElement.getId());
 //                    if(node != null) {
 //                        System.out.println("Mouse pressed at node: " + node.getId());
 //                    }
 //                }
-            }
+                }
 
-        };
-        viewPanel.setMouseManager(manager);
-    }
-
-    public void unsetMouseManager(ViewPanel viewPanel) {
-        viewPanel.setMouseManager(null);
+            };
+            viewPanel.setMouseManager(manager);
+        } else {
+            viewPanel.setMouseManager(null);
+        }
     }
 }

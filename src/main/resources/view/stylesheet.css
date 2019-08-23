@@ -74,6 +74,20 @@ TABLE VIEW
   -fx-background-color: #dedede;
 }
 
+/*
+BUTTON SETTING
+ */
+.button {
+  -fx-background-color: rgba(0,0,0,0);
+}
+
+.button:hover {
+  -fx-opacity: 0.6;
+}
+
+.button:selected {
+  -fx-opacity: 0.6;
+}
 
 /*
 FONT SETTING

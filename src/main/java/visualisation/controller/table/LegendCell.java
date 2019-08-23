@@ -14,9 +14,6 @@ public class LegendCell extends JFXListCell<String> {
     private Pane colorPane = new Pane();
     private ProcessorColourHelper _processColourHelper;
 
-
-
-
     public LegendCell(ProcessorColourHelper processorColorHelper){
         super();
         _processColourHelper = processorColorHelper;
@@ -24,9 +21,9 @@ public class LegendCell extends JFXListCell<String> {
         hBox.setHgrow(spacerPane, Priority.ALWAYS);
         hBox.setHgrow(colorPane,Priority.ALWAYS);
         colorPane.setBackground(Background.EMPTY);
+        //colorPane.setScaleX(0.5);
 
     }
-
 
     @Override
     protected void updateItem(String item, boolean empty) {
