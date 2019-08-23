@@ -309,7 +309,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.1 0 5;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.15 0 5;");
                         }
                     }
                 });

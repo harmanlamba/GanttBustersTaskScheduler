@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
@@ -196,12 +196,12 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <TableView fx:id="scheduleResultsTable" prefHeight="521.0" prefWidth="688.0">
+                                          <TableView fx:id="scheduleResultsTable" prefHeight="521.0" prefWidth="688.0" stylesheets="@stylesheet.css">
                                             <columns>
-                                              <TableColumn fx:id="taskIDColumn" editable="false" prefWidth="170.0" text="Task ID" />
-                                              <TableColumn fx:id="startTimeColumn" editable="false" prefWidth="170.0" text="Start Time" />
-                                                <TableColumn fx:id="endTimeColumn" editable="false" prefWidth="170.0" text="End Time" />
-                                                <TableColumn fx:id="assignedProcessorColumn" editable="false" prefWidth="174.0" text="Assigned Processor" />
+                                              <TableColumn id="taskIDColumn" fx:id="taskIDColumn" editable="false" prefWidth="170.0" style="-fx-alignment: CENTER;" text="Task ID" />
+                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="170.0" text="Start Time" />
+                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="170.0" text="End Time" />
+                                                <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="174.0" text="Assigned Processor" />
                                             </columns>
                                           </TableView>
                                        </children>

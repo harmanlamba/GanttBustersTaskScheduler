@@ -59,6 +59,17 @@ TABLE VIEW
 .table-view {
   -fx-selection-bar: #dedede;
   -fx-selection-bar-non-focused: rgba(0,0,0,0);
+  -fx-text-alignment: CENTER;
+  -fx-alignment: CENTER;
+
+}
+#taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
+  -fx-alignment: CENTER;
+  -fx-text-alignment: CENTER;
+}
+
+.table-view .table.column {
+  -fx-text-alignment: CENTER;
 }
 
 .table-view:focused{
