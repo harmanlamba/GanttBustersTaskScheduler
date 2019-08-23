@@ -39,6 +39,8 @@ public class FXApplication extends Application {
         primaryStage.setResizable(false);
         primaryStage.setTitle("Visualization screen");
         primaryStage.show();
+
+        //On exit, stop program
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
