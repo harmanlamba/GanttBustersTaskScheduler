@@ -20,7 +20,6 @@ public class GraphUpdater extends Viewer {
             "text-alignment: center;\n"
                     + "\tstroke-mode: plain;\n"
                     + "\tstroke-color:white;\n"
-                    + "\tstroke-width: 4px;\n"
                     + "\tfill-mode: plain;\n"
                     + "\tfill-color: black;\n"
                     + "\ttext-style: bold;\n"
@@ -31,7 +30,7 @@ public class GraphUpdater extends Viewer {
     private Graph _graph;
     private SpriteManager _spriteManager;
     private ProcessorColourHelper _processorColourHelper;
-    private boolean isShowSprite = true;
+    private boolean isShowSprite = false;
 
     public GraphUpdater(Graph graph, ThreadingModel threadingModel, ProcessorColourHelper processorColourHelper) {
         super(graph, threadingModel);
@@ -91,7 +90,6 @@ public class GraphUpdater extends Viewer {
                         "text-alignment: center;\n"
                                 + "\tstroke-mode: plain;\n"
                                 + "\tstroke-color:white;\n"
-                                + "\tstroke-width: 4px;\n"
                                 + "\tfill-mode: plain;\n"
                                 + "\tfill-color:" + processColour + ";\n"
                                 + "\tsize: 40px, 40px;\n"

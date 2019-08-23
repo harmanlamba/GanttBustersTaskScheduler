@@ -131,7 +131,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
         // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
         // somehow to make this not an issue
-        //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
         _observableTimer = AlgorithmTimer.getAlgorithmTimer();
@@ -173,11 +172,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
                 switch (_currentTab) {
                     case TABLE:
-                        updateTable(test); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                        updateTable(test);
                         break;
                     case GANTT:
                         for (Node node : _graphStream) {
-                            updateGantt(test); //TODO: TEMP
+                            updateGantt(test);
                         }
                         break;
                     default: //graph
@@ -209,7 +208,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         viewPanel.setMinimumSize(new Dimension(650,500)); //Window size
         viewPanel.setOpaque(false);
         viewPanel.setBackground(Color.white);
-        //_graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
+        _graphUpdater.setMouseManager(viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
