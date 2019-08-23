@@ -241,7 +241,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
             // had been scheduled
             updateFreeTasks(task);
 
-
             if (_jGraph.outDegreeOf(task) == 0 && _freeTaskList.size() == 0 && getStackMax() <= _lowerBound) {
 
                 int currentFinishedTime = 0;
@@ -249,7 +248,8 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                     if (processor.isEmpty()) {
                         continue;
                     }
-                    int endTime = processor.peek().getEndTime();
+                    GraphNode  topNode = processor.peek();
+                    int endTime = topNode.getStartTime() + topNode.getWeight() ;
                     if (currentFinishedTime < endTime) {
                         currentFinishedTime = endTime;
                     }

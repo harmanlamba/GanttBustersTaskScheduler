@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +37,7 @@ public class FileIOTest {
     private String[] _negativeEdgeWeight;
     private String[] _negativeNodeWeight;
     private String[] _ownExample1;
+    private ArrayList<Graph> _graphStore;
 
     @Before
     public void setup() {
@@ -69,8 +71,16 @@ public class FileIOTest {
      */
     private void idaStarTestHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
+
+        _graphStore = new ArrayList<>();
+        for (int i = 0; i< io.getNumberOfProcessorsForParallelAlgorithm(); i++) {
+            IO tempIO = new IO(file);
+            Graph graph = new Graph(tempIO.getNodeMap(), tempIO.getEdgeList()); //create graph from nodes and edges
+            _graphStore.add(graph);
+        }
+
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
+        Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(_graphStore,
                 io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm()).getAlgorithm();
         io.write(algorithm.solve());
     }

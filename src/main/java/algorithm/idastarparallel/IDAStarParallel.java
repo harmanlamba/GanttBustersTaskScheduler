@@ -9,6 +9,7 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.graph.EdgeReversedGraph;
 
 import java.util.ArrayList;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
 
 public class IDAStarParallel extends Algorithm {
@@ -64,7 +65,11 @@ public class IDAStarParallel extends Algorithm {
                 }
             }
         }
-        return  bestSchedule.getCurrentBestSolution();
+        if (bestSchedule != null) {
+            return bestSchedule.getCurrentBestSolution();
+        } else {
+            return getCurrentBestSolution();
+        }
 
     }
 
