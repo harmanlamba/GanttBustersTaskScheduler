@@ -58,7 +58,7 @@ TABLE VIEW
  */
 .table-view {
   -fx-selection-bar: #dedede;
-  -fx-selection-bar-non-focused: rgba(0,0,0,0);
+  -fx-selection-bar-non-focused: #dedede;
   -fx-text-alignment: CENTER;
   -fx-alignment: CENTER;
 
@@ -66,11 +66,21 @@ TABLE VIEW
 #taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
   -fx-alignment: CENTER;
   -fx-text-alignment: CENTER;
+  -fx-font-weight: NORMAL;
+}
+
+#taskIDColumn {
+  -fx-font-weight: BOLD;
 }
 
 .table-view .table.column {
   -fx-text-alignment: CENTER;
 }
+
+.table-cell {
+  -fx-background-color: white;
+}
+
 
 .table-view:focused{
   -fx-background-color: transparent;
@@ -98,6 +108,10 @@ LEGEND
 #legendListView .list-cell:odd,
 #legendListView .list-cell:even {
   -fx-background-color: rgba(0,0,0,0);
+}
+
+#legendListView .cell {
+  -fx-background-color: transparent;
 }
 
 /* SCROLL BAR */
@@ -169,6 +183,11 @@ BUTTON SETTING
 
 .button:selected {
   -fx-opacity: 0.6;
+}
+
+.button:pressed {
+  -fx-scale-y: 1.1;
+  -fx-scale-x: 1.1;
 }
 
 /*

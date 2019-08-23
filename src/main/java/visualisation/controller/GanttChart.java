@@ -17,6 +17,8 @@ import javafx.scene.chart.ValueAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -26,41 +28,54 @@ import javafx.scene.text.TextAlignment;
  * From https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch?answertab=votes#tab-top
  */
 public class GanttChart<X,Y> extends XYChart<X,Y> {
+    private double blockHeight = 10;
+
 
     public static class Properties {
 
-        public long _length;
-        public String _styleClass;
-        public String _style;
-        public String _taskId;
+        private long _length;
+        private String _styleClass;
+        private String _style;
+        private String _taskId;
 
         public Properties(long lengthMs, String style, String taskId) {
             super();
             _length = lengthMs;
             _styleClass = "gantt-border";
-            _style = style;
             _taskId = taskId;
+
+            //If task is unassigned, do not show!
+            if (!style.equals("#000000")) {
+                _style = "-fx-background-color:" + style;
+            } else {
+                _style = "-fx-background-color: transparent;";
+            }
         }
+
         public long getLength() {
             return _length;
         }
+
         public void setLength(long length) {
             _length = length;
         }
+
         public String getStyleClass() {
             return _styleClass;
         }
+
         public String getStyle() {
             return _style;
         }
+
         public void setStyleClass(String styleClass) {
             _styleClass = styleClass;
         }
+
         public void setStyle(String style) { _style = style; }
+
         public String getTaskId() { return _taskId; }
     }
-
-    private double blockHeight = 10;
 
     public GanttChart(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis) {
         this(xAxis, yAxis, FXCollections.<Series<X, Y>>observableArrayList());
@@ -115,23 +130,29 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         } else {
                             return;
                         }
+
                         rectangle.setWidth( getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         rectangle.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         y -= getBlockHeight() / 2.0;
 
+                        //Get positions of blocks
+                        double paddingHeight = getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1);
+                        double paddingWidth = getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1);
+
+                        //Create regions with create rectangles
                         region.setShape(null);
                         region.setShape(rectangle);
                         region.setScaleShape(false);
                         region.setCenterShape(false);
                         region.setCacheShape(false);
 
-                        //TODO: I actually can't get it to center. Help me Obi-Wan Kenobi you're my only hope
+                        //Set positioning and add text with padding
                         region.setMaxHeight(rectangle.getHeight());
                         region.setMinHeight(rectangle.getHeight());
                         region.setPrefHeight(rectangle.getHeight());
-                        Text text = new Text(getTaskId(item.getExtraValue())); //don't delete
-                        text.setTextAlignment(TextAlignment.CENTER);
-                        region.setAlignment(Pos.CENTER);
+                        Label text = new Label(getTaskId(item.getExtraValue())); //don't delete
+                        text.setStyle("-fx-font-family: 'Space Mono', monospace; -fx-font-weight: BOLD; -fx-text-fill: white;");
+                        text.setPadding(new Insets(paddingHeight, 0, 0, paddingWidth));
                         region.getChildren().add(text); //don't delete
 
                         block.setLayoutX(x);
@@ -180,7 +201,6 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         removeSeriesFromDisplay(series);
 
     }
-
 
     private Node createContainer(Series<X, Y> series, int seriesIndex, final Data<X,Y> item, int itemIndex) {
 

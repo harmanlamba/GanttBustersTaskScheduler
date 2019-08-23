@@ -234,10 +234,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //ganttchart fx properties
         ganttChart.setPrefWidth(650);
         ganttChart.setPrefHeight(500);
-        ganttChart.setLayoutX(10);
         ganttChart.setLayoutY(10);
         ganttChart.setLegendVisible(false);
-        ganttChart.setBlockHeight(40);
+        ganttChart.setBlockHeight(50);
         ganttChart.setAlternativeRowFillVisible(false);
         ganttChart.setHorizontalGridLinesVisible(false);
         ganttChart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -311,7 +310,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.15 0 5;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.12 0 8;");
                         }
                     }
                 });
@@ -333,7 +332,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             for (GraphNode graphNode : test) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
                 if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour, graphNode.getId())));
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor,
+                            new GanttChart.Properties(graphNode.getWeight(),
+                                    processorColour, graphNode.getId())));
                 }
             }
         }
