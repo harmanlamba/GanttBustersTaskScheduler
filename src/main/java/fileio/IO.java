@@ -67,7 +67,7 @@ public class IO implements IIO {
             String[] fileNameSplit = file.getName().split("\\.");
             nameOfInputFile = parentPath + "/" + file.getName();
             nameOfOutputFile = fileNameSplit[0] + "-output.dot";
-            _inputFileName = nameOfOutputFile; //Set text file name
+            _inputFileName = file.getName(); //Set text file name
             nameOfOutputFile = parentPath + "/" + nameOfOutputFile;
 
         } else {

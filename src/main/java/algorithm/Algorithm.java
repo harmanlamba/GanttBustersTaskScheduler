@@ -65,6 +65,8 @@ public abstract class Algorithm implements IObservable {
      */
     public Map<String,GraphNode> solveAlgorithm(){
         Map<String, GraphNode> outputMap = solve();
+        System.out.println("\nDone");
+        System.out.println("Best time: " + getBestScheduleCost());
         notifyObserversOfAlgorithmEnding();
         return outputMap;
     }
