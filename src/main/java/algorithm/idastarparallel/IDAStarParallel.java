@@ -33,6 +33,8 @@ public class IDAStarParallel extends Algorithm {
             IDAStarParallelRecursive potentialSolution = new IDAStarParallelRecursive(_graph, _numProcTask, _numProcParallel);
             solutionsList.add(potentialSolution);
             potentialSolution.resetOverallBestTime();
+            potentialSolution.resetLowerBoundQueue();
+            potentialSolution.resetSolvedStatus();
 
             threadList.add(new Thread(potentialSolution));
             threadList.get(i).start();
@@ -54,17 +56,17 @@ public class IDAStarParallel extends Algorithm {
         System.out.println("Solutions list contains " + solutionsList.size());
         int bestCost = solutionsList.get(0).getOverallBestFinishTime();
         System.out.println("Best cost = " + bestCost);
-        int tempCost = -1;
+//        int tempCost = -1;
         for (int i = 0; i < _numProcParallel; i++) {
             IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
-            if (currentPotentialSchedule.getFreeTaskListSize() == 0 && (tempCost == -1 || (tempCost != -1 && currentPotentialSchedule.getBestScheduleCost() < tempCost))) {
+            if (currentPotentialSchedule.getFreeTaskListSize() == 0 && currentPotentialSchedule.getBestScheduleCost() == bestCost) {
                 bestSchedule = currentPotentialSchedule;
-                tempCost = currentPotentialSchedule.getBestScheduleCost();
+//                tempCost = currentPotentialSchedule.getBestScheduleCost();
             }
         }
-        if (tempCost != bestCost) {
-            System.out.println("temp: " + tempCost + ", best: " + bestCost);
-        }
+//        if (tempCost != bestCost) {
+//            System.out.println("temp: " + tempCost + ", best: " + bestCost);
+//        }
         if (bestSchedule != null) {
             return bestSchedule.getCurrentBestSolution();
         } else {

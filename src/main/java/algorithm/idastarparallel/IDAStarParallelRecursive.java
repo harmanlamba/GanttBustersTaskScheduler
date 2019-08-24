@@ -469,6 +469,15 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         _overallBestFinishTime = -1;
     }
 
+    public void resetLowerBoundQueue() {
+        _lowerBoundQueue = new PriorityBlockingQueue<>();
+        _checkedLowerBoundList = new ArrayList<>();
+    }
+
+    public void resetSolvedStatus() {
+        _solved = false;
+    }
+
     @Override
     public void run() {
         solve();
