@@ -27,18 +27,18 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     private int _lowerBound; // Current lower bound to find solution against
 
     private static volatile PriorityBlockingQueue<Integer> _lowerBoundQueue = new PriorityBlockingQueue<>();
-    private static volatile ArrayList<Integer> _checkedLowerBoundList = new ArrayList<>();
+    private static volatile TreeSet<Integer> _checkedLowerBoundList = new TreeSet<>();
     private static volatile int _overallBestFinishTime = -1;
     private static volatile boolean _solved; // Represents whether the optimal solution has been found on any thread
     private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
-    private int _threadBestFinishTime; // Stores the cost of the optimal schedule
+    private int _threadBestFinishTime = -1; // Stores the cost of the optimal schedule
     private Stack<GraphNode>[] _processorAllocations; // Stack array holding tasks scheduled to the processors
     private int _updateGraphIteration;
     private Map<String, List<String>> _adjChildrenMap;
     private Map<String, List<String>> _adjParentMap;
     private Map<String, GraphNode> _jGraphNodeMap;
-//    private int _threadBestTime = -1;
+    private int _threadNum;
 
 
     /**
@@ -47,8 +47,9 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
      * @param numProcParallel is the number of processors the algorithm should be working on
      */
-    public IDAStarParallelRecursive(Graph graph, int numProcTask, int numProcParallel) {
+    public IDAStarParallelRecursive(Graph graph, int numProcTask, int numProcParallel, int threadNum) {
         super(graph, numProcTask, numProcParallel);
+        _threadNum = threadNum;
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _jGraph = _graph.getGraph();
@@ -75,11 +76,12 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     public Map<String, GraphNode> solve() {
         for (GraphNode task : _taskInfo.values()) { // For every task that is ready to be scheduled
             if (task.isFree()) {
-                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
+                _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel()) + _threadNum;
+                _checkedLowerBoundList.add(_lowerBound);
                 while (!_solved) { // If the optimal solution has not already been found
                     _numberOfIterations += 1;
                     notifyObserversOfIterationChange();
-                    _solved = idaRecursive(task, 0); // Schedules the task
+                    idaRecursive(task, 0); // Schedules the task
 
                     // a thread should only try to get a new _lowerBound if it isn't solved
                     while (!_solved) {
@@ -231,6 +233,10 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                     _overallBestFinishTime = currentFinishedTime;
                     System.out.println("thread " + Thread.currentThread().getId() + " has finished with best time of " + _overallBestFinishTime);
                 }
+
+                if (_threadBestFinishTime > currentFinishedTime || _threadBestFinishTime == -1) {
+                    _overallBestFinishTime = currentFinishedTime;
+                }
                 _solved = true;
                 return _solved; // If the solution is most optimal, end search
             } else {
@@ -246,10 +252,10 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                                     // Do nothing
                                     _branchesPruned += 1;
                                 } else {
-                                    _solved = idaRecursive(freeTask, i);
+                                    idaRecursive(freeTask, i);
                                 }
                             } else {
-                                _solved = idaRecursive(freeTask, i);
+                                idaRecursive(freeTask, i);
                             }
                             if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
                                 notifyObserversOfSchedulingUpdate();
@@ -461,7 +467,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     public void resetStaticVolatileFields() {
         _solved = false;
         _lowerBoundQueue = new PriorityBlockingQueue<>();
-        _checkedLowerBoundList = new ArrayList<>();
+        _checkedLowerBoundList = new TreeSet<>();
         _overallBestFinishTime = -1;
     }
 
