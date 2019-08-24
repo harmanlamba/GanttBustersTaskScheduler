@@ -59,7 +59,7 @@ public class IDAStarParallel extends Algorithm {
 //        int tempCost = -1;
         for (int i = 0; i < _numProcParallel; i++) {
             IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
-            if (currentPotentialSchedule.getFreeTaskListSize() == 0 && currentPotentialSchedule.getBestScheduleCost() == bestCost) {
+            if (currentPotentialSchedule.getBestScheduleCost() == bestCost) {
                 bestSchedule = currentPotentialSchedule;
 //                tempCost = currentPotentialSchedule.getBestScheduleCost();
             }
