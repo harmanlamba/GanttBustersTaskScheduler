@@ -34,7 +34,7 @@ public class FXApplication extends Application {
         Parent root = loader.load();
 
         //Show stage
-        Scene scene = new Scene(root, 990, 590);
+        Scene scene = new Scene(root, 1005, 610);
         scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap");
         primaryStage.setScene(scene); //total window size
         primaryStage.setResizable(false);

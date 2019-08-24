@@ -30,7 +30,6 @@ import javafx.scene.text.TextAlignment;
 public class GanttChart<X,Y> extends XYChart<X,Y> {
     private double blockHeight = 10;
 
-
     public static class Properties {
 
         private long _length;
@@ -48,6 +47,8 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
             if (!style.equals("#000000")) {
                 _style = "-fx-background-color:" + style;
             } else {
+                _taskId = "";
+                _length = 0;
                 _style = "-fx-background-color: transparent;";
             }
         }

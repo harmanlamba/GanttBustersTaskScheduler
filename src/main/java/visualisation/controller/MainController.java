@@ -49,10 +49,8 @@ import java.util.List;
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
     private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
-    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
-    private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
     private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: "; //this one
     private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: "; //this one
     private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
@@ -172,7 +170,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
                 switch (_currentTab) {
                     case TABLE:
-                        updateTable(test); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                        updateTable(test);
                         break;
                     case GANTT:
                         for (Node node : _graphStream) {
@@ -192,8 +190,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
-        statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
-        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
+        statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
+        algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
     }
 
@@ -205,7 +203,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //Create graphstream view panel
         _viewPanel = _graphUpdater.addDefaultView(false);
-        _viewPanel.setMinimumSize(new Dimension(660,500)); //Window size
+        _viewPanel.setMinimumSize(new Dimension(660,530)); //Window size
         _viewPanel.setOpaque(false);
         _graphUpdater.setMouseManager(_viewPanel);
 
@@ -278,7 +276,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private void initializeStatistics() {
         initializeCheckParallelisationForStats();
         fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
-        algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
+        algorithmTypeText.setText(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
         numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());

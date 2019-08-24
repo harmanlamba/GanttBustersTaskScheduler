@@ -4,7 +4,7 @@
 }
 
 #visualsContainer {
-  -fx-background-color: #525252;
+  -fx-background-color: #414141;
 }
 
 .gantt-border {
@@ -18,6 +18,33 @@
   -fx-border-color: #525252;
   -fx-background-color: #525252;
   -fx-background-radius: 4;
+}
+
+#statusPane1 {
+  -fx-border-width: 0 0 0 8;
+  -fx-border-color: #525252;
+  -fx-background-radius: 4;
+  -fx-padding: 0 5;
+}
+
+/*
+CHART
+ */
+.chart-plot-background {
+  -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+  -fx-stroke: #525252;
+}
+
+.axis {
+  -fx-tick-label-fill: #ffffff;
+  -fx-tick-length: 10;
+}
+
+.axis-label {
+  -fx-text-fill: #ffffff;
 }
 
 /*
@@ -64,6 +91,14 @@ TABLE VIEW
   -fx-alignment: CENTER;
 }
 
+.table-view .placeholder {
+  -fx-background-color: #414141;
+}
+
+.table-view .placeholder .label {
+  -fx-text-fill: #ffffff;
+}
+
 #taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
   -fx-alignment: CENTER;
   -fx-text-alignment: CENTER;
@@ -84,7 +119,7 @@ TABLE VIEW
 }
 
 .table-cell {
-  -fx-background-color: #525252;
+  -fx-background-color: #414141;
   -fx-text-fill: white;
 }
 
@@ -98,11 +133,13 @@ TABLE VIEW
 
 .table-view .column-header-background .label{
   -fx-background-color: #414141;
+  -fx-border-color: #525252;
+  -fx-border-width: 0 0 8 0;
   -fx-text-fill: white;
 }
 
 .table-view .column-header {
-  -fx-background-color: #525252;
+  -fx-background-color: #414141;
 }
 
 /*
@@ -209,7 +246,7 @@ COMBOBOX SETTINGS
  */
 
 #comboBox{
-  -jfx-focus-color: #525252;
+  -jfx-focus-color: transparent;
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-weight: bold;
   -fx-font-size: 15px;
@@ -219,9 +256,9 @@ COMBOBOX SETTINGS
   -fx-background-color: white;
 }
 
-
 .jfx-combo-box {
   -fx-focus-color: transparent;
+  -fx-text-fill: white;
 }
 
 .jfx-combo-box > .list-cell:selected{
@@ -254,6 +291,7 @@ FONT SETTING
 #searchGraph {
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-size: 18;
+  -fx-font-weight: BOLD;
 }
 
 #algorithmStatus {
@@ -264,7 +302,7 @@ FONT SETTING
 
 #algorithmTypeText {
   -fx-font-family: 'Space Mono', monospace;
-
+  -fx-font-weight: bold;
 }
 
 #timeElapsedText {
@@ -319,6 +357,7 @@ FONT SETTING
 #taskSchedule {
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-size: 18;
+  -fx-font-weight: BOLD;
 }
 
 #legendText {
@@ -329,6 +368,7 @@ FONT SETTING
 #scheduleResults {
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-size: 18;
+  -fx-font-weight: BOLD;
 }
 
 #scheduleResultsTable {
