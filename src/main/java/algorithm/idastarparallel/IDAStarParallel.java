@@ -32,18 +32,19 @@ public class IDAStarParallel extends Algorithm {
 
             IDAStarParallelRecursive potentialSolution = new IDAStarParallelRecursive(_graph, _numProcTask, _numProcParallel);
             solutionsList.add(potentialSolution);
-            potentialSolution.resetOverallBestTime();
-            potentialSolution.resetLowerBoundQueue();
-            potentialSolution.resetSolvedStatus();
-
             threadList.add(new Thread(potentialSolution));
-            threadList.get(i).start();
+        }
+
+        solutionsList.get(0).resetStaticVolatileFields();
+
+        for (Thread thread: threadList) {
+            thread.start();
         }
 
         // Joining all threads to wait on their completion
-        for (int i = 0; i < _numProcParallel; i++) {
+        for (Thread thread: threadList) {
             try {
-                threadList.get(i).join();
+                thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
