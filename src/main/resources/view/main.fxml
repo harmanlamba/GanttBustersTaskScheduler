@@ -38,10 +38,10 @@
                               <Insets bottom="15.0" left="10.0" top="15.0" />
                            </VBox.margin>
                         </Text>
-                        <VBox prefHeight="35.0" prefWidth="288.0">
+                        <VBox prefHeight="50.0" prefWidth="288.0">
                            <children>
-                              <VBox fx:id="statusPane" prefHeight="40.0" prefWidth="288.0">
-                                 <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">
+                              <VBox fx:id="statusPane" prefHeight="34.0" prefWidth="288.0">
+                                 <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="24.0" prefWidth="280.0">
                                     <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: In Progress" textAlignment="CENTER" wrappingWidth="280.0">
                                        <font>
                                           <Font size="16.0" />
@@ -142,7 +142,7 @@
                               </Text>
                               <HBox alignment="CENTER_LEFT" prefHeight="157.0" prefWidth="308.0">
                                  <children>
-                                    <JFXListView fx:id="legendListView" prefHeight="150.0" prefWidth="342.0">
+                                    <JFXListView fx:id="legendListView" prefHeight="150.0" prefWidth="308.0">
                                        <HBox.margin>
                                           <Insets />
                                        </HBox.margin></JFXListView>

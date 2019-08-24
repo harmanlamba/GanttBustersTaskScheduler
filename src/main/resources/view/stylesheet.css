@@ -196,7 +196,15 @@ COMBOBOX SETTINGS
 
 #comboBox{
   -jfx-focus-color: #525252;
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+  -fx-font-size: 15px;
 }
+
+#comboBox .arrow {
+  -fx-background-color: white;
+}
+
 
 .jfx-combo-box {
   -fx-focus-color: transparent;

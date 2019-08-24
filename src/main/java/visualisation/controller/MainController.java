@@ -298,7 +298,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private void initializeComboBox(){
         ObservableList<String> parallelProcessorList = FXCollections.observableArrayList();
         for(int i = 0; i < _io.getNumberOfProcessorsForParallelAlgorithm(); i++){
-            parallelProcessorList.add("Stats for Thread: " + i);
+            parallelProcessorList.add("Stats Thread " + i);
         }
         comboBox.setItems(parallelProcessorList);
         comboBox.getSelectionModel().selectFirst();
