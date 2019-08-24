@@ -46,23 +46,20 @@ public class IDAStarParallel extends Algorithm {
             }
         }
 
+
         // Retrieve best schedule from the threads that have run
         IDAStarParallelRecursive bestSchedule = null;
+        System.out.println("Solutions list contains " + solutionsList.size());
         for (int i = 0; i < _numProcParallel; i++) {
             IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
-            if (currentPotentialSchedule.getBestFinishTime() != -1) {
-                if (bestSchedule == null) {
-                    bestSchedule = currentPotentialSchedule;
-                } else {
-                    if (bestSchedule.getBestFinishTime() > currentPotentialSchedule.getBestFinishTime()) {
-                        bestSchedule = currentPotentialSchedule;
-                    }
-                }
+            if (currentPotentialSchedule.getBestFinishTime() == currentPotentialSchedule.getBestScheduleCost()) {
+                bestSchedule = currentPotentialSchedule;
             }
         }
         if (bestSchedule != null) {
             return bestSchedule.getCurrentBestSolution();
         } else {
+            System.out.println("returning null");
             return getCurrentBestSolution();
         }
 

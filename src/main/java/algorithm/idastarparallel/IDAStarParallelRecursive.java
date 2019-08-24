@@ -8,10 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static utility.GraphUtility.getChildrenAdjacencyMap;
 import static utility.GraphUtility.getParentAdjacencyMap;
@@ -31,16 +28,17 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
 
     private static volatile PriorityBlockingQueue<Integer> _lowerBoundQueue = new PriorityBlockingQueue<>();
     private static volatile ArrayList<Integer> _checkedLowerBoundList = new ArrayList<>();
-    private int _bestFinishTime = -1;
+    private static volatile int _overallBestFinishTime = -1;
     private static volatile boolean _solved; // Represents whether the optimal solution has been found on any thread
     private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
-    private int _bestScheduleCost; // Stores the cost of the optimal schedule
+    private int _threadBestFinishTime; // Stores the cost of the optimal schedule
     private Stack<GraphNode>[] _processorAllocations; // Stack array holding tasks scheduled to the processors
     private int _updateGraphIteration;
     private Map<String, List<String>> _adjChildrenMap;
     private Map<String, List<String>> _adjParentMap;
     private Map<String, GraphNode> _jGraphNodeMap;
+//    private int _threadBestTime = -1;
 
 
     /**
@@ -74,7 +72,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @return returns a mapping of the Node ID to the GraphNode object containing its scheduling information
      */
     @Override
-    public synchronized Map<String, GraphNode> solve() {
+    public Map<String, GraphNode> solve() {
         for (GraphNode task : _taskInfo.values()) { // For every task that is ready to be scheduled
             if (task.isFree()) {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
@@ -108,7 +106,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @return a map of Strings mapping to GraphNodes containing the nodes' scheduling information
      */
     @Override
-    public synchronized Map<String, GraphNode> getCurrentBestSolution() {
+    public Map<String, GraphNode> getCurrentBestSolution() {
         return convertProcessorAllocationsToMap();
     }
 
@@ -117,8 +115,8 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @return returns an integer representing the optimal finish time
      */
     @Override
-    public synchronized int getBestScheduleCost() {
-        return _bestScheduleCost;
+    public int getBestScheduleCost() {
+        return _threadBestFinishTime;
     }
 
     /**
@@ -126,7 +124,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @return returns an integer of the representing the current lower bound
      */
     @Override
-    public synchronized int getCurrentLowerBound() {
+    public int getCurrentLowerBound() {
         return _lowerBound;
     }
 
@@ -135,24 +133,25 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * that is required for output (visualisation)
      * @return
      */
-    private synchronized Map<String, GraphNode> convertProcessorAllocationsToMap() {
+    private Map<String, GraphNode> convertProcessorAllocationsToMap() {
         //TODO: deep copy the _processorAllocations
         Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
         for (int i=0; i < _numProcTask; i++) {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
         }
 
-        _bestScheduleCost = 0;
+        _threadBestFinishTime = 0;
 
         Map<String, GraphNode> optimal = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
                 GraphNode task = copyOfStacks[i].pop();
                 optimal.put(task.getId(), task);
-                if (task.getStartTime() + task.getWeight() > _bestScheduleCost) {
-                    _bestScheduleCost = task.getStartTime() + task.getWeight();
+                if (task.getStartTime() + task.getWeight() > _threadBestFinishTime) {
+                    _threadBestFinishTime = task.getStartTime() + task.getWeight();
                 }
             }
+
         }
         return optimal;
     }
@@ -164,13 +163,13 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @param processorNumber is the processor number the task should be allocated on
      * @return returns a boolean of whether the solution is optimal or not
      */
-    private synchronized boolean idaRecursive(GraphNode task, int processorNumber) {
+    private boolean idaRecursive(GraphNode task, int processorNumber) {
 
-        if (_solved) { return true; }
 
-//        if (task.getId().equals("4")) {
-//            System.out.println("STOP");
-//        }
+        if (_solved) {
+            System.out.println("thread " + Thread.currentThread().getId() + " has stopped");
+            return true;
+        }
 
         // Cost function calculation
         int startTime =  getStartTime(task, processorNumber);
@@ -224,22 +223,13 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
             // had been scheduled
             updateFreeTasks(task);
 
-            if (_adjChildrenMap.get(task.getId()).size() == 0 && _freeTaskList.size() == 0 && getStackMax() <= _lowerBound) {
+            if (_adjChildrenMap.get(task.getId()).size() == 0 && _freeTaskList.size() == 0) {
 
-                int currentFinishedTime = 0;
-                for (Stack<GraphNode> processor : _processorAllocations) {
-                    if (processor.isEmpty()) {
-                        continue;
-                    }
-                    GraphNode topNode = processor.peek();
-                    int endTime = topNode.getStartTime() + topNode.getWeight() ;
-                    if (currentFinishedTime < endTime) {
-                        currentFinishedTime = endTime;
-                    }
-                }
+                int currentFinishedTime = getStackMax();
 
-                if (_bestFinishTime > currentFinishedTime || _bestFinishTime == -1) {
-                    _bestFinishTime = currentFinishedTime;
+                if (_overallBestFinishTime > currentFinishedTime || _overallBestFinishTime == -1) {
+                    _overallBestFinishTime = currentFinishedTime;
+                    System.out.println("thread " + Thread.currentThread().getId() + " has finished with best time of " + _overallBestFinishTime);
                 }
                 _solved = true;
                 return _solved; // If the solution is most optimal, end search
@@ -291,7 +281,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * Takes the recently scheduled task, and updates its children's availability status for scheduling
      * @param task - the task whose children must be checked as to whether they are free
      */
-    private synchronized void updateFreeTasks(GraphNode task) {
+    private void updateFreeTasks(GraphNode task) {
         List<String> cIDs = _adjChildrenMap.get(task.getId());
         for (String cID : cIDs) { // For every child node
             GraphNode child = _taskInfo.get(cID);
@@ -321,7 +311,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @param processorNumber - the processor the task is to be scheduled on
      * @return returns an integer representing its start time on the processor
      */
-    private synchronized int getStartTime(GraphNode task, int processorNumber) {
+    private int getStartTime(GraphNode task, int processorNumber) {
         // Calculates the max finish time from all its parents (plus communication costs if the parent was
         // scheduled on a different processor).
         int[] maxTimes = new int[_numProcTask];
@@ -356,7 +346,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     /**
      * Initialiser method that adds all tasks to free tasks list and the task mapping
      */
-    private synchronized void initialiseFreeTasks() {
+    private void initialiseFreeTasks() {
         for (GraphNode task : _jGraph.vertexSet()) {
             GraphNode temp = new GraphNode(task.getId(), task.getWeight());
             if (_graph.getGraph().inDegreeOf(task) == 0) {
@@ -373,7 +363,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     /**
      * Calculates a part of one of the load balance cost function (ratio of node weight to processor)
      */
-    private synchronized int maxComputationalTime() {
+    private int maxComputationalTime() {
         int sum = 0;
         for(GraphNode task : _taskInfo.values()) {
             sum += task.getWeight();
@@ -385,7 +375,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * Calculates bottom level (cost function) of all nodes, starting from the leaves of DAG
      * and recursively calculating up the DAG
      */
-    private synchronized void initaliseBottomLevel() {
+    private void initaliseBottomLevel() {
         for (GraphNode task : _taskInfo.values()) {
             if (_adjChildrenMap.get(task.getId()).size() == 0) { // Calculate bottom level for a leaf
                 calculateBottomLevel(task,0);
@@ -398,7 +388,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * @param task - task to calculate bottom level for
      * @param currentBottomLevel - the current bottom level cost of the task
      */
-    private synchronized void calculateBottomLevel(GraphNode task, int currentBottomLevel) {
+    private void calculateBottomLevel(GraphNode task, int currentBottomLevel) {
         int potential = task.getWeight() + currentBottomLevel;
 
         if (potential >= task.getComputationalBottomLevel()) {
@@ -416,7 +406,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * Retrieves the maximum finish time for already scheduled tasks out of all the processors
      * @return returns an int with the latest finish time
      */
-    private synchronized int getStackMax() {
+    private int getStackMax() {
         int max = 0;
         for (int i = 0; i < _numProcTask; i++) {
             try {
@@ -435,7 +425,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * Backtracking method which unschedules a task and updates its children so that they can no longer be scheduled
      * @param processorNumber - the processor number to remove the latest scheduled task from
      */
-    private synchronized void sanitise(int processorNumber) {
+    private void sanitise(int processorNumber) {
         // Unschedules node, adds it to free task list and set it to free
         GraphNode node = _processorAllocations[processorNumber].pop();
         node.setFree(true);
@@ -457,7 +447,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
      * Checks the stack array and returns the number of processors that have no tasks scheduled onto them
      * @return returns an integer of the number of empty processors
      */
-    private synchronized int getFreeProc() {
+    private int getFreeProc() {
         int free = 0;
         for (int i = 0; i < _numProcTask; i++) {
             if (_processorAllocations[i].empty()) {
@@ -467,8 +457,8 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         return free;
     }
 
-    public synchronized int getBestFinishTime() {
-        return _bestFinishTime;
+    public int getBestFinishTime() {
+        return _overallBestFinishTime;
     }
 
     @Override
