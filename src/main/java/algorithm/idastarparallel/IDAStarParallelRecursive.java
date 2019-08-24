@@ -30,6 +30,8 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     private static volatile TreeSet<Integer> _checkedLowerBoundList = new TreeSet<>();
     private static volatile int _overallBestFinishTime = -1;
     private static volatile boolean _solved; // Represents whether the optimal solution has been found on any thread
+    private static volatile Map<String, GraphNode> _overallBestSchedule = new HashMap<>();
+
     private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
     private int _threadBestFinishTime = -1; // Stores the cost of the optimal schedule
@@ -231,11 +233,12 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
 
                 if (_overallBestFinishTime > currentFinishedTime || _overallBestFinishTime == -1) {
                     _overallBestFinishTime = currentFinishedTime;
-                    System.out.println("thread " + Thread.currentThread().getId() + " has finished with best time of " + _overallBestFinishTime);
+                    setOverallBestSchedule();
                 }
 
                 if (_threadBestFinishTime > currentFinishedTime || _threadBestFinishTime == -1) {
-                    _overallBestFinishTime = currentFinishedTime;
+                    _threadBestFinishTime = currentFinishedTime;
+                    System.out.println("thread " + Thread.currentThread().getId() + " has finished with best time of " + _threadBestFinishTime);
                 }
                 _solved = true;
                 return _solved; // If the solution is most optimal, end search
@@ -446,6 +449,14 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         }
     }
 
+    private void setOverallBestSchedule() {
+        _overallBestSchedule = new HashMap<>();
+        for (GraphNode node: _taskInfo.values()) {
+            GraphNode newNode = new GraphNode(node.getId(), node.getWeight(), node.getProcessor(), node.getStartTime());
+            _overallBestSchedule.put(newNode.getId(), newNode);
+        }
+    }
+
     /**
      * Checks the stack array and returns the number of processors that have no tasks scheduled onto them
      * @return returns an integer of the number of empty processors
@@ -464,11 +475,16 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         return _overallBestFinishTime;
     }
 
+    public Map<String, GraphNode> getOverallBestSchedule() {
+        return _overallBestSchedule;
+    }
+
     public void resetStaticVolatileFields() {
         _solved = false;
         _lowerBoundQueue = new PriorityBlockingQueue<>();
         _checkedLowerBoundList = new TreeSet<>();
         _overallBestFinishTime = -1;
+        _overallBestSchedule = new HashMap<>();
     }
 
     @Override

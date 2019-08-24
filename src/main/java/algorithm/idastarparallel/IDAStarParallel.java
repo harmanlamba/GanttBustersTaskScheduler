@@ -52,27 +52,22 @@ public class IDAStarParallel extends Algorithm {
 
 
         // Retrieve best schedule from the threads that have run
-        IDAStarParallelRecursive bestSchedule = null;
+//        IDAStarParallelRecursive bestSchedule = null;
         int bestCost = solutionsList.get(0).getOverallBestFinishTime();
         System.out.println("Best cost = " + bestCost);
-//        int tempCost = -1;
-        for (int i = 0; i < _numProcParallel; i++) {
-            IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
-            if (currentPotentialSchedule.getBestScheduleCost() == bestCost) {
-                bestSchedule = currentPotentialSchedule;
-//                tempCost = currentPotentialSchedule.getBestScheduleCost();
-            }
-        }
-//        if (tempCost != bestCost) {
-//            System.out.println("temp: " + tempCost + ", best: " + bestCost);
+//        for (int i = 0; i < _numProcParallel; i++) {
+//            IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
+//            if (currentPotentialSchedule.getBestScheduleCost() == bestCost) {
+//                bestSchedule = currentPotentialSchedule;
+//            }
 //        }
-        if (bestSchedule != null) {
-            return bestSchedule.getCurrentBestSolution();
-        } else {
-            System.out.println("returning null");
-            return getCurrentBestSolution();
-        }
-
+//        if (bestSchedule != null) {
+//            return bestSchedule.getCurrentBestSolution();
+//        } else {
+//            System.out.println("returning null");
+//            return getCurrentBestSolution();
+//        }
+        return solutionsList.get(0).getOverallBestSchedule();
     }
 
     @Override
