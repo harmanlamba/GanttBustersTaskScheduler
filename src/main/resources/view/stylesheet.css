@@ -27,6 +27,13 @@
   -fx-padding: 0 5;
 }
 
+#statusPane2 {
+    -fx-border-width: 0 0 0 8;
+    -fx-border-color: #525252;
+    -fx-background-radius: 4;
+    -fx-padding: 0 5;
+}
+
 /*
 CHART
  */
@@ -205,7 +212,7 @@ LEGEND
 
 .scroll-bar:horizontal .thumb,
 .scroll-bar:vertical .thumb {
-  -fx-background-color : #dedede;
+  -fx-background-color : #525252;
   -fx-background-insets : 2.0, 0.0, 0.0;
   -fx-background-radius : 2.0em;
 }

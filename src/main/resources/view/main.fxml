@@ -5,6 +5,7 @@
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -19,7 +20,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.Label?>
 <VBox fx:id="root" prefHeight="621.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
@@ -38,10 +38,10 @@
                               <Font size="22.0" />
                            </font>
                            <VBox.margin>
-                              <Insets bottom="15.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
                         </Text>
-                        <VBox prefHeight="43.0" prefWidth="308.0">
+                        <VBox prefHeight="35.0" prefWidth="308.0">
                            <children>
                               <VBox fx:id="statusPane" prefHeight="40.0" prefWidth="288.0">
                                  <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">
@@ -54,7 +54,7 @@
                               </VBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" />
+                              <Insets bottom="2.0" left="10.0" right="10.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -129,7 +129,7 @@
                               </HBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="17.0" left="10.0" right="10.0" top="5.0" />
+                              <Insets bottom="8.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -196,7 +196,7 @@
                               </HBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="16.0" left="10.0" right="10.0" top="5.0" />
+                              <Insets bottom="8.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
@@ -223,19 +223,34 @@
                               </Text>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="16.0" left="10.0" right="10.0" top="5.0" />
+                              <Insets bottom="14.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefHeight="171.0" prefWidth="328.0">
                            <children>
-                              <Text fx:id="legendText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Legend:" wrappingWidth="241.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
+                              <VBox fx:id="statusPane2" alignment="CENTER" prefHeight="45.0" prefWidth="305.0">
+                                 <children>
+                                    <VBox fx:id="statusPane11" prefHeight="60.0" prefWidth="286.0">
+                                       <children>
+                                          <VBox fx:id="statusBackground11" alignment="CENTER" minHeight="10.0" prefHeight="42.0" prefWidth="286.0">
+                                             <children>
+                                                <Text fx:id="legendText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Legend:" wrappingWidth="286.0">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </Text>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
                                  <VBox.margin>
-                                    <Insets bottom="4.0" left="10.0" />
+                                    <Insets left="2.0" right="10.0" />
                                  </VBox.margin>
-                              </Text>
+                              </VBox>
                               <HBox alignment="CENTER_LEFT" prefHeight="146.0" prefWidth="328.0">
                                  <children>
                                     <JFXListView fx:id="legendListView" prefHeight="150.0" prefWidth="342.0">
@@ -249,7 +264,7 @@
                               </HBox>
                            </children>
                            <VBox.margin>
-                              <Insets top="5.0" />
+                              <Insets left="8.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                      </children>
@@ -335,7 +350,7 @@
                                                 <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="180.0" resizable="false" text="Assigned Processor" />
                                             </columns>
                                              <placeholder>
-                                                <Label text="No assigned processors :-("/>
+                                                <Label text="No assigned processors :-(" />
                                              </placeholder>
                                              <VBox.margin>
                                                 <Insets top="8.0" />
