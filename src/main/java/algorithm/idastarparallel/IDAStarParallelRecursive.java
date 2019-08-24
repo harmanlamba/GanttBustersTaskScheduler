@@ -32,8 +32,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     private static volatile PriorityBlockingQueue<Integer> _lowerBoundQueue = new PriorityBlockingQueue<>();
     private static volatile ArrayList<Integer> _checkedLowerBoundList = new ArrayList<>();
     private int _bestFinishTime = -1;
-
-    private int _nextLowerBound = -1; // Next lower bound to be assigned to _lowerBound
     private static volatile boolean _solved; // Represents whether the optimal solution has been found on any thread
     private int _maxCompTime; // Sum of node weights divided by number of processors to schedule tasks to
     private int _idle = 0; // Holds the idle time (unused processor time/wastage) in a particular scheduling iteration/partial state, used for cost function
@@ -84,8 +82,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                     _numberOfIterations += 1;
                     notifyObserversOfIterationChange();
                     _solved = idaRecursive(task, 0); // Schedules the task
-//                    _lowerBound = _nextLowerBound; // Increments the lower bound
-//                    _nextLowerBound = -1;
 
                     // a thread should only try to get a new _lowerBound if it isn't solved
                     while (!_solved) {
@@ -316,32 +312,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
             }
         }
     }
-
-//    /**
-//     * Getter method to grab the parents of a particular node
-//     * @param task - the task whose parents must be retrieved
-//     * @return returns a set of the parent GraphNodes
-//     */
-//    private synchronized Set<GraphNode> getParents(GraphNode task) {
-//        Set<GraphNode> parents = new HashSet<>();
-//        for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
-//            parents.add((GraphNode) _jGraph.getEdgeSource(edge));
-//        }
-//        return parents;
-//    }
-//
-//    /**
-//     * Getter method to grab the children of a particular node
-//     * @param task - the task whose parents must be retrieved
-//     * @return returns a set of the children GraphNodes
-//     */
-//    private synchronized Set<GraphNode> getChildren(GraphNode task) {
-//        Set<GraphNode> children = new HashSet<>();
-//        for (DefaultWeightedEdge edge : _jGraph.outgoingEdgesOf(task)) {
-//            children.add((GraphNode) _jGraph.getEdgeTarget(edge));
-//        }
-//        return children;
-//    }
 
     /**
      * Calculates the start time for the task to be assigned onto a specified processor
