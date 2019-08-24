@@ -48,13 +48,13 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
-    private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
+    private final static String NUMBER_OF_TASKS_TEXT = "Tasks: ";
     private final static String ALGORITHM_STATUS_TEXT = "Status: ";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
-    private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: "; //this one
-    private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: "; //this one
+    private final static String NUMBER_OF_PROCESSORS_TEXT = "Processors: "; //this one
+    private final static String NUMBER_OF_THREADS_TEXT = "Threads: "; //this one
     private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
     private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
