@@ -2,11 +2,10 @@ package visualisation.controller;
 
 import algorithm.AlgorithmBuilder;
 import app.App;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import fileio.IIO;
-import graph.Graph;
 import graph.GraphNode;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,7 +15,6 @@ import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -96,6 +94,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text branchesPruned;
     public Text currentLowerBound;
     public Text currentMemoryUsage;
+    public Text stats;
 
     public TabPane visualsContainer;
     public Tab graphTab;
@@ -116,6 +115,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
 
     public JFXListView<String> legendListView;
+    public JFXComboBox<String> comboBox;
 
     public MainController(){
 
@@ -276,12 +276,34 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     private void initializeStatistics() {
+        initializeCheckParallelisationForStats();
         fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
         algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
         numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
+
+    private void initializeCheckParallelisationForStats(){
+        if (_io.getNumberOfProcessorsForParallelAlgorithm() > 1){
+            //Remove the stats text as a child of the VBox
+            statsContainer.getChildren().remove(stats);
+            initializeComboBox();
+        }else{
+            //Remove ComboBox as a Child for the VBox
+            statsContainer.getChildren().remove(comboBox);
+        }
+    }
+
+    private void initializeComboBox(){
+        ObservableList<String> parallelProcessorList = FXCollections.observableArrayList();
+        for(int i = 0; i < _io.getNumberOfProcessorsForParallelAlgorithm(); i++){
+            parallelProcessorList.add("Stats for Thread: " + i);
+        }
+        comboBox.setItems(parallelProcessorList);
+        comboBox.getSelectionModel().selectFirst();
+    }
+
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
