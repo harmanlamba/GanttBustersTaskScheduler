@@ -172,6 +172,11 @@ LEGEND
   -fx-control-inner-background: blue;
 }
 
+.list-view:focused .list-cell:filled:selected, .list-view:focused .list-cell:filled:selected:hover {
+  -fx-background: -fx-accent;
+  -fx-background-color: -fx-selection-bar;
+}
+
 /* SCROLL BAR */
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track{
@@ -233,13 +238,14 @@ BUTTON SETTING
  */
 .button {
   -fx-background-color: rgba(0,0,0,0);
+  -fx-opacity: 1;
 }
 
 .button:hover {
-  -fx-opacity: 0.6;
+  -fx-opacity: 0.8;
 }
 
-.button:selected {
+.button-active {
   -fx-opacity: 0.6;
 }
 

@@ -25,7 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.graphstream.graph.Node;
@@ -204,8 +203,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //Create graphstream view panel
         _viewPanel = _graphUpdater.addDefaultView(false);
         _viewPanel.setMinimumSize(new Dimension(660,530)); //Window size
-        _viewPanel.setOpaque(false);
         _graphUpdater.setMouseManager(_viewPanel);
+        _viewPanel.setOpaque(false);
+        _viewPanel.setBackground(Color.BLACK);
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -217,8 +217,10 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //Assign button icons
         Image spriteImage = new Image(getClass().getResourceAsStream("/images/sprite.png"));
         spriteButton.setGraphic(new ImageView(spriteImage));
+        spriteButton.getStyleClass().add("button-active");
         Image floppyImage = new Image(getClass().getResourceAsStream("/images/floppy.png"));
         floppyButton.setGraphic(new ImageView(floppyImage));
+        floppyButton.getStyleClass().add("button-active");
     }
 
     private void initializeGantt() {
@@ -316,6 +318,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
         Map<String,String> colorMap =  new HashMap<>();
+
         //Repopulate with the new GraphNode Details
         for(GraphNode node : update){
             if(node.getStartTime() != -1 && node.getProcessor() != -1){
@@ -330,13 +333,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 8;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 9;");
                         }
                     }
                 });
                 _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
         }
+
     }
 
     public void updateGantt(List<GraphNode> test) {
@@ -378,11 +382,21 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     @FXML
     public void toggleSprite(ActionEvent event) {
+        if (_graphUpdater.getSpriteFlag()) {
+            spriteButton.getStyleClass().add("button-active");
+        } else {
+            spriteButton.getStyleClass().remove("button-active");
+        }
         _graphUpdater.toggleSprites(_graphStream);
     }
 
     @FXML
     public void toggleFloppy(ActionEvent event) {
+        if (_graphUpdater.getFloppyFlag()) {
+            floppyButton.getStyleClass().add("button-active");
+        } else {
+            floppyButton.getStyleClass().remove("button-active");
+        }
         _graphUpdater.toggleMouseManager(_viewPanel);
     }
 }
