@@ -1,5 +1,6 @@
 #statsContainer {
   -fx-background-color: #f0f0f0;
+  -fx-padding: 0 4;
 }
 
 #visualsContainer {
@@ -11,21 +12,92 @@
   -fx-border-width: 1;
 }
 
-.table-column{
+#statusPane {
+  -fx-border-radius: 3;
+  -fx-border-width: 4;
+  -fx-border-color: #dedede;
+  -fx-background-color: #dedede;
+  -fx-background-radius: 4;
+}
+
+/*
+TAB SETTINGS
+ */
+.tab-pane:top *.tab-header-area {
+  -fx-background-insets: 0, 0 0 0 0;
+  -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+}
+
+.tab {
+  -fx-background-color: #e3e3e3;
+  -fx-padding: 7 8;
+  -fx-background-radius: 0;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+  -fx-border-color: rgba(0,0,0,0);
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected {
+  -fx-background-color: #a8a8a8;
+  -fx-text-base-color: #ffffff;
+}
+
+.tab:selected {
+  -fx-background-color: #a8a8a8;
+  -fx-text-base-color: #ffffff;
+}
+
+.tab-pane *.tab-header-background {
+  -fx-background-color: #e3e3e3;
+  -fx-effect: innershadow(two-pass-box , transparent , 0, 0.0 , 0 , 0);
+}
+
+/**
+TABLE VIEW
+ */
+.table-view {
+  -fx-selection-bar: #dedede;
+  -fx-selection-bar-non-focused: rgba(0,0,0,0);
+  -fx-text-alignment: CENTER;
   -fx-alignment: CENTER;
+
+}
+#taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
+  -fx-alignment: CENTER;
+  -fx-text-alignment: CENTER;
 }
 
-.table-row-cell:filled:selected {
-  -fx-background: -fx-control-inner-background ;
-  -fx-background-color: -fx-table-cell-border-color, -fx-background ;
-  -fx-background-insets: 0, 0 0 1 0 ;
-  -fx-table-cell-border-color: derive(-fx-color, 0%);
-  -fx-border-width: 0;
+.table-view .table.column {
+  -fx-text-alignment: CENTER;
 }
 
-.table-row-cell:odd:filled:selected {
-  -fx-background: -fx-control-inner-background-alt ;
-  -fx-border-width: 0;
+.table-view:focused{
+  -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label{
+  -fx-background-color: #e3e3e3;
+  -fx-text-fill: black;
+}
+
+.table-view .column-header {
+  -fx-background-color: #dedede;
+}
+
+/*
+BUTTON SETTING
+ */
+.button {
+  -fx-background-color: rgba(0,0,0,0);
+}
+
+.button:hover {
+  -fx-opacity: 0.6;
+}
+
+.button:selected {
+  -fx-opacity: 0.6;
 }
 
 /*
@@ -41,6 +113,7 @@ FONT SETTING
 
 #searchGraph {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
 }
 
 #algorithmStatus {
@@ -53,21 +126,10 @@ FONT SETTING
 
 #timeElapsedText {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #numberOfTasks {
   -fx-font-family: 'Space Mono', monospace;
-
-}
-
-#statusPane {
-  -fx-min-width: 50%;
-  -fx-border-radius: 10;
-  -fx-border-width: 3;
-  -fx-border-color: #dedede;
-  -fx-background-radius: 10;
-  -fx-background-color: #dedede;
 }
 
 #numberOfProcessors {
@@ -87,7 +149,6 @@ FONT SETTING
 
 #numberOfIterations {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 
@@ -102,24 +163,33 @@ FONT SETTING
 
 #graphTab {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #taskTab {
   -fx-font-family: 'Space Mono', monospace;
-}
-
-#taskSchedule {
-  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #resultTab {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+}
+
+#taskSchedule {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
 }
 
 #scheduleResults {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
 }
 
 #scheduleResultsTable {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#currentMemoryUsage {
   -fx-font-family: 'Space Mono', monospace;
 }
