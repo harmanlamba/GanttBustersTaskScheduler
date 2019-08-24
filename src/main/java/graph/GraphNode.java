@@ -41,6 +41,15 @@ public class GraphNode {
         _startTime =  startTime;
     }
 
+    public GraphNode(String id, int weight, int processor, int startTime, boolean free){
+        _id = id;
+        _weight = weight;
+        _processor = processor;
+        _startTime =  startTime;
+        _free = free;
+    }
+
+
     /**
      * equals - overriding equals method
      * @param o
