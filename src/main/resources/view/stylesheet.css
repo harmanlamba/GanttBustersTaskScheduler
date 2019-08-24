@@ -323,6 +323,7 @@ FONT SETTING
 
 #legendText {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #scheduleResults {
