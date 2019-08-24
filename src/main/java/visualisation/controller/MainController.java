@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.graphstream.graph.Node;
@@ -204,9 +205,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //Create graphstream view panel
         _viewPanel = _graphUpdater.addDefaultView(false);
-        _viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
+        _viewPanel.setMinimumSize(new Dimension(660,500)); //Window size
         _viewPanel.setOpaque(false);
-        _viewPanel.setBackground(Color.white);
         _graphUpdater.setMouseManager(_viewPanel);
 
         //Assign graph using swing node
@@ -310,7 +310,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.12 0 8;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 8;");
                         }
                     }
                 });

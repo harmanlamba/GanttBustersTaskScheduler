@@ -1,10 +1,10 @@
 #statsContainer {
-  -fx-background-color: #313131;
+  -fx-background-color: #f0f0f0;
   -fx-padding: 0 5;
 }
 
 #visualsContainer {
-  -fx-background-color: #525252;
+  -fx-background-color: #ffffff;
 }
 
 .gantt-border {
@@ -15,8 +15,8 @@
 #statusPane {
   -fx-border-radius: 3;
   -fx-border-width: 4;
-  -fx-border-color: #525252;
-  -fx-background-color: #525252;
+  -fx-border-color: #dedede;
+  -fx-background-color: #dedede;
   -fx-background-radius: 4;
 }
 
@@ -29,8 +29,7 @@ TAB SETTINGS
 }
 
 .tab {
-  -fx-background-color: #414141;
-  -fx-text-base-color: #ffffff;
+  -fx-background-color: #e3e3e3;
   -fx-padding: 7 8;
   -fx-background-radius: 0;
 }
@@ -40,17 +39,17 @@ TAB SETTINGS
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected {
-  -fx-background-color: #525252;
+  -fx-background-color: #a8a8a8;
   -fx-text-base-color: #ffffff;
 }
 
 .tab:selected {
-  -fx-background-color: #525252;
+  -fx-background-color: #a8a8a8;
   -fx-text-base-color: #ffffff;
 }
 
 .tab-pane *.tab-header-background {
-  -fx-background-color: #414141;
+  -fx-background-color: #e3e3e3;
   -fx-effect: innershadow(two-pass-box , transparent , 0, 0.0 , 0 , 0);
 }
 
@@ -62,8 +61,8 @@ TABLE VIEW
   -fx-selection-bar-non-focused: #dedede;
   -fx-text-alignment: CENTER;
   -fx-alignment: CENTER;
-}
 
+}
 #taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
   -fx-alignment: CENTER;
   -fx-text-alignment: CENTER;
@@ -74,35 +73,26 @@ TABLE VIEW
   -fx-font-weight: BOLD;
 }
 
-.table-view {
-  -fx-background-insets: 0;
-  -fx-padding: 0;
-}
-
 .table-view .table.column {
   -fx-text-alignment: CENTER;
 }
 
 .table-cell {
-  -fx-background-color: #525252;
-  -fx-text-fill: white;
+  -fx-background-color: white;
 }
 
-.table-row-cell{
-  -fx-table-cell-border-color: transparent;
-}
 
 .table-view:focused{
   -fx-background-color: transparent;
 }
 
 .table-view .column-header-background .label{
-  -fx-background-color: #414141;
-  -fx-text-fill: white;
+  -fx-background-color: #e3e3e3;
+  -fx-text-fill: black;
 }
 
 .table-view .column-header {
-  -fx-background-color: #525252;
+  -fx-background-color: #dedede;
 }
 
 /*
@@ -111,21 +101,17 @@ LEGEND
 #legendListView {
   -fx-background-color: rgba(0,0,0,0);
   -fx-selection-bar: #dedede;
+  -fx-text-fill: black;
   -fx-font-family: 'Space Mono', monospace;
 }
 
 #legendListView .list-cell:odd,
 #legendListView .list-cell:even {
   -fx-background-color: rgba(0,0,0,0);
-  -fx-text-fill: white;
 }
 
 #legendListView .cell {
-  -fx-background-color: #313131;
-}
-
-#legendListView .list-cell {
-  -fx-control-inner-background: blue;
+  -fx-background-color: transparent;
 }
 
 /* SCROLL BAR */
@@ -223,23 +209,18 @@ FONT SETTING
 
 #algorithmStatus {
   -fx-font-family: 'Space Mono', monospace;
-  -fx-font-weight: bold;
-
 }
 
 #algorithmTypeText {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #timeElapsedText {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #numberOfTasks {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #numberOfProcessors {
@@ -263,6 +244,7 @@ FONT SETTING
 
 #branchesPruned {
   -fx-font-family: 'Space Mono', monospace;
+
 }
 
 #currentLowerBound {
@@ -271,14 +253,17 @@ FONT SETTING
 
 #graphTab {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #taskTab {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #resultTab {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #taskSchedule {
