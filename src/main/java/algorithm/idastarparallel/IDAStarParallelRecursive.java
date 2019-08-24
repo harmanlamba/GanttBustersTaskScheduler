@@ -234,9 +234,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                 _solved = true;
                 return _solved; // If the solution is most optimal, end search
             } else {
-                // Recursion algorithm start
-                _solved = false;
-
                 for (GraphNode freeTask : _taskInfo.values()) {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
