@@ -17,8 +17,8 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     private List<IBBAObservable> _observableList;
     private int _upperBound;
     private int _lowerBound;
-    private Map<Integer, Map<String, GraphNode>> _currentBestSolutions;
-    private Map<Integer, Integer> _currentBestCosts;
+    public static volatile Map<Integer, Map<String, GraphNode>> _currentBestSolutions;
+    public static volatile Map<Integer, Integer> _currentBestCosts;
     private int _bestSolutionIndex;
     private boolean _solved;
 
@@ -39,7 +39,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
 
         for (int i=0; i < _numProcParallel; i++) {
             //TODO: give deep copy of _graph
-            IBBAObservable child = new BBAStarChild(_graph, _numProcTask, i, bounds[i]);
+            IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
             child.add(this);
             _observableList.add(child);
             Thread thread = new Thread(child);
@@ -53,6 +53,12 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
                     wait();
                 }
             }
+            System.out.println("hi");
+            try {
+                _threadList.get(_bestSolutionIndex).join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -63,11 +69,11 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     //TODO: Implement these mofos
     @Override public void algorithmStopped(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
-        _currentBestCosts.put(thread, bestScheduleCost);
         synchronized(this){
-            notify();
+            notifyAll();
         }
     }
+
 
     //Complete
     private int initializeUpperBound() {
@@ -103,7 +109,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         _numberOfIterations = iterations;
         notifyObserversOfIterationChange();
     }
-    @Override public void updateScheduleInformation(int thread, Map<String, GraphNode> map) {
+    @Override public void updateScheduleInformation(int thread) {
         notifyObserversOfSchedulingUpdate();
     }
 

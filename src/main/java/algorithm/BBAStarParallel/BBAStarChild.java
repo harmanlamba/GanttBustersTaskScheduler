@@ -11,14 +11,12 @@ import java.util.*;
 
 public class BBAStarChild implements IBBAObservable, Runnable {
 
-    private final static int DEPTH_OF_STATES_TO_STORE = 20;
+    private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
     private Graph _graph;
-    private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph;
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
     private int _upperBound;
-    private Map<String, GraphNode> _currentBestSolution;
     private List<Stack<GraphNode>> _processorAllocation;
     private int _depth;
     private int _numTasks;
@@ -30,7 +28,6 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     public BBAStarChild(Graph graph, int numProcTask, int thread, int bound) {
         _BBAObserverList = new ArrayList<>();
         _graph = graph;
-        _jGraph = graph.getGraph();
         _numProcTask = numProcTask;
         _numTasks = _graph.get_vertexMap().size();
         _thread = thread;
@@ -52,12 +49,15 @@ public class BBAStarChild implements IBBAObservable, Runnable {
 
             // Assigns task to processor
             _freeTaskList.remove(task);
-            GraphNode newTask = new GraphNode(task.getId(), task.getWeight(), startTime, processor, false);
-            _taskInfo.put(task.getId(), newTask);
-            _processorAllocation.get(processor).push(newTask);
+            task.setStartTime(startTime);
+            task.setProcessor(processor);
+            task.setFree(false);
+            _taskInfo.put(task.getId(), task);
+            _processorAllocation.get(processor).push(task);
             updateFreeTasks(task);
 
             Set<Stack<Temp>> temp = new HashSet<>(convertProessorAllocationsToTemp());
+
             if (!_previousStates.contains(temp)) {
                 if (_depth < DEPTH_OF_STATES_TO_STORE) {
                     _previousStates.add(temp);
@@ -66,18 +66,15 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                     int cost = getCostOfCurrentAllocation();
                     if (cost <= _upperBound) {
                         _upperBound = cost;
-                        System.out.println(cost);
                         assignCurrentBestSolution();
                         notifyObserversOfSchedulingUpdate();
                     }
-                }
-
-
-            }else {
-                for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
-                    if (freeTask.isFree()) {
-                        for (int i = 0; i < _numProcTask; i++) {
-                            recursive(freeTask, i);
+                } else {
+                    for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
+                        if (freeTask.isFree()) {
+                            for (int i = 0; i < _numProcTask; i++) {
+                                recursive(freeTask, i);
+                            }
                         }
                     }
                 }
@@ -92,7 +89,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     //Implemented
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
-            if (_jGraph.inDegreeOf(task) == 0) {
+            if (task.getParents().size() == 0) {
                 _freeTaskList.add(task);
                 task.setFree(true);
             } else {
@@ -108,15 +105,17 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                 recursive(initTask, 0);
             }
         }
-        notifyObserversOfAlgorithmEnding();
+        if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
+            System.out.println("Thread " + _thread + ": " + _upperBound);
+            notifyObserversOfAlgorithmEnding();
+        }
     }
     private int getStartTime(GraphNode task, int processor) {
         int[] maxTimes = new int[_numProcTask];
-        for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
-            GraphNode parent = (GraphNode) _jGraph.getEdgeSource(edge);
+        for (GraphNode parent : task.getParents()) {
             if (parent.getProcessor() != processor) {
                 int cost = parent.getStartTime() + parent.getWeight(); //parent finish time
-                cost += (int) _jGraph.getEdgeWeight(edge); //communication cost
+                cost += (int) _graph.getEdgeWeight(parent, task); //communication cost
                 if (cost > maxTimes[parent.getProcessor()]) {
                     maxTimes[parent.getProcessor()] = cost;
                 }
@@ -134,22 +133,22 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         return Collections.max(Arrays.asList(ArrayUtils.toObject(maxTimes)));
     }
     private void updateFreeTasks(GraphNode task) {
-            for (GraphNode child : getChildren(task)) { // For every child node
-                boolean childFree = true;
-                for (GraphNode parent : getParents(child)) { // If the child node has a parent that hasn't been scheduled
-                    if (parent.getProcessor() == -1) {
-                        childFree = false;
-                        break; // Do not update child
-                    }
-                }
-                if (childFree) { // Only reaches this point if all parents of child have been scheduled
-                    // Updates free task list and task mapping with the child is ready to be scheduled
-                    GraphNode newTask = new GraphNode(child.getId(), child.getWeight(), child.getProcessor(), child.getStartTime(), childFree);
-                    _taskInfo.put(child.getId(), newTask);
-                    _freeTaskList.add(newTask);
+        for (GraphNode child : task.getChildren()) { // For every child node
+            boolean childFree = true;
+            for (GraphNode parent : child.getParents()) { // If the child node has a parent that hasn't been scheduled
+                if (parent.getProcessor() == -1) {
+                    childFree = false;
+                    break; // Do not update child
                 }
             }
+            if (childFree) { // Only reaches this point if all parents of child have been scheduled
+                // Updates free task list and task mapping with the child is ready to be scheduled
+                child.setFree(childFree);
+                _taskInfo.put(child.getId(), child);
+                _freeTaskList.add(child);
+            }
         }
+    }
     private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
         Set<Stack<Temp>> output = new HashSet<>();
         for (int i=0; i < _numProcTask; i++) {
@@ -162,20 +161,6 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
         return output;
         } // TODO: change temp to an array of strings with two indices for speedup
-    private Set<GraphNode> getParents(GraphNode task) {
-        Set<GraphNode> parents = new HashSet<>();
-        for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
-            parents.add((GraphNode) _jGraph.getEdgeSource(edge));
-        }
-        return parents;
-    }
-    private Set<GraphNode> getChildren(GraphNode task) {
-        Set<GraphNode> children = new HashSet<>();
-        for (DefaultWeightedEdge edge : _jGraph.outgoingEdgesOf(_taskInfo.get(task.getId()))) {
-            children.add((GraphNode) _jGraph.getEdgeTarget(edge));
-        }
-        return children;
-    }
     private int getCostOfCurrentAllocation() {
         int max = 0;
         for (Stack<GraphNode> stack : _processorAllocation) {
@@ -196,14 +181,15 @@ public class BBAStarChild implements IBBAObservable, Runnable {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocation.get(i));
         }
 
-        _currentBestSolution = new HashMap<>();
+        Map<String, GraphNode> solution = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
                 GraphNode task = copyOfStacks[i].pop();
-                GraphNode copy = new GraphNode(task.getId(), task.getWeight(), task.getProcessor(), task.getStartTime());
-                _currentBestSolution.put(copy.getId(), copy);
+                GraphNode copy = new GraphNode(task.getId(), task.getWeight(), task.getProcessor(), task.getStartTime(), task.isFree(), task.getParents(), task.getChildren());
+                solution.put(copy.getId(), copy);
             }
         }
+        BBAStarParent._currentBestSolutions.put(_thread, solution);
     }
     private void sanitise(int processor) {
         // Unschedules node, adds it to free task list and set it to free
@@ -215,7 +201,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         _taskInfo.put(node.getId(), node);
 
         // Sets children of removed node to not free
-        for (GraphNode child : getChildren(node)) {
+        for (GraphNode child : node.getChildren()) {
             _freeTaskList.remove(child);
             child.setFree(false);
             _taskInfo.put(child.getId(), child);
@@ -230,7 +216,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     }
     @Override public void notifyObserversOfSchedulingUpdate() {
         for (IBBAObserver observer : _BBAObserverList) {
-            observer.updateScheduleInformation(_thread, _currentBestSolution);
+            observer.updateScheduleInformation(_thread);
         }
     }
     @Override public void notifyObserversOfAlgorithmEnding() {
@@ -239,6 +225,6 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
     @Override public Map<String, GraphNode> getBestPath() {
-        return _currentBestSolution;
+        return BBAStarParent._currentBestSolutions.get(_thread);
     }
 }

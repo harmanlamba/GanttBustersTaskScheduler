@@ -12,7 +12,7 @@ import java.util.*;
 
 public class BBAStarBase extends Algorithm {
 
-    private final static int DEPTH_OF_STATES_TO_STORE = 40;
+    private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
@@ -62,9 +62,9 @@ public class BBAStarBase extends Algorithm {
 
                 if (_freeTaskList.isEmpty() && _depth == _numTasks) {
                     int cost = getCostOfCurrentAllocation();
-                    if (cost <= _upperBound) {
+                    if (cost < _upperBound) {
                         _upperBound = cost;
-                        System.out.println(cost);
+                        System.out.println(_upperBound);
                         assignCurrentBestSolution();
                         notifyObserversOfSchedulingUpdate();
                     }
@@ -127,7 +127,6 @@ public class BBAStarBase extends Algorithm {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
             max += task.getWeight();
         }
-        System.out.println(max);
         return max;
     }
     @Override protected int getCurrentLowerBound() {
@@ -242,7 +241,7 @@ public class BBAStarBase extends Algorithm {
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
                 GraphNode task = copyOfStacks[i].pop();
-                GraphNode copy = new GraphNode(task.getId(), task.getWeight(), task.getProcessor(), task.getStartTime());
+                GraphNode copy = new GraphNode(task.getId(), task.getWeight(), task.getProcessor(), task.getStartTime(), task.getParents(), task.getChildren());
                 _currentBestSolution.put(copy.getId(), copy);
             }
         }

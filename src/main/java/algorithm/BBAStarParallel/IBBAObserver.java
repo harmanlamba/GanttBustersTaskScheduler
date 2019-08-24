@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface IBBAObserver {
     void algorithmStopped(int thread, int bestScheduleCost);
-    void updateScheduleInformation(int thread, Map<String, GraphNode> map);
+    void updateScheduleInformation(int thread);
     void updateIterationInformation(int thread, int prunedBranches, int iterations, int lowerBound);
 
 }
