@@ -250,10 +250,24 @@ COMBOBOX SETTINGS
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-weight: bold;
   -fx-font-size: 15px;
+  -jfx-text-fill: white;
 }
 
 #comboBox .arrow {
   -fx-background-color: white;
+  -fx-prompt-text-fill: #525252;
+}
+
+.jfx-combo-box .list-view .list-cell{
+  -fx-background-color: #525252;
+}
+
+#comboBox .list-cell:hover{
+  -fx-background-color: #383838;
+}
+
+#comboBox .cell{
+  -fx-text-fill: white;
 }
 
 .jfx-combo-box {

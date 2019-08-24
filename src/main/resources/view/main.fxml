@@ -10,6 +10,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -85,16 +87,46 @@
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="timeElapsedText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="currentMemoryUsage" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
+                              <HBox prefHeight="7.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/timer.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="timeElapsedText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="260.33331298828125">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="15.0" prefWidth="299.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/memory.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="currentMemoryUsage" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
                            </children>
                            <VBox.margin>
                               <Insets bottom="17.0" left="10.0" right="10.0" top="5.0" />
@@ -102,21 +134,66 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="numberOfTasks" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Tasks: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfProcessors" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Processors: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfThreads" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Threads: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
+                              <HBox prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/tasks.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfTasks" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Tasks: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/processor.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfProcessors" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Processors: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/thread.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfThreads" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Threads: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
                            </children>
                            <VBox.margin>
                               <Insets bottom="16.0" left="10.0" right="10.0" top="5.0" />
