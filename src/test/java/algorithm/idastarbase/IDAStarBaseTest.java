@@ -9,6 +9,7 @@ import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,35 +25,22 @@ import static org.junit.Assert.assertTrue;
  */
 public class IDAStarBaseTest {
     //File arrays for input file locations
-    private String[] _file1;
-    private String[] _file2;
-    private String[] _file3;
-    private String[] _file4;
-    private String[] _file5;
-    private final int NUM_TASK_PROC = 2;
-    private final int NUM_PARALLEL_PROC = 1;
-    private Graph _graph;
-    // TODO: Add correctness tests for the algorithm with 4 processors
-//    private String[] _file1Proc4;
-//    private String[] _file2Proc4;
-//    private String[] _file3Proc4;
-//    private String[] _file4Proc4;
-//    private String[] _file5Proc4;
+    private final static String[] FILE1_PROC2 = new String[]{"src/main/resources/e1.dot", "2", "-p", "1"};
+    private final static String[] FILE2_PROC2 = new String[]{"src/main/resources/e2.dot", "2", "-p", "1"};
+    private final static String[] FILE3_PROC2  = new String[]{"src/main/resources/e3.dot", "2", "-p", "1"};
+    private final static String[] FILE4_PROC2  = new String[]{"src/main/resources/e4.dot", "2", "-p", "1"};
+    private final static String[] FILE5_PROC2  = new String[]{"src/main/resources/e5.dot", "2", "-p", "1"};
+    private final static String[] FILE1_PROC4 = new String[]{"src/main/resources/e1.dot", "4", "-p", "1"};
+    private final static String[] FILE2_PROC4 = new String[]{"src/main/resources/e2.dot", "4", "-p", "1"};
+    private final static String[] FILE3_PROC4 = new String[]{"src/main/resources/e3.dot", "4", "-p", "1"};
+    private final static String[] FILE4_PROC4 = new String[]{"src/main/resources/e4.dot", "4", "-p", "1"};
+    private final static String[] FILE5_PROC4 = new String[]{"src/main/resources/e5.dot", "4", "-p", "1"};
 
-    @Before
-    public void setup() {
-        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-p", "1"};
-        _file2 = new String[]{"src/main/resources/e2.dot", "2", "-p", "1"};
-        _file3 = new String[]{"src/main/resources/e3.dot", "2", "-p", "1"};
-        _file4 = new String[]{"src/main/resources/e4.dot", "2", "-p", "1"};
-        _file5 = new String[]{"src/main/resources/e5.dot", "2", "-p", "1"};
-//        _file1Proc4 = new String[]{"src/main/resources/e1.dot", "4", "-p", "1"};
-//        _file2Proc4 = new String[]{"src/main/resources/e2.dot", "4", "-p", "1"};
-//        _file3Proc4 = new String[]{"src/main/resources/e3.dot", "4", "-p", "1"};
-//        _file4Proc4 = new String[]{"src/main/resources/e4.dot", "4", "-p", "1"};
-//        _file5Proc4 = new String[]{"src/main/resources/e5.dot", "4", "-p", "1"};
-    }
-
+    /**
+     * Creates a graph and makes an instance of the algorithm to be used to test optimality without reliance
+     * on the IO classes to open an input DOT file.
+     * @return an instance of IDAStarBase which is independent of IO classes
+     */
     private IDAStarBase IDAStarBaseInstance() {
         Map<String, GraphNode> vertexMap = new HashMap<>();
         List<GraphEdge> edgeList = new ArrayList<>();
@@ -77,8 +65,7 @@ public class IDAStarBaseTest {
         edgeList.add(new GraphEdge(n1,n5,4));
         edgeList.add(new GraphEdge(n1,n6,21));
         Graph graph = new Graph(vertexMap, edgeList);
-        _graph = graph;
-        return new IDAStarBase(graph, NUM_TASK_PROC, NUM_PARALLEL_PROC);
+        return new IDAStarBase(graph, 2, 1);
     }
 
     private Map<String, GraphNode> getIDAStarSolution(String[] file) throws InputFileException {
@@ -89,22 +76,17 @@ public class IDAStarBaseTest {
     }
 
     /**
-     * Checks if the IDAStarBase algorithm's produced schedule is optimal
-     * @param solution
-     * @param optimalStartTimes
-     * @param optimalProcessors
+     * Checks if the IDAStarBase algorithm's produced schedule is optimal given the best cost last start
+     * time and the associated node's weight
      * @return true if the algorithm solution schedule is optimal, false if not.
      */
-    private boolean solutionIsOptimal(Map<String, GraphNode> solution, int[] optimalStartTimes, int[] optimalProcessors) {
-        int i = 0;
+    private boolean solutionIsOptimal(Map<String, GraphNode> solution, int bestCostLastStartTime, int BestCostLastWeight) {
         for (GraphNode task : solution.values()) {
-
-            if ((task.getStartTime() != optimalStartTimes[i]) || (task.getProcessor() != optimalProcessors[i])) {
-                    return false;
-                }
-            i++;
+            if ((task.getStartTime() == bestCostLastStartTime) && (task.getWeight() == BestCostLastWeight)) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -118,12 +100,9 @@ public class IDAStarBaseTest {
     }
 
     @Test
-    public void testE1SolutionWithoutIODependency() {
-        int[] startTimes = new int[] {0, 5, 11, 22, 16, 15, 20};
-        int[] processors = new int[] {0, 0, 0, 1, 0, 1, 0};
+    public void testE1Proc2WithoutIODependency() {
         IDAStarBase IDAStar = IDAStarBaseInstance();
-
-        if (solutionIsOptimal(IDAStar.solve(), startTimes, processors)) {
+        if (solutionIsOptimal(IDAStar.solve(), 22, 6)) {
             assertTrue(true);
         } else {
             assert(false);
@@ -131,12 +110,9 @@ public class IDAStarBaseTest {
     }
 
     @Test
-    public void testE2Solution() {
-        int[] startTimes = new int[] {0, 38, 35, 126, 211, 285, 387, 528};
-        int[] processors = new int[] {0, 1, 0, 1, 0, 1, 0, 0};
-
+    public void testE1Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(_file2), startTimes, processors)) {
+            if (solutionIsOptimal(getIDAStarSolution(FILE1_PROC2), 22, 6)) {
                 assertTrue(true);
             } else {
                 assert(false);
@@ -147,11 +123,9 @@ public class IDAStarBaseTest {
     }
 
     @Test
-    public void testE3Solution() {
-        int[] startTimes = new int[] {0, 48, 10, 16, 23, 39, 28, 30, 32};
-        int[] processors = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    public void testE2Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(_file3), startTimes, processors)) {
+            if (solutionIsOptimal(getIDAStarSolution(FILE2_PROC2), 528, 53)) {
                 assertTrue(true);
             } else {
                 assert(false);
@@ -162,11 +136,9 @@ public class IDAStarBaseTest {
     }
 
     @Test
-    public void testE4Solution() {
-        int[] startTimes = new int[] {0, 6, 11, 40, 16, 30, 19, 27, 30, 38};
-        int[] processors = new int[] {0, 0, 0, 1, 0, 1, 0, 0, 0, 0};
+    public void testE3Proc() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(_file4), startTimes, processors)) {
+            if (solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 48, 7)) {
                 assertTrue(true);
             } else {
                 assert(false);
@@ -177,11 +149,87 @@ public class IDAStarBaseTest {
     }
 
     @Test
-    public void testE5Solution() {
-        int[] startTimes = new int[] {0, 50, 120, 54, 210, 250, 154, 270, 254, 304, 324};
-        int[] processors = new int[] {0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1};
+    public void testE4Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(_file5), startTimes, processors)) {
+            if (solutionIsOptimal(getIDAStarSolution(FILE4_PROC2), 40, 10)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testE5Proc2() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE5_PROC2), 270, 80)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testE1Proc4() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE1_PROC4), 15, 7)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testE2Proc4() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE2_PROC4), 528, 53)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+    @Test
+    public void testE3Proc4() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE3_PROC4), 48, 7)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+
+
+    @Test
+    public void testE4Proc4() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE4_PROC4), 40, 10)) {
+                assertTrue(true);
+            } else {
+                assert(false);
+            }
+        } catch (InputFileException e) {
+            assert(false);
+        }
+    }
+
+    @Test
+    public void testE5Proc4() {
+        try {
+            if (solutionIsOptimal(getIDAStarSolution(FILE5_PROC4), 147, 80)) {
                 assertTrue(true);
             } else {
                 assert(false);
@@ -191,3 +239,4 @@ public class IDAStarBaseTest {
         }
     }
 }
+
