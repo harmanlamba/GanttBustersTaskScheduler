@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
@@ -25,6 +26,12 @@
                   <VBox fx:id="statsContainer" prefHeight="622.0" prefWidth="316.0" stylesheets="@stylesheet.css">
                      <children>
                         <Text fx:id="stats" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="280.0">
+                        <JFXComboBox id="comboBox" fx:id="comboBox" prefHeight="25.0" prefWidth="323.0" stylesheets="@stylesheet.css">
+                           <VBox.margin>
+                              <Insets bottom="15.0" left="10.0" top="15.0" />
+                           </VBox.margin>
+                        </JFXComboBox>
+                        <Text fx:id="stats" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="280.0">
                            <font>
                               <Font size="22.0" />
                            </font>
@@ -32,7 +39,7 @@
                               <Insets bottom="15.0" left="10.0" top="15.0" />
                            </VBox.margin>
                         </Text>
-                        <VBox prefHeight="35.0" prefWidth="288.0">
+                        <VBox prefHeight="50.0" prefWidth="288.0">
                            <children>
                               <VBox fx:id="statusPane" prefHeight="40.0" prefWidth="288.0">
                                  <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">

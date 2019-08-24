@@ -205,6 +205,41 @@ BUTTON SETTING
 }
 
 /*
+COMBOBOX SETTINGS
+ */
+
+#comboBox{
+  -jfx-focus-color: #525252;
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+  -fx-font-size: 15px;
+}
+
+#comboBox .arrow {
+  -fx-background-color: white;
+}
+
+
+.jfx-combo-box {
+  -fx-focus-color: transparent;
+}
+
+.jfx-combo-box > .list-cell:selected{
+  -fx-background-color: transparent;
+  -jfx-focus-color: transparent;
+}
+
+.jfx-combo-box > .list-cell {
+  -fx-alignment: CENTER;
+  -fx-text-alignment: CENTER;
+}
+
+.jfx-combo-box > .prompt-container {
+  -fx-alignment: center;
+}
+
+
+/*
 FONT SETTING
  */
 #fileNameText {
