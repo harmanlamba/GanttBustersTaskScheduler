@@ -457,8 +457,16 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         return free;
     }
 
-    public int getBestFinishTime() {
+    public int getOverallBestFinishTime() {
         return _overallBestFinishTime;
+    }
+
+    public int getFreeTaskListSize() {
+        return _freeTaskList.size();
+    }
+
+    public void resetOverallBestTime() {
+        _overallBestFinishTime = -1;
     }
 
     @Override
