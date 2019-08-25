@@ -108,7 +108,6 @@ public class IDAStarBase extends Algorithm {
      * @return
      */
     private Map<String, GraphNode> convertProcessorAllocationsToMap() {
-        //TODO: deep copy the _processorAllocations
         Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
         for (int i=0; i < _numProcTask; i++) {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);

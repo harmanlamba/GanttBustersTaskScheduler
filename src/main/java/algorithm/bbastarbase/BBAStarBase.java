@@ -4,6 +4,7 @@ import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
 import graph.Temp;
+import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -12,7 +13,7 @@ import java.util.*;
 
 public class BBAStarBase extends Algorithm {
 
-    private final static int NUMBER_OF_GRAPH_UPDATES = 1;
+    private final static int NUMBER_OF_GRAPH_UPDATES = 10000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
@@ -66,10 +67,12 @@ public class BBAStarBase extends Algorithm {
                     int cost = getCostOfCurrentAllocation();
                     if (cost <= _upperBound) {
                         _upperBound = cost;
-                        System.out.println(_upperBound);
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
-                            notifyObserversOfSchedulingUpdate(1);
+                            Platform.runLater(() -> {
+                                notifyObserversOfSchedulingUpdate(1);
+                            });
+
                         }
                         _graphUpdates += 1;
                     }

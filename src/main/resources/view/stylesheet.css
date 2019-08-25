@@ -152,6 +152,10 @@ TABLE VIEW
 /*
 LEGEND
  */
+#legendListView .label {
+  -fx-text-fill: white;
+}
+
 #legendListView {
   -fx-background-color: rgba(0,0,0,0);
   -fx-selection-bar: #dedede;
