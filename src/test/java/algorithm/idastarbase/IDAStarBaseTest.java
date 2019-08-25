@@ -75,13 +75,17 @@ public class IDAStarBaseTest {
      * time and the associated node's weight
      * @return true if the algorithm solution schedule is optimal, false if not.
      */
-    private boolean solutionIsOptimal(Map<String, GraphNode> solution, int bestCostLastStartTime, int BestCostLastWeight) {
+    private boolean solutionIsOptimal(Map<String, GraphNode> solution, int bestCost) {
+        boolean foundBestCost = false;
         for (GraphNode task : solution.values()) {
-            if ((task.getStartTime() == bestCostLastStartTime) && (task.getWeight() == BestCostLastWeight)) {
-                return true;
+            if (task.getStartTime()+ task.getWeight() > bestCost) {
+                return false;
+            }
+            if (task.getStartTime()+ task.getWeight() == bestCost) {
+                foundBestCost = true;
             }
         }
-        return false;
+        return foundBestCost;
     }
 
     /**
@@ -114,13 +118,13 @@ public class IDAStarBaseTest {
     @Test
     public void testE1Proc2WithoutIODependency() {
         IDAStarBase IDAStar = IDAStarBaseInstance();
-        assertTrue(solutionIsOptimal(IDAStar.solve(), 22, 6));
+        assertTrue(solutionIsOptimal(IDAStar.solve(), 28));
     }
 
     @Test
     public void testE1Proc2() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC2), 22, 6));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC2), 28));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -129,7 +133,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE2Proc2() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC2), 528, 53));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC2), 581));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -138,7 +142,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE3Proc() {
         try {
-            assertEquals(true, solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 48, 7));
+            assertEquals(true, solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 55));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -147,7 +151,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE4Proc2() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC2), 40, 10));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC2), 50));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -156,7 +160,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE5Proc2() {
         try {
-            assertEquals(true, solutionIsOptimal(getIDAStarSolution(FILE5_PROC2), 270, 80));
+            assertEquals(true, solutionIsOptimal(getIDAStarSolution(FILE5_PROC2), 350));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -165,7 +169,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE1Proc4() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC4), 15, 7));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC4), 22));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -174,7 +178,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE2Proc4() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC4), 528, 53));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC4), 581));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -182,7 +186,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE3Proc4() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE3_PROC4), 48, 7));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE3_PROC4), 55));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -192,7 +196,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE4Proc4() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC4), 40, 10));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC4), 50));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -201,7 +205,7 @@ public class IDAStarBaseTest {
     @Test
     public void testE5Proc4() {
         try {
-            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE5_PROC4), 147, 80));
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE5_PROC4), 227));
         } catch (InputFileException e) {
             assert(false);
         }
