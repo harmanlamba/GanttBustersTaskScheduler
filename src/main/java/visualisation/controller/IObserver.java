@@ -29,5 +29,4 @@ public interface IObserver {
      * @param numIterations - number of iterations completed by the algorithm
      */
     void updateIterationInformation(int threadNumber, int upperBound, int numIterations);
-
 }

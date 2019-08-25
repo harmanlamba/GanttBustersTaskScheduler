@@ -18,15 +18,15 @@ import visualisation.controller.MainController;
 public class FXApplication extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
-        //Load FXML
+        // Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
         MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
 
-        //Show stage
+        // Show stage
         Scene scene = new Scene(root, 1005, 610);
         scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap");
         primaryStage.setScene(scene); //total window size
@@ -35,7 +35,7 @@ public class FXApplication extends Application {
         primaryStage.getIcons().add(new Image("/images/logo.png"));
         primaryStage.show();
 
-        //On exit, stop program
+        // On exit, stop program
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
@@ -44,13 +44,10 @@ public class FXApplication extends Application {
             }
         });
 
-        //Runs the algorithm in a new thread
         new Thread(() -> {
             AlgorithmTimer.getAlgorithmTimer().start();
             IIO io = App._mainIO;
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
-
     }
-
 }

@@ -24,6 +24,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
 
     /**
      * getAlgorithmTimer - get current timer given algorithm start
+
      */
     public static AlgorithmTimer getAlgorithmTimer() {
         if (_algorithmTimer == null) {
@@ -33,6 +34,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
+
      * start - begin time using timestamp
      */
     @Override
@@ -65,6 +67,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         super.stop();
     }
 
+
     /**
      * setTimerStatistic - runs the timer of mins, seconds, milliseconds and notify observers of update for each time
      * @param currentTime
@@ -72,11 +75,12 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
 
+            // Converts time from long into a displayable string format
             long minutes = (currentTime / 60000);
             long seconds = ((currentTime - minutes * 60) / 1000);
             long milliseconds = (currentTime - minutes * 60 - seconds * 1000) / 10;
 
-            String minutesText ="";
+            String minutesText = "";
             String secondsText = "";
             String millisecondsText = "";
             if (seconds % 60 < 10) { //Fix seconds
