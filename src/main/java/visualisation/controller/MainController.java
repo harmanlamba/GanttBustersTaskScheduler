@@ -120,6 +120,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     }
 
+    /**
+     * initialize - Initiate algorithm and GUI components
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         _io = App._mainIO;
@@ -127,17 +130,19 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
+        initializeTabSelectionModel();
+        initializeViews();
 
         //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
         _observableTimer = AlgorithmTimer.getAlgorithmTimer();
         _observableTimer.add(this);
-
-        initializeTabSelectionModel();
-        initializeViews();
     }
 
+    /**
+     * initializeViews - Initialize all views for legend, graph, gantt, table and statistics
+     */
     private void initializeViews() {
         initializeStatistics();
         initializeLegend();
@@ -146,8 +151,13 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         initializeTable();
     }
 
+    /**
+     * initializeTabSelectionModel - create tabs according to thread and thread's current solution
+     */
     private void initializeTabSelectionModel() {
         _currentTab = SelectedTab.GRAPH;
+
+        //Select initial tab with initial data and threads
         visualsContainer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
@@ -159,6 +169,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         });
     }
 
+    /**
+     * algorithmStopped - once algorithm has been solved call upon timer to stop and status to complete -> create solution BOX
+     * @param thread - thread in which the current display is on
+     * @param bestCost - get the best cost statistic which updates on stats
+     */
     @Override
     public void algorithmStopped(int thread, int bestCost) {
         _observableTimer.stop();
@@ -178,6 +193,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + bestCost);
     }
 
+    /**
+     * initializeGraph - create graph component which is placed into swing util
+     */
     private void initializeGraph() {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer"); //Set styling renderer
         _graphStream = _graphManager.getGraph();
@@ -207,6 +225,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         floppyButton.getStyleClass().add("button-active");
     }
 
+    /**
+     * initializeGantt - create gantt component and its xAxis + YAxis properties
+     */
     private void initializeGantt() {
         //Gantt chart initialize
         NumberAxis xAxis = new NumberAxis();
@@ -244,12 +265,17 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
     }
 
+    /**
+     * initializeLegend - create legend list component on stats given colours and num processes
+     */
     private void initializeLegend(){
+        //Get number of processors
         ObservableList<String> processorList = FXCollections.observableArrayList();
         for(int i=0 ; i < _io.getNumberOfProcessorsForTask(); i++){
             processorList.add(String.valueOf(i));
         }
 
+        //Set processor list
         legendListView.setItems(processorList);
         legendListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
             @Override
@@ -259,6 +285,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         });
     }
 
+    /**
+     * initializeStatistics - initialize statistics values + initial CL values set by user
+     */
     private void initializeStatistics() {
         initializeCheckParallelisationForStats();
         fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
@@ -268,17 +297,23 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
 
+    /**
+     * initializeCheckParallelisationForStats - create parallelization for stats if parallelization is enabled
+     */
     private void initializeCheckParallelisationForStats(){
         if (_io.getNumberOfProcessorsForParallelAlgorithm() > 1){
             //Remove the stats text as a child of the VBox
             statsContainer.getChildren().remove(stats);
             initializeComboBox();
-        }else{
+        } else {
             //Remove ComboBox as a Child for the VBox
             statsContainer.getChildren().remove(comboBox);
         }
     }
 
+    /**
+     * initializeComboBox - create combo boxes depending on if parallelization is enabled
+     */
     private void initializeComboBox(){
         ObservableList<String> parallelProcessorList = FXCollections.observableArrayList();
         for(int i = 0; i < _io.getNumberOfProcessorsForParallelAlgorithm(); i++){
@@ -304,6 +339,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         });
     }
 
+    /**
+     * initializeTable - create table component with appropriate column ids
+     */
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
@@ -314,6 +352,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 
+    /**
+     * updateScheduleInformation - for every update called from observer, input current thread user is in + the update of information
+     * including the nodes and edges in which processor allocated + start time allocated.
+     * @param threadNumber - current thread user is on
+     * @param update - map of data to update all components on
+     */
     @Override
     public void updateScheduleInformation(int threadNumber, Map<String, GraphNode> update) {
         _latestUpdateMap = update;
@@ -324,6 +368,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+
                     //update graph visualization using runnable
                     try {
                         List<GraphNode> test = new ArrayList<>(update.values());
@@ -352,19 +397,25 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                             }
                         }
                     } catch (NullPointerException e) {
-                        System.out.println("yeet");
+                        System.out.println("Too fast"); //null pointer for thread race -> won't break algorithm
                     }
                 }
             });
         }
     }
 
+    /**
+     * updateTable - update table component give update list data from observable
+     * @param update - list of nodes to update the table according to start time + processor
+     */
     private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
         Map<String,String> colorMap =  new HashMap<>();
 
         //Repopulate with the new GraphNode Details
         for(GraphNode node : update){
+
+            //If assigned nodes are not "-1" (unassigned)
             if(node.getStartTime() != -1 && node.getProcessor() != -1){
                 MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
                 colorMap.put(tempMockGraphNode.getId(),_processColourHelper.getProcessorColour(tempMockGraphNode.getProcessor()));
@@ -384,20 +435,25 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
         }
-
     }
 
-    public void updateGantt(List<GraphNode> test) {
+    /**
+     * updateGantt - updates gantt chart graph when updated by observable
+     * @param graphNodeList - list of nodes to update processor and start time
+     */
+    public void updateGantt(List<GraphNode> graphNodeList) {
         XYChart.Series series1 = new XYChart.Series();
         ganttChart.getData().clear();
 
+        //Get list of processors
         List<String> processors = new ArrayList<>();
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
         }
 
+        //Assign colour for processor list
         for (String processor : processors) {
-            for (GraphNode graphNode : test) {
+            for (GraphNode graphNode : graphNodeList) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
                 if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
                     series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor,
@@ -409,6 +465,13 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.getData().addAll(series1);
     }
 
+    /**
+     * updateIterationInformation - for each iteration of the algorithm, update statistics given from BBA* implementation
+     * @param threadNumber
+     * @param prunedBranches
+     * @param iterations
+     * @param lowerBound
+     */
     @Override
     public void updateIterationInformation(int threadNumber, int upperBound) {
         currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + ((upperBound == -1) ? "-" : upperBound));
@@ -417,13 +480,22 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         currentMemoryUsage.setText(CURRENT_MEMORY_USAGE + memoryUsage + MB_TEXT);
     }
 
+    /**
+     * updateTimer - elapsed time update for each millisecond
+     * @param time - new time in string to set timeElapsedText component
+     */
     @Override
     public void updateTimer(String time) {
         timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
     }
 
+    /**
+     * toggleSprite - toggle sprite information being displayed on graph
+     * @param event - on click event from spriteButton
+     */
     @FXML
     public void toggleSprite(ActionEvent event) {
+        //If on -> set opacity less
         if (_graphUpdater.getSpriteFlag()) {
             spriteButton.getStyleClass().add("button-active");
         } else {
@@ -432,8 +504,13 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _graphUpdater.toggleSprites(_graphStream);
     }
 
+    /**
+     * toggleFloppy - toggle floppy of graph information being displayed on graph
+     * @param event - on click even from floppyButton
+     */
     @FXML
     public void toggleFloppy(ActionEvent event) {
+        //If on -> set opacity less
         if (_graphUpdater.getFloppyFlag()) {
             floppyButton.getStyleClass().add("button-active");
         } else {
