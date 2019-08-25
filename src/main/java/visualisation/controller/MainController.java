@@ -160,7 +160,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
                 _currentTab = SelectedTab.values()[visualsContainer.getSelectionModel().getSelectedIndex()];
                 if (oldValue != newValue) {
-                    updateScheduleInformation(1, _latestUpdateMap);
+                    updateScheduleInformation(comboBox.getSelectionModel().getSelectedIndex(), _latestUpdateMap);
                 }
             }
         });
@@ -291,7 +291,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //On change combobox action
         comboBox.setOnAction(e -> {
             int threadNumber = comboBox.getSelectionModel().getSelectedIndex();
-            if (_updateThreadMap.get(threadNumber) != null){ //Update has happened in thread
+            if (_updateThreadMap.get(threadNumber) != null && _updateStatisticsMap.get(threadNumber) != null){ //Update has happened in thread
                 graphPane.setVisible(true);
                 scheduleResultsTable.setVisible(true);
                 ganttPane.setVisible(true);
@@ -301,6 +301,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 graphPane.setVisible(false);
                 scheduleResultsTable.setVisible(false);
                 ganttPane.setVisible(false);
+                currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + "-");
+                numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + "-");
             }
 
         });
