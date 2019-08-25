@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Random;
 
 public class ProcessorColourHelper {
-    private final static int MAXMIMUM_COLOURS_NUM = 11;
+
+    private final static int MAXIMUM_COLOURS_NUM = 11;
     private final static String UNASSIGNED_COLOUR = "#000000";
     private Random rand = new Random();
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
-        //11 available colours
+        // 11 available colours
         add("#d66060");
         add("#d68360");
         add("#d6ab60");
@@ -22,13 +23,18 @@ public class ProcessorColourHelper {
         add("#608dd6");
         add("#9560d6");
         add("#d660a5");
-
     }};
 
     public ProcessorColourHelper(int processCount) {
         setProcessorColours(processCount);
     }
 
+    /**
+     * Returns the processor's colour if the processor is already assigned
+     * or a new unassigned colour
+     * @param processorIndex the assigned processor number
+     * @return the colour as a String
+     */
     public String getProcessorColour(int processorIndex) {
         if (processorIndex != -1) {
             return _processorColours.get(processorIndex);
@@ -37,12 +43,16 @@ public class ProcessorColourHelper {
         }
     }
 
+    /**
+     * Setter method giving each processor its own colour
+     * @param processorCount
+     */
     private void setProcessorColours(int processorCount) {
-        //If only 1 processor count, then set to main node colour
-        int randomColourNumber = rand.nextInt(MAXMIMUM_COLOURS_NUM);
+        // If only 1 processor count, then set to main node colour
+        int randomColourNumber = rand.nextInt(MAXIMUM_COLOURS_NUM);
         if (processorCount > 1) {
             for (int i = 0; i < processorCount; i++) {
-                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM));
+                _processorColours.add(_colours.get((i + randomColourNumber) % MAXIMUM_COLOURS_NUM));
             }
         } else {
             _processorColours.add(_colours.get(1));

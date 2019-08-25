@@ -1,6 +1,5 @@
 package visualisation.controller;
 
-import graph.GraphNode;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -202,7 +201,6 @@ public class GraphUpdater extends Viewer {
 //                    }
 //                }
                 }
-
             };
             viewPanel.setMouseManager(manager);
         } else {

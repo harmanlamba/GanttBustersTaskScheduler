@@ -1,12 +1,10 @@
 package visualisation;
 
-import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import app.App;
 import fileio.IIO;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,23 +15,21 @@ import javafx.stage.WindowEvent;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.MainController;
 
-import java.util.concurrent.TimeUnit;
-
 public class FXApplication extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
-        //Load FXML
+        // Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
 
 
-        //Run algorithm on own thread
+        // Run algorithm on own thread
         MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
 
-        //Show stage
+        // Show stage
         Scene scene = new Scene(root, 1005, 610);
         scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap");
         primaryStage.setScene(scene); //total window size
@@ -42,7 +38,7 @@ public class FXApplication extends Application {
         primaryStage.getIcons().add(new Image("/images/logo.png"));
         primaryStage.show();
 
-        //On exit, stop program
+        // On exit, stop program
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
@@ -51,17 +47,14 @@ public class FXApplication extends Application {
             }
         });
 
+        // Starts the timer
         AlgorithmTimer.getAlgorithmTimer().start();
         IIO io = App._mainIO;
-        //Runs the algorithm in a new thread
+        // Runs the algorithm in a new thread
         new Thread(() -> {
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
-
-
-
-
     }
 
-    //TODO: Override stop() method to stop algorithm
+    // TODO: Override stop() method to stop algorithm
 }
