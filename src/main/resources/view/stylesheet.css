@@ -424,3 +424,7 @@ FONT SETTING
   -fx-font-family: 'Space Mono', monospace;
   -fx-font-size: 15;
 }
+
+#currentScheduleCost {
+  -fx-font-family: 'Space Mono', monospace;
+}

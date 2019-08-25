@@ -15,6 +15,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GraphUpdater class - provides methods for the controller to update the graph colour and properties according to the
+ * algorithm's results.
+ */
 public class GraphUpdater extends Viewer {
     private final static String DEFAULT_NODE_STYLE =
             "text-alignment: center;\n"
@@ -27,6 +31,7 @@ public class GraphUpdater extends Viewer {
                     + "\ttext-size: 20px;\n"
                     + "\ttext-color: white;\n";
 
+    //Graph helpers
     private Graph _graph;
     private SpriteManager _spriteManager;
     private ProcessorColourHelper _processorColourHelper;
@@ -85,7 +90,6 @@ public class GraphUpdater extends Viewer {
     public void updateGraph(Graph graph) {
         //Create nodeslist from graphstream graph
         List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
-
         for (Node node : nodesList) {
             if ((int) node.getAttribute("processor") != -1) {
                 //Update nodes colours (for processor allocation)
@@ -105,14 +109,14 @@ public class GraphUpdater extends Viewer {
                 //Update nodes information using Sprites
                 Sprite sprite = _spriteManager.getSprite(node.getId());
                 sprite.addAttribute("ui.label",
-                        "Start time: " + node.getAttribute("startTime") + "s");
+                        "Start [P" + node.getAttribute("processor") + "]: " + node.getAttribute("startTime") + "s");
                 sprite.addAttribute("ui.style",
                         "\ttext-alignment: under;\n"
                                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
                                 + "\ttext-background-color: rgba(255,255,255,180);\n"
                                 + "\ttext-background-mode: rounded-box;\n"
                                 + "\tpadding: 3px;\n"
-                                + "\ttext-size: 15px;\n");
+                                + "\ttext-size: 16px;\n");
                 sprite.attachToNode(node.getId());
 
                 //Handle sprite display
@@ -150,6 +154,10 @@ public class GraphUpdater extends Viewer {
         }
     }
 
+    /**
+     * toggleMouseManager - toggle between mouse manager property (allow to move graph or not)
+     * @param viewPanel
+     */
     public void toggleMouseManager(ViewPanel viewPanel) {
         _isShowFloppy = !_isShowFloppy;
 
@@ -160,17 +168,9 @@ public class GraphUpdater extends Viewer {
         }
     }
 
-    public Boolean getSpriteFlag() {
-        return _isShowSprite;
-    }
-
-    public Boolean getFloppyFlag() {
-        return _isShowFloppy;
-    }
-
     /**
      * Disable mouse on click physics with graph {dangly mode}
-     * @param viewPanel
+     * @param viewPanel - takes panel which views graph
      */
     public void setMouseManager(ViewPanel viewPanel) {
         if (!_isShowFloppy) {
@@ -193,20 +193,21 @@ public class GraphUpdater extends Viewer {
                 @Override
                 public void mousePressed(MouseEvent event) {
                     super.mousePressed(event);
-                    // if you need object of Node pressed, following code will help you, curElement is already defined at DefaultMouseManager.
                     curElement = view.findNodeOrSpriteAt(event.getX(), event.getY());
-//                if (curElement != null) {
-//                    Node node = graph.getNode(curElement.getId());
-//                    if(node != null) {
-//                        System.out.println("Mouse pressed at node: " + node.getId());
-//                    }
-//                }
                 }
 
             };
             viewPanel.setMouseManager(manager);
-        } else {
+        } else { //set view panel to default
             viewPanel.setMouseManager(null);
         }
+    }
+
+    public Boolean getSpriteFlag() {
+        return _isShowSprite;
+    }
+
+    public Boolean getFloppyFlag() {
+        return _isShowFloppy;
     }
 }
