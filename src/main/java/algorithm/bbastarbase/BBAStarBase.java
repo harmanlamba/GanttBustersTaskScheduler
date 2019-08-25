@@ -97,17 +97,7 @@ public class BBAStarBase extends Algorithm {
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
                         if (freeTask.isFree()) {
                             for (int i = 0; i < _numProcTask; i++) {
-//                                if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
-//                                    int freeProc = getFreeProc();
-//                                    if (freeProc > 1 && (i > (_numProcTask - freeProc))) {
-//                                        // Do nothing
-//                                        _branchesPruned += 1;
-//                                    } else {
                                         recursive(freeTask, i);
-//                                    }
-//                                } else {
-//                                    recursive(freeTask, i);
-//                                }
                             }
                         }
                     }
@@ -135,7 +125,7 @@ public class BBAStarBase extends Algorithm {
             List<GraphNode> temp = new ArrayList<>(_processorAllocation.get(i));
             Stack<Temp> stack = new Stack<>();
 
-            // Populate stack with graphnodes scheduled on that processor
+            // Populate stack with GraphNodes scheduled on that processor
             for (GraphNode task : temp) {
                 stack.push(new Temp(task.getId(), task.getStartTime()));
             }
@@ -177,7 +167,7 @@ public class BBAStarBase extends Algorithm {
     }
 
     /**
-     * Set each task to be free or not free and create a map of the task ID to the correspondiong
+     * Set each task to be free or not free and create a map of the task ID to the corresponding
      * GraphNode object
      */
     private void initializeFreeTasks() {

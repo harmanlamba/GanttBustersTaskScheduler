@@ -12,16 +12,16 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private final static int NUMBER_OF_GRAPH_UPDATES = 1000000000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
-    private Graph _graph;
+    private Graph _graph; // Reference to the Graph object containing the jGraph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
-    private int _upperBound;
-    private List<Stack<GraphNode>> _processorAllocation;
-    private int _depth;
-    private int _numTasks;
-    private int _numProcTask;
+    private int _upperBound; // Upper bound schedule is being evaluated against
+    private List<Stack<GraphNode>> _processorAllocation; // List of Stacks containing tasks scheduled on processors
+    private int _depth; // the depth of the iteration being searched
+    private int _numTasks; // Number of tasks to schedule
+    private int _numProcTask; // Number of processors to schedule tasks on
     private Set<Set<Stack<Temp>>> _previousStates;
-    private int _thread;
+    private int _thread; // This thread's thread number
     private int _graphUpdates;
 
     /**
@@ -69,7 +69,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
             _processorAllocation.get(processor).push(task);
             updateFreeTasks(task);
 
-            Set<Stack<Temp>> temp = new HashSet<>(convertProessorAllocationsToTemp());
+            Set<Stack<Temp>> temp = new HashSet<>(convertProcessorAllocationsToTemp());
 
             if (!_previousStates.contains(temp)) {
                 if (_depth < DEPTH_OF_STATES_TO_STORE) {
@@ -195,7 +195,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
      * @return the complete schedule where each stack populated by graph nodes represents
      * the tasks scheduled on a particular processor
      */
-    private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
+    private Set<Stack<Temp>> convertProcessorAllocationsToTemp() {
         Set<Stack<Temp>> output = new HashSet<>();
         for (int i=0; i < _numProcTask; i++) {
             List<GraphNode> temp = new ArrayList<>(_processorAllocation.get(i));
@@ -289,7 +289,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     }
 
     /**
-     * Notify this child thread's observers of statitic updates on the thread
+     * Notify this child thread's observers of statistic updates on the thread
      */
     @Override
     public void notifyObserversOfSchedulingUpdateBBA() {
