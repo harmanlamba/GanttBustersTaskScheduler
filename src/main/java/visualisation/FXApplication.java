@@ -22,9 +22,6 @@ public class FXApplication extends Application {
 
         // Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-
-
-        // Run algorithm on own thread
         MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
@@ -47,14 +44,11 @@ public class FXApplication extends Application {
             }
         });
 
-        // Starts the timer
-        AlgorithmTimer.getAlgorithmTimer().start();
-        IIO io = App._mainIO;
-        // Runs the algorithm in a new thread
+        //Runs the algorithm in a new thread
         new Thread(() -> {
+            AlgorithmTimer.getAlgorithmTimer().start();
+            IIO io = App._mainIO;
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
     }
-
-    // TODO: Override stop() method to stop algorithm
 }

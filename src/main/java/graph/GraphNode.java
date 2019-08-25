@@ -1,5 +1,8 @@
 package graph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * GraphNode - keeps instance of graph node (weight, processor, start time, node id). Such nodes will initially have
  * no processor/startTime assignments - but will be set during computation of algorithm.
@@ -12,6 +15,8 @@ public class GraphNode {
     private int _startTime; // Node's start time on processor
     private boolean _free; // Represents whether the task is ready to be scheduled when using the IDA Star algorithm
     private int _computationalBottomLevel;  // A cost function representing the critical path cost from the current node
+    private List<GraphNode> _parents;
+    private List<GraphNode> _children;
 
     // Constructors to create GraphNode objects
 
@@ -25,6 +30,8 @@ public class GraphNode {
         _weight = weight;
         _processor = -1; //Default processor value
         _startTime = -1; //Default startTime value
+        _parents = new ArrayList<>();
+        _children = new ArrayList<>();
     }
 
     /**
@@ -34,12 +41,25 @@ public class GraphNode {
      * @param processor - processor number the node is assigned to
      * @param startTime - start time of the scheduled node
      */
-    public GraphNode(String id, int weight, int processor, int startTime){
+    public GraphNode(String id, int weight, int processor, int startTime, List<GraphNode> parents, List<GraphNode> children){
         _id = id;
         _weight = weight;
         _processor = processor;
         _startTime =  startTime;
+        _parents = parents;
+        _children = children;
     }
+
+    public GraphNode(String id, int weight, int processor, int startTime, boolean free, List<GraphNode> parents, List<GraphNode> children){
+        _id = id;
+        _weight = weight;
+        _processor = processor;
+        _startTime =  startTime;
+        _free = free;
+        _parents = parents;
+        _children = children;
+    }
+
 
     /**
      * equals - overriding equals method
@@ -125,6 +145,22 @@ public class GraphNode {
      */
     public void setComputationalBottomLevel(int computationalBottomLevel) {
         this._computationalBottomLevel = computationalBottomLevel;
+    }
+
+    public void addChild(GraphNode task) {
+        _children.add(task);
+    }
+
+    public void addParent(GraphNode task) {
+        _parents.add(task);
+    }
+
+    public List<GraphNode> getChildren() {
+        return _children;
+    }
+
+    public List<GraphNode> getParents() {
+        return _parents;
     }
 
 

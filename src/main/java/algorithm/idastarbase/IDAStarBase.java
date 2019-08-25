@@ -63,11 +63,11 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) { // If the optimal solution has not already been found
                     _numberOfIterations += 1;
-                    notifyObserversOfIterationChange();
+                    notifyObserversOfIterationChange(1);
                     _solved = idaRecursive(task, 0); // Schedules the task
                     _lowerBound = _nextLowerBound; // Increments the lower bound
                     _nextLowerBound = -1;
-                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
+                    notifyObserversOfSchedulingUpdate(1); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -84,6 +84,11 @@ public class IDAStarBase extends Algorithm {
         return convertProcessorAllocationsToMap();
     }
 
+    @Override
+    public int getSolutionThread() {
+        return 0;
+    }
+
     /**
      * Getter method for the cost/finish time of the optimal scheduling
      * @return returns an integer representing the optimal finish time
@@ -98,8 +103,13 @@ public class IDAStarBase extends Algorithm {
      * @return returns an integer of the representing the current lower bound
      */
     @Override
-    public int getCurrentLowerBound() {
+    public int getCurrentUpperBound(int threadNumber) {
         return _lowerBound;
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return 0; //not implemented yet
     }
 
     /**
@@ -108,7 +118,6 @@ public class IDAStarBase extends Algorithm {
      * @return
      */
     private Map<String, GraphNode> convertProcessorAllocationsToMap() {
-        //TODO: deep copy the _processorAllocations
         Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
         for (int i=0; i < _numProcTask; i++) {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocations[i]);
@@ -197,7 +206,7 @@ public class IDAStarBase extends Algorithm {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
                             // Grabs the next free task that is ready to schedule and tries scheduling it on a processor
-                            // The next few if statements remove redundant scheduling onto homogeneous processors
+                            // The next few if statements removeBBA redundant scheduling onto homogeneous processors
                             // that are all empty
                             if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
                                 int freeProc = getFreeProc();
@@ -211,7 +220,7 @@ public class IDAStarBase extends Algorithm {
                                 _solved = idaRecursive(freeTask, i);
                             }
                             if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
-                                notifyObserversOfSchedulingUpdate();
+                                notifyObserversOfSchedulingUpdate(1);
                             }
                             _updateGraphIteration += 1;
                             if (_solved) {
@@ -393,7 +402,7 @@ public class IDAStarBase extends Algorithm {
 
     /**
      * Backtracking method which unschedules a task and updates its children so that they can no longer be scheduled
-     * @param processorNumber - the processor number to remove the latest scheduled task from
+     * @param processorNumber - the processor number to removeBBA the latest scheduled task from
      */
     private void sanitise(int processorNumber) {
         // Unschedules node, adds it to free task list and set it to free

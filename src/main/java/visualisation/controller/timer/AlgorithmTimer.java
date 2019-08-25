@@ -6,6 +6,9 @@ import javafx.application.Platform;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AlgorithmTimer - class for algorithm timer to manage GUI time
+ */
 public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
 
     private static AlgorithmTimer _algorithmTimer;
@@ -20,8 +23,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Getter method for the one AlgorithmTimer instance
-     * @return the AlgorithmTimer instance
+     * getAlgorithmTimer - get current timer given algorithm start
      */
     public static AlgorithmTimer getAlgorithmTimer() {
         if (_algorithmTimer == null) {
@@ -31,7 +33,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Starts the timer
+     * start - begin time using timestamp
      */
     @Override
     public void start() {
@@ -41,8 +43,8 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Used to make changes to the timer
-     * @param now
+     * handle - current new time
+     * @param now - current time
      */
     @Override
     public void handle(long now) {
@@ -55,7 +57,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Method to stop tht timer
+     * stop - stop the current timer (pause)
      */
     @Override
     public void stop() {
@@ -63,12 +65,9 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         super.stop();
     }
 
-    // TODO: Refactor this stuff out
     /**
-     * Method that converts time from a long (in milliseconds) to a
-     * displayable string format for the GUI and informs its observers
-     * of the update
-     * @param currentTime the time in milliseconds
+     * setTimerStatistic - runs the timer of mins, seconds, milliseconds and notify observers of update for each time
+     * @param currentTime
      */
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
@@ -105,7 +104,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Method used to let observers know a timer update has occurred
+     * notifyObserversOfTimerUpdate - notify currently subscribed observers for time update
      */
     public void notifyObserversOfTimerUpdate() {
         if (!_stopped) {
@@ -116,8 +115,8 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
-     * Used to add observers to the timer
-     * @param e is the observer instance to be added
+     * add - add subscriber to timer observer
+     * @param e - observer e
      */
     public void add(ITimerObserver e) {
         _observerList.add(e);

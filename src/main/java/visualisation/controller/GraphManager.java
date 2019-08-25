@@ -10,14 +10,22 @@ import org.graphstream.ui.spriteManager.SpriteManager;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * GraphManager - manages the object of the GraphStream graph. Initially created given the Read classes inputs and
+ * outputs.
+ */
 public class GraphManager {
     private SingleGraph _graphStream = new SingleGraph("graph");
-    private SpriteManager _spriteManager;
 
     public GraphManager(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
         createGraphStream(graphNodesMap,graphEdgesList);
     }
 
+    /**
+     * createGraphStream - create nodes and edges given properties according to list of nodes from Read class
+     * @param graphNodesMap - map of nodes from Read
+     * @param graphEdgesList - list of edges from Read
+     */
     private void  createGraphStream(Map<String, GraphNode> graphNodesMap, List<GraphEdge> graphEdgesList){
         for(GraphNode node : graphNodesMap.values()){
              Node nodeGraphStream = _graphStream.addNode(node.getId());
@@ -38,7 +46,7 @@ public class GraphManager {
 
     /**
      * Updates the graphstream graph nodes with processor and start time attributes
-     * @param graphNodesMap
+     * @param graphNodesMap - map of nodes from Read class
      */
     public void updateGraphStream(List<GraphNode> graphNodesMap) {
         for (GraphNode node : graphNodesMap) {
@@ -47,6 +55,10 @@ public class GraphManager {
         }
     }
 
+    /**
+     * getGraph - returns single graph for graphstream
+     * @return - single graph Graph with nodes and edges already instantiated
+     */
     public SingleGraph getGraph(){
         return _graphStream;
     }
