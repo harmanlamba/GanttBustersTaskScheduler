@@ -1,5 +1,6 @@
 package fileio;
 
+import exception.EdgeAlreadyExistsException;
 import exception.InputFileException;
 import utility.Utility;
 import exception.NodeNotExistException;
@@ -92,6 +93,9 @@ public class Read {
         } catch (PatternSyntaxException e) {
             System.err.println(e.getMessage() + "\n");
             throw new InputFileException("Invalid Format");
+        } catch (EdgeAlreadyExistsException e) {
+            System.err.println(e.getMessage() + "\n");
+            throw new InputFileException("Edge from source to target already exists");
         }
     }
 
@@ -114,7 +118,7 @@ public class Read {
      * @throws NodeNotExistException - when making edge, if node doesn't exist in list throw exception
      * @throws PatternSyntaxException - if input dot line does not match regex
      */
-    private void makeNodeEdge(String line) throws NodeNotExistException, PatternSyntaxException {
+    private void makeNodeEdge(String line) throws NodeNotExistException, PatternSyntaxException, EdgeAlreadyExistsException {
         Pattern patternNode = Pattern.compile(RGX_NODE);
         Pattern patternEdge = Pattern.compile(RGX_EDGE);
 
@@ -129,7 +133,12 @@ public class Read {
             if (node1 == null || node2 == null) {   //Throw nodenotexist exception for if any node is currently not shown in edge
                 throw new NodeNotExistException();
             }
-            _edgeList.add(new GraphEdge(node1, node2, Integer.parseInt(matcherEdge.group(3))));
+            GraphEdge edge = new GraphEdge(node1, node2, Integer.parseInt(matcherEdge.group(3)));
+            if (_edgeList.contains(edge)) {
+                throw new EdgeAlreadyExistsException();
+            }else {
+                _edgeList.add(edge);
+            }
         } else {    //Otherwise, line + file format is incorrect
             throw new PatternSyntaxException("Invalid file format - middle lines:", RGX_EDGE, 2);
         }

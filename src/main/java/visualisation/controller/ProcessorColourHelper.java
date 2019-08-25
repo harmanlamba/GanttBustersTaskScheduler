@@ -5,26 +5,24 @@ import java.util.List;
 import java.util.Random;
 
 public class ProcessorColourHelper {
-    private final static int MAXMIMUM_COLOURS_NUM = 14;
+    private final static int MAXMIMUM_COLOURS_NUM = 11;
     private final static String UNASSIGNED_COLOUR = "#000000";
     private Random rand = new Random();
     private List<String> _processorColours = new ArrayList<>();
     private List<String> _colours = new ArrayList<String>() {{
-        //14 available colours
-        add("#b35454");
-        add("#b39854");
-        add("#98b354");
-        add("#75b354");
-        add("#54b36a");
-        add("#54b390");
-        add("#54b1b3");
-        add("#5498b3");
-        add("#546db3");
-        add("#5d54b3");
-        add("#9854b3");
-        add("#b354a2");
-        add("#b35482");
-        add("#b35469");
+        //11 available colours
+        add("#d66060");
+        add("#d68360");
+        add("#d6ab60");
+        add("#d6c660");
+        add("#bcd660");
+        add("#60d67f");
+        add("#60d6ba");
+        add("#60c4d6");
+        add("#608dd6");
+        add("#9560d6");
+        add("#d660a5");
+
     }};
 
     public ProcessorColourHelper(int processCount) {

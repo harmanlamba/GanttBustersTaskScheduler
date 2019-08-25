@@ -2,31 +2,36 @@ package visualisation.controller;
 
 import algorithm.AlgorithmBuilder;
 import app.App;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXListView;
 import fileio.IIO;
-import graph.Graph;
 import graph.GraphNode;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
-import javafx.geometry.Pos;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.fxml.Initializable;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
+import visualisation.controller.table.LegendCell;
 import visualisation.controller.table.MockGraphNode;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.timer.ITimerObservable;
@@ -42,14 +47,11 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
-    //TODO: The strings may need to be changed into something that is less confusing
-    private final static String NUMBER_OF_TASKS_TEXT = "Number of Tasks: ";
-    private final static String ALGORITHM_STATUS_TEXT = "Status: ";
+    private final static String NUMBER_OF_TASKS_TEXT = "Tasks: ";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
-    private final static String ALGORITHM_TYPE_TEXT = "Algorithm Type: ";
-    private final static String NUMBER_OF_PROCESSORS_TEXT = "Number of Processors: "; //this one
-    private final static String NUMBER_OF_THREADS_TEXT = "Number of Threads: "; //this one
+    private final static String NUMBER_OF_PROCESSORS_TEXT = "Processors: "; //this one
+    private final static String NUMBER_OF_THREADS_TEXT = "Threads: "; //this one
     private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
     private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
@@ -90,6 +92,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text branchesPruned;
     public Text currentLowerBound;
     public Text currentMemoryUsage;
+    public Text stats;
 
     public TabPane visualsContainer;
     public Tab graphTab;
@@ -99,7 +102,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Tab taskTab;
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
-    public Button physicButton;
+    public Button spriteButton;
+    public Button floppyButton;
 
     public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
@@ -107,6 +111,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public TableColumn<MockGraphNode, Integer> startTimeColumn;
     public TableColumn<MockGraphNode, Integer> endTimeColumn;
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
+
+    public JFXListView<String> legendListView;
+    public JFXComboBox<String> comboBox;
 
     public MainController(){
 
@@ -120,9 +127,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
 
-        //TODO: None of the code below this can be in the initialize method because this occurs before the screen renders.
-        // This means the algorithm/timer starts and sometimes stops before user can even see this. Please yeet this
-        // somehow to make this not an issue
         //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
@@ -135,6 +139,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     private void initializeViews() {
         initializeStatistics();
+        initializeLegend();
         initializeGraph();
         initializeGantt();
         initializeTable();
@@ -164,11 +169,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
                 switch (_currentTab) {
                     case TABLE:
-                        updateTable(test); //TODO: Platform Run Later need to figure out why we get ConcurrentModificationException
+                        updateTable(test);
                         break;
                     case GANTT:
                         for (Node node : _graphStream) {
-                            updateGantt(test); //TODO: TEMP
+                            updateGantt(test);
                         }
                         break;
                     default: //graph
@@ -184,11 +189,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
-        statusPane.setStyle("-fx-background-color: #86e39c; -fx-border-color: #86e39c;");
-        algorithmStatus.setText(ALGORITHM_STATUS_TEXT + ALGORITHM_STATUS_DONE_TEXT);
+        statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
+        algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
-        _graphUpdater.unsetMouseManager(_viewPanel);
-
     }
 
     private void initializeGraph() {
@@ -199,18 +202,25 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //Create graphstream view panel
         _viewPanel = _graphUpdater.addDefaultView(false);
-        _viewPanel.setMinimumSize(new Dimension(700,500)); //Window size
+        _viewPanel.setMinimumSize(new Dimension(660,530)); //Window size
+        _graphUpdater.setMouseManager(_viewPanel);
         _viewPanel.setOpaque(false);
-        _viewPanel.setBackground(Color.white);
-        _graphUpdater.setMouseManager(_viewPanel); //Disable mouse drag of nodes //TODO: MAKE JIGGLY A BUTTON
-
+        _viewPanel.setBackground(Color.BLACK);
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
             swingNode.setContent(_viewPanel);
         });
-        swingNode.setLayoutX(5);
-        swingNode.setLayoutY(5);
+        swingNode.setLayoutX(10);
+        swingNode.setLayoutY(10);
+
+        //Assign button icons
+        Image spriteImage = new Image(getClass().getResourceAsStream("/images/sprite.png"));
+        spriteButton.setGraphic(new ImageView(spriteImage));
+        spriteButton.getStyleClass().add("button-active");
+        Image floppyImage = new Image(getClass().getResourceAsStream("/images/floppy.png"));
+        floppyButton.setGraphic(new ImageView(floppyImage));
+        floppyButton.getStyleClass().add("button-active");
     }
 
     private void initializeGantt() {
@@ -222,12 +232,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
 
         //ganttchart fx properties
-        ganttChart.setPrefWidth(640);
-        ganttChart.setPrefHeight(450);
-        ganttChart.setLayoutX(20);
-        ganttChart.setLayoutY(40);
+        ganttChart.setPrefWidth(650);
+        ganttChart.setPrefHeight(500);
+        ganttChart.setLayoutY(10);
         ganttChart.setLegendVisible(false);
-        ganttChart.setBlockHeight(40);
+        ganttChart.setBlockHeight(50);
         ganttChart.setAlternativeRowFillVisible(false);
         ganttChart.setHorizontalGridLinesVisible(false);
         ganttChart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
@@ -245,21 +254,56 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
             processors.add(Integer.toString(i));
         }
-        yAxis.setLabel("");
+        yAxis.setLabel("Processor(s)");
         yAxis.setTickLabelGap(20);
         yAxis.setCategories(FXCollections.observableList(processors));
         yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
+    }
 
+    private void initializeLegend(){
+        ObservableList<String> processorList = FXCollections.observableArrayList();
+        for(int i=0 ; i < _io.getNumberOfProcessorsForTask(); i++){
+            processorList.add(String.valueOf(i));
+        }
 
+        legendListView.setItems(processorList);
+        legendListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                return new LegendCell(_processColourHelper);
+            }
+        });
     }
 
     private void initializeStatistics() {
+        initializeCheckParallelisationForStats();
         fileNameText.setText(ALGORITHM_FILE_TEXT + _io.getFileName());
-        algorithmTypeText.setText(ALGORITHM_TYPE_TEXT + AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
+        algorithmTypeText.setText(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithmType().getName());
         numberOfTasks.setText(NUMBER_OF_TASKS_TEXT + _io.getNodeMap().size());
         numberOfProcessors.setText(NUMBER_OF_PROCESSORS_TEXT + _io.getNumberOfProcessorsForTask());
         numberOfThreads.setText(NUMBER_OF_THREADS_TEXT + _io.getNumberOfProcessorsForParallelAlgorithm());
     }
+
+    private void initializeCheckParallelisationForStats(){
+        if (_io.getNumberOfProcessorsForParallelAlgorithm() > 1){
+            //Remove the stats text as a child of the VBox
+            statsContainer.getChildren().remove(stats);
+            initializeComboBox();
+        }else{
+            //Remove ComboBox as a Child for the VBox
+            statsContainer.getChildren().remove(comboBox);
+        }
+    }
+
+    private void initializeComboBox(){
+        ObservableList<String> parallelProcessorList = FXCollections.observableArrayList();
+        for(int i = 0; i < _io.getNumberOfProcessorsForParallelAlgorithm(); i++){
+            parallelProcessorList.add("Stats Thread " + i);
+        }
+        comboBox.setItems(parallelProcessorList);
+        comboBox.getSelectionModel().selectFirst();
+    }
+
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -269,11 +313,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
-     }
+    }
 
     private void updateTable(List<GraphNode> update) {
         _tablePopulationList.clear();
         Map<String,String> colorMap =  new HashMap<>();
+
         //Repopulate with the new GraphNode Details
         for(GraphNode node : update){
             if(node.getStartTime() != -1 && node.getProcessor() != -1){
@@ -288,17 +333,16 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                         }else{
                             setText(item);
                             String color = colorMap.get(item);
-                            //TODO: See why colors are not assigned differently
-                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0.1 0 5;");
+                            setStyle("-fx-border-color: " + color + "; -fx-border-width: 0 0 0 9;");
                         }
                     }
                 });
                 _tablePopulationList.add(new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime()));
             }
         }
+
     }
 
-    //TODO: Call for every task allocated to a processor
     public void updateGantt(List<GraphNode> test) {
         XYChart.Series series1 = new XYChart.Series();
         ganttChart.getData().clear();
@@ -312,7 +356,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             for (GraphNode graphNode : test) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
                 if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor, new GanttChart.Properties(graphNode.getWeight(), "-fx-background-color:" + processorColour, graphNode.getId())));
+                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor,
+                            new GanttChart.Properties(graphNode.getWeight(),
+                                    processorColour, graphNode.getId())));
                 }
             }
         }
@@ -332,5 +378,25 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateTimer(String time) {
         timeElapsedText.setText(TIME_ELAPSED_TEXT + time);
+    }
+
+    @FXML
+    public void toggleSprite(ActionEvent event) {
+        if (_graphUpdater.getSpriteFlag()) {
+            spriteButton.getStyleClass().add("button-active");
+        } else {
+            spriteButton.getStyleClass().remove("button-active");
+        }
+        _graphUpdater.toggleSprites(_graphStream);
+    }
+
+    @FXML
+    public void toggleFloppy(ActionEvent event) {
+        if (_graphUpdater.getFloppyFlag()) {
+            floppyButton.getStyleClass().add("button-active");
+        } else {
+            floppyButton.getStyleClass().remove("button-active");
+        }
+        _graphUpdater.toggleMouseManager(_viewPanel);
     }
 }

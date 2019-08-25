@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import javafx.embed.swing.SwingNode?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -14,27 +20,32 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="root" prefHeight="621.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <HBox fx:id="mainContainer" prefHeight="600.0" prefWidth="1000.0">
+            <HBox fx:id="mainContainer" prefHeight="621.0" prefWidth="1033.0">
                <children>
-                  <VBox fx:id="statsContainer" prefHeight="200.0" prefWidth="300.0" stylesheets="@stylesheet.css">
+                  <VBox fx:id="statsContainer" prefHeight="661.0" prefWidth="338.0" stylesheets="@stylesheet.css">
                      <children>
-                        <Text fx:id="stats" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="280.0">
+                        <JFXComboBox id="comboBox" fx:id="comboBox" prefHeight="25.0" prefWidth="323.0" stylesheets="@stylesheet.css" unFocusColor="#4d4d4d00">
+                           <VBox.margin>
+                              <Insets bottom="15.0" left="10.0" top="15.0" />
+                           </VBox.margin>
+                        </JFXComboBox>
+                        <Text fx:id="stats" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Stats" textAlignment="CENTER" wrappingWidth="307.0">
                            <font>
                               <Font size="22.0" />
                            </font>
                            <VBox.margin>
-                              <Insets bottom="20.0" left="10.0" top="20.0" />
+                              <Insets bottom="20.0" left="10.0" right="10.0" top="10.0" />
                            </VBox.margin>
                         </Text>
-                        <VBox prefWidth="100.0">
+                        <VBox prefHeight="35.0" prefWidth="308.0">
                            <children>
-                              <VBox fx:id="statusPane">
-                                 <VBox fx:id="statusBackground" minHeight="10.0">
-                                    <Text fx:id="algorithmStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: In progress" wrappingWidth="280.0">
+                              <VBox fx:id="statusPane" prefHeight="40.0" prefWidth="288.0">
+                                 <VBox fx:id="statusBackground" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">
+                                    <Text fx:id="algorithmStatus" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="In Progress" textAlignment="CENTER" wrappingWidth="299.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -43,86 +54,223 @@
                               </VBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="2.0" left="10.0" right="10.0" />
                            </VBox.margin>
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="fileNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Running: " wrappingWidth="280.0">
+                              <VBox alignment="CENTER" prefHeight="54.0" prefWidth="288.0">
+                                 <children>
+                                    <VBox fx:id="statusPane1" prefHeight="40.0" prefWidth="288.0">
+                                       <children>
+                                          <VBox fx:id="statusBackground1" alignment="CENTER" minHeight="10.0" prefHeight="42.0" prefWidth="280.0">
+                                             <children>
+                                                <Text fx:id="algorithmTypeText" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type: " wrappingWidth="280.0">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </Text>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <Text fx:id="fileNameText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Running: " wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="algorithmTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm Type: " wrappingWidth="280.0">
+                              <HBox prefHeight="7.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/timer.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="timeElapsedText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="260.33331298828125">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="15.0" prefWidth="299.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/memory.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="currentMemoryUsage" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="10.0" right="10.0" top="5.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefWidth="100.0">
+                           <children>
+                              <HBox prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/tasks.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfTasks" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Tasks: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/processor.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfProcessors" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Processors: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="0.0" prefWidth="280.0" spacing="2.0">
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/thread.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets top="2.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text fx:id="numberOfThreads" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Threads: " wrappingWidth="197.0">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets bottom="16.0" left="10.0" right="10.0" />
+                           </VBox.margin>
+                        </VBox>
+                        <VBox prefWidth="100.0">
+                           <children>
+                              <Text fx:id="bestScheduleCost" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: -" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
-                              <Text fx:id="timeElapsedText" strokeType="OUTSIDE" strokeWidth="0.0" text="Time Elapsed: 00:00:00" wrappingWidth="280.0">
+                              <Text fx:id="numberOfIterations" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Iterations: 1" wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="currentLowerBound" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="branchesPruned" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
                               </Text>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets bottom="25.0" left="10.0" right="10.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
-                        <VBox prefWidth="100.0">
+                        <VBox prefHeight="171.0" prefWidth="328.0">
                            <children>
-                              <Text fx:id="numberOfTasks" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Tasks: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfProcessors" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Processors: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfThreads" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Threads: " wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
+                              <VBox fx:id="statusPane2" alignment="CENTER" prefHeight="45.0" prefWidth="305.0">
+                                 <children>
+                                    <VBox fx:id="statusPane11" prefHeight="60.0" prefWidth="286.0">
+                                       <children>
+                                          <VBox fx:id="statusBackground11" alignment="CENTER" minHeight="10.0" prefHeight="42.0" prefWidth="286.0">
+                                             <children>
+                                                <Text fx:id="legendText" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Legend:" wrappingWidth="286.0">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin>
+                                                </Text>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <HBox alignment="CENTER_LEFT" prefHeight="146.0" prefWidth="328.0">
+                                 <children>
+                                    <JFXListView fx:id="legendListView" prefHeight="150.0" prefWidth="315.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin></JFXListView>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </HBox>
                            </children>
                            <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </VBox.margin>
-                        </VBox>
-                        <VBox prefWidth="100.0">
-                           <children>
-                              <Text fx:id="bestScheduleCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: -" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfIterations" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Iterations: 1" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="currentLowerBound" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="branchesPruned" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="currentMemoryUsage" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              <Insets left="8.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </VBox>
                      </children>
+                     <HBox.margin>
+                        <Insets bottom="-2.0" />
+                     </HBox.margin>
                   </VBox>
                   <TabPane fx:id="visualsContainer" prefHeight="600.0" prefWidth="700.0" stylesheets="@stylesheet.css" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -130,9 +278,9 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <VBox prefHeight="560.0" prefWidth="700.0">
+                                    <VBox prefHeight="591.0" prefWidth="700.0">
                                        <children>
-                                          <Text fx:id="searchGraph" strokeType="OUTSIDE" strokeWidth="0.0" text="Search graph" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="searchGraph" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Search graph" textAlignment="CENTER" wrappingWidth="700.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -140,9 +288,15 @@
                                                 <Insets top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <Pane fx:id="graphPane" prefHeight="633.0" prefWidth="700.0">
+                                          <Pane fx:id="graphPane" prefHeight="549.0" prefWidth="679.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
+                                                <Button fx:id="spriteButton" accessibleText="Extra Info" layoutX="577.0" layoutY="-30.0" mnemonicParsing="false" onAction="#toggleSprite">
+                                                   <tooltip><Tooltip text="Extra info" /></tooltip>
+                                                </Button>
+                                                <Button fx:id="floppyButton" layoutX="621.0" layoutY="-30.0" mnemonicParsing="false" onAction="#toggleFloppy">
+                                                   <tooltip><Tooltip text="Floppy mode" /></tooltip>
+                                                </Button>
                                              </children>
                                           </Pane>
                                        </children>
@@ -154,9 +308,9 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <VBox prefHeight="560.0" prefWidth="700.0">
+                                    <VBox prefHeight="592.0" prefWidth="700.0">
                                        <children>
-                                          <Text fx:id="taskSchedule" strokeType="OUTSIDE" strokeWidth="0.0" text="Task schedule" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="taskSchedule" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Task schedule" textAlignment="CENTER" wrappingWidth="701.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -164,7 +318,7 @@
                                                 <Insets top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <Pane fx:id="ganttPane" prefHeight="560.0" prefWidth="700.0">
+                                          <Pane fx:id="ganttPane" prefHeight="548.0" prefWidth="701.0">
                                              <VBox.margin>
                                                 <Insets />
                                              </VBox.margin>
@@ -178,9 +332,9 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <VBox prefHeight="560.0" prefWidth="682.0">
+                                    <VBox prefHeight="583.0" prefWidth="700.0">
                                        <children>
-                                          <Text fx:id="scheduleResults" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule results" textAlignment="CENTER" wrappingWidth="680.0">
+                                          <Text fx:id="scheduleResults" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule results" textAlignment="CENTER" wrappingWidth="679.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -188,13 +342,19 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <TableView fx:id="scheduleResultsTable" prefHeight="521.0" prefWidth="688.0">
+                                          <TableView fx:id="scheduleResultsTable" prefHeight="530.0" prefWidth="700.0" stylesheets="@stylesheet.css">
                                             <columns>
-                                              <TableColumn fx:id="taskIDColumn" prefWidth="175.0" text="Task ID" />
-                                              <TableColumn fx:id="startTimeColumn" prefWidth="175.0" text="Start Time" />
-                                                <TableColumn fx:id="endTimeColumn" prefWidth="175.0" text="End Time" />
-                                                <TableColumn fx:id="assignedProcessorColumn" prefWidth="175.0" text="Assigned Processor" />
+                                              <TableColumn id="taskIDColumn" fx:id="taskIDColumn" editable="false" prefWidth="170.0" resizable="false" style="-fx-alignment: CENTER;" text="Task ID" />
+                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="165.0" resizable="false" text="Start Time" />
+                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="165.0" resizable="false" text="End Time" />
+                                                <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="180.0" resizable="false" text="Assigned Processor" />
                                             </columns>
+                                             <placeholder>
+                                                <Label text="No assigned processors :-(" />
+                                             </placeholder>
+                                             <VBox.margin>
+                                                <Insets top="8.0" />
+                                             </VBox.margin>
                                           </TableView>
                                        </children>
                                     </VBox>
@@ -202,6 +362,9 @@
                            </content>
                         </Tab>
                     </tabs>
+                     <HBox.margin>
+                        <Insets bottom="-10.0" right="-10.0" />
+                     </HBox.margin>
                   </TabPane>
                </children>
             </HBox>

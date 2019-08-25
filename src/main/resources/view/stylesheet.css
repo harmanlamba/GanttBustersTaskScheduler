@@ -1,9 +1,10 @@
 #statsContainer {
-  -fx-background-color: #f0f0f0;
+  -fx-background-color: #313131;
+  -fx-padding: 0 5;
 }
 
 #visualsContainer {
-  -fx-background-color: #ffffff;
+  -fx-background-color: #414141;
 }
 
 .gantt-border {
@@ -11,22 +12,296 @@
   -fx-border-width: 1;
 }
 
-.table-column{
+#statusPane {
+  -fx-border-radius: 3;
+  -fx-border-width: 4;
+  -fx-border-color: #525252;
+  -fx-background-color: #525252;
+  -fx-background-radius: 4;
+}
+
+#statusPane1 {
+  -fx-border-width: 0 0 0 8;
+  -fx-border-color: #525252;
+  -fx-background-radius: 4;
+  -fx-padding: 0 5;
+}
+
+#statusPane2 {
+    -fx-border-width: 0 0 0 8;
+    -fx-border-color: #525252;
+    -fx-background-radius: 4;
+    -fx-padding: 0 5;
+}
+
+/*
+CHART
+ */
+.chart-plot-background {
+  -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+  -fx-stroke: #525252;
+}
+
+.axis {
+  -fx-tick-label-fill: #ffffff;
+  -fx-tick-length: 10;
+}
+
+.axis-label {
+  -fx-text-fill: #ffffff;
+}
+
+/*
+TAB SETTINGS
+ */
+.tab-pane:top *.tab-header-area {
+  -fx-background-insets: 0, 0 0 0 0;
+  -fx-padding: 0.0em 0.0em 0.0em 0.0em; /* overridden as 5 2 0 0 */
+}
+
+.tab {
+  -fx-background-color: #414141;
+  -fx-text-base-color: #ffffff;
+  -fx-padding: 7 8;
+  -fx-background-radius: 0;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+  -fx-border-color: rgba(0,0,0,0);
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected {
+  -fx-background-color: #525252;
+  -fx-text-base-color: #ffffff;
+}
+
+.tab:selected {
+  -fx-background-color: #525252;
+  -fx-text-base-color: #ffffff;
+}
+
+.tab-pane *.tab-header-background {
+  -fx-background-color: #414141;
+  -fx-effect: innershadow(two-pass-box , transparent , 0, 0.0 , 0 , 0);
+}
+
+/**
+TABLE VIEW
+ */
+.table-view {
+  -fx-selection-bar: #dedede;
+  -fx-selection-bar-non-focused: #dedede;
+  -fx-text-alignment: CENTER;
   -fx-alignment: CENTER;
 }
 
-.table-row-cell:filled:selected {
-  -fx-background: -fx-control-inner-background ;
-  -fx-background-color: -fx-table-cell-border-color, -fx-background ;
-  -fx-background-insets: 0, 0 0 1 0 ;
-  -fx-table-cell-border-color: derive(-fx-color, 0%);
-  -fx-border-width: 0;
+.table-view .placeholder {
+  -fx-background-color: #414141;
 }
 
-.table-row-cell:odd:filled:selected {
-  -fx-background: -fx-control-inner-background-alt ;
-  -fx-border-width: 0;
+.table-view .placeholder .label {
+  -fx-text-fill: #ffffff;
 }
+
+#taskIDColumn, #startTimeColumn, #endTimeColumn, #assignedProcessorColumn{
+  -fx-alignment: CENTER;
+  -fx-text-alignment: CENTER;
+  -fx-font-weight: NORMAL;
+}
+
+#taskIDColumn {
+  -fx-font-weight: BOLD;
+}
+
+.table-view {
+  -fx-background-insets: 0;
+  -fx-padding: 0;
+}
+
+.table-view .table.column {
+  -fx-text-alignment: CENTER;
+}
+
+.table-cell {
+  -fx-background-color: #414141;
+  -fx-text-fill: white;
+}
+
+.table-row-cell{
+  -fx-table-cell-border-color: transparent;
+}
+
+.table-view:focused{
+  -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label{
+  -fx-background-color: #414141;
+  -fx-border-color: #525252;
+  -fx-border-width: 0 0 8 0;
+  -fx-text-fill: white;
+}
+
+.table-view .column-header {
+  -fx-background-color: #414141;
+}
+
+/*
+LEGEND
+ */
+#legendListView {
+  -fx-background-color: rgba(0,0,0,0);
+  -fx-selection-bar: #dedede;
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#legendListView .list-cell:odd,
+#legendListView .list-cell:even {
+  -fx-background-color: rgba(0,0,0,0);
+  -fx-text-fill: white;
+}
+
+#legendListView .cell {
+  -fx-background-color: #313131;
+}
+
+#legendListView .list-cell {
+  -fx-control-inner-background: blue;
+}
+
+.list-view:focused .list-cell:filled:selected, .list-view:focused .list-cell:filled:selected:hover {
+  -fx-background: -fx-accent;
+  -fx-background-color: -fx-selection-bar;
+}
+
+/* SCROLL BAR */
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+  -fx-background-color :transparent;
+  -fx-border-color :transparent;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+  -fx-background-color :transparent;
+
+}
+
+.scroll-bar:vertical .track-background,
+.scroll-bar:horizontal .track-background {
+  -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+  -fx-background-color :transparent;
+  -fx-background-radius : 0.0em;
+  -fx-padding :0.0 12.0 0.0 0.0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+  -fx-shape : " ";
+  -fx-padding :0.15em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow{
+  -fx-shape : " ";
+  -fx-padding :0.0 0.15em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+  -fx-background-color : #525252;
+  -fx-background-insets : 2.0, 0.0, 0.0;
+  -fx-background-radius : 2.0em;
+}
+
+.scroll-bar{
+  -fx-background-color: transparent;
+  -fx-background-radius: 2em;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.scroll-bar:vertical:focused {
+  -fx-background-color: transparent;
+}
+
+/*
+BUTTON SETTING
+ */
+.button {
+  -fx-background-color: rgba(0,0,0,0);
+  -fx-opacity: 1;
+}
+
+.button:hover {
+  -fx-opacity: 0.8;
+}
+
+.button-active {
+  -fx-opacity: 0.6;
+}
+
+.button:pressed {
+  -fx-scale-y: 1.1;
+  -fx-scale-x: 1.1;
+}
+
+/*
+COMBOBOX SETTINGS
+ */
+
+#comboBox{
+  -jfx-focus-color: transparent;
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+  -fx-font-size: 15px;
+  -jfx-text-fill: white;
+}
+
+#comboBox .arrow {
+  -fx-background-color: white;
+  -fx-prompt-text-fill: #525252;
+}
+
+.jfx-combo-box .list-view .list-cell{
+  -fx-background-color: #525252;
+}
+
+#comboBox .list-cell:hover{
+  -fx-background-color: #383838;
+}
+
+#comboBox .cell{
+  -fx-text-fill: white;
+}
+
+.jfx-combo-box {
+  -fx-focus-color: transparent;
+  -fx-text-fill: white;
+}
+
+.jfx-combo-box > .list-cell:selected{
+  -fx-background-color: transparent;
+  -jfx-focus-color: transparent;
+}
+
+.jfx-combo-box > .list-cell {
+  -fx-alignment: CENTER;
+  -fx-text-alignment: CENTER;
+}
+
+.jfx-combo-box > .prompt-container {
+  -fx-alignment: center;
+}
+
 
 /*
 FONT SETTING
@@ -37,18 +312,24 @@ FONT SETTING
 
 #stats {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #searchGraph {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
+  -fx-font-weight: BOLD;
 }
 
 #algorithmStatus {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+
 }
 
 #algorithmTypeText {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
 }
 
 #timeElapsedText {
@@ -61,15 +342,6 @@ FONT SETTING
 
 }
 
-#statusPane {
-  -fx-min-width: 50%;
-  -fx-border-radius: 10;
-  -fx-border-width: 3;
-  -fx-border-color: #dedede;
-  -fx-background-radius: 10;
-  -fx-background-color: #dedede;
-}
-
 #numberOfProcessors {
   -fx-font-family: 'Space Mono', monospace;
 
@@ -77,7 +349,6 @@ FONT SETTING
 
 #numberOfThreads {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #bestScheduleCost {
@@ -87,13 +358,11 @@ FONT SETTING
 
 #numberOfIterations {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 
 #branchesPruned {
   -fx-font-family: 'Space Mono', monospace;
-
 }
 
 #currentLowerBound {
@@ -108,18 +377,31 @@ FONT SETTING
   -fx-font-family: 'Space Mono', monospace;
 }
 
-#taskSchedule {
-  -fx-font-family: 'Space Mono', monospace;
-}
-
 #resultTab {
   -fx-font-family: 'Space Mono', monospace;
 }
 
+#taskSchedule {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
+  -fx-font-weight: BOLD;
+}
+
+#legendText {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-weight: bold;
+}
+
 #scheduleResults {
   -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 18;
+  -fx-font-weight: BOLD;
 }
 
 #scheduleResultsTable {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#currentMemoryUsage {
   -fx-font-family: 'Space Mono', monospace;
 }

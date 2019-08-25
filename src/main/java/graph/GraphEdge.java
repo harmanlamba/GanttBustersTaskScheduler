@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.Objects;
+
 /**
  * GraphEdge - contains fields of directed edge properties (from node, to node) and the edge's weight
  */
@@ -39,4 +41,19 @@ public class GraphEdge {
         return _edgeWeight;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GraphEdge graphEdge = (GraphEdge) o;
+        return _edgeWeight == graphEdge._edgeWeight &&
+                _edgeFrom.equals(graphEdge._edgeFrom) &&
+                _edgeTo.equals(graphEdge._edgeTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_edgeFrom, _edgeTo, _edgeWeight);
+    }
 }
