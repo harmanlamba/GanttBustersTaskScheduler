@@ -12,20 +12,26 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private final static int NUMBER_OF_GRAPH_UPDATES = 2100000000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
-    private Graph _graph;
+    private Graph _graph;    // Reference to the Graph object containing the jGraph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
     private List<GraphNode> _freeTaskList; // List of tasks that are ready to be scheduled
-    private int _upperBound;
-    private List<Stack<GraphNode>> _processorAllocation;
-    private int _depth;
-    private int _numTasks;
-    private int _numProcTask;
+    private int _upperBound;     // Upper bound schedule is being evaluated against
+    private List<Stack<GraphNode>> _processorAllocation;    // List of Stacks containing tasks scheduled on processors
+    private int _depth;// the depth of the iteration being searched
+    private int _numTasks;// Number of tasks to schedule
+    private int _numProcTask;// Number of processors to schedule tasks on
     private Set<Set<Stack<Temp>>> _previousStates;
-    private int _thread;
+    private int _thread; // This thread's thread number
     private int _graphUpdates;
     private int _iterations;
 
-
+    /**
+     * Constructor for BBASTarChild to instantiate the object
+     * @param graph of the network
+     * @param numProcTask number of processors for the tasks to be scheduled on in the problem
+     * @param thread the thread on which this instance of the algorithm is running on
+     * @param bound the bound of the thread
+     */
     public BBAStarChild(Graph graph, int numProcTask, int thread, int bound) {
         _BBAObserverList = new ArrayList<>();
         _graph = graph;
@@ -45,6 +51,12 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
+    /**
+     * A recursive method that completes a BBA* search on branches by scheduling free tasks until tasks have been scheduled.
+     * Branch pruning techniques and cost functions have also been put in place to optimise performance.
+     * @param task is the task to be scheduled in this iteration
+     * @param processor is the processor number the task should be allocated on
+     */
     public void recursive(GraphNode task, int processor) {
         _iterations += 1;
         int startTime = getStartTime(task, processor);
@@ -67,18 +79,20 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                     _previousStates.add(temp);
                 }
                 if (_freeTaskList.isEmpty() && _depth == _numTasks) {
+                    // Update upper bound value
                     int cost = getCostOfCurrentAllocation();
                     if (cost <= _upperBound) {
                         _upperBound = cost;
                         assignCurrentBestSolution();
+                        // Notify GUI of scheduling update
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
                             BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
-
                             notifyObserversOfSchedulingUpdateBBA();
                         }
                         _graphUpdates += 1;
                     }
                 } else {
+                    // Recursively call method on all tasks yet to be scheduled
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
                         if (freeTask.isFree()) {
                             for (int i = 0; i < _numProcTask; i++) {
@@ -88,14 +102,20 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                     }
                 }
             }
+
+            // Backtrack the schedulings on the processor if not yet solver
             sanitise(processor);
             _depth -= 1;
         }
     }
 
-    //Implemented
+    /**
+     * Set each task to be free or not free and create a map of the task ID to the correspondiong
+     * GraphNode object
+     */
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
+            // Set a task to free if it has no withstanding unscheduled dependencies
             if (task.getParents().size() == 0) {
                 _freeTaskList.add(task);
                 task.setFree(true);
@@ -106,6 +126,9 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
+    /**
+     * Runs the recursive algorithm on all free tasks
+     */
     @Override public void run() {
         initializeFreeTasks();
         for (GraphNode initTask : new ArrayList<>(_taskInfo.values())) {
@@ -113,12 +136,20 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                 recursive(initTask, 0);
             }
         }
+
+        // Set the best cost path of the parent to the one found in this child
         if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
             BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
             notifyObserversOfAlgorithmEndingBBA();
         }
     }
 
+    /**
+     * Finds the earliest possible time a task can be scheduled on a specific processor
+     * @param task
+     * @param processor
+     * @return the start time a task will be scheduled
+     */
     private int getStartTime(GraphNode task, int processor) {
         int[] maxTimes = new int[_numProcTask];
         for (GraphNode parent : task.getParents()) {
@@ -141,6 +172,11 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         // Returns the earliest time the task can be scheduled on the specified processor
         return Collections.max(Arrays.asList(ArrayUtils.toObject(maxTimes)));
     }
+
+    /**
+     * Update the list of free tasks and update the mapping with the child ready to be scheduled
+     * @param task the task who's children will be updated in the list of free tasks if they are free
+     */
     private void updateFreeTasks(GraphNode task) {
         for (GraphNode child : task.getChildren()) { // For every child node
             boolean childFree = true;
@@ -159,6 +195,10 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
+    /**
+     * @return the complete schedule where each stack populated by graph nodes represents
+     * the tasks scheduled on a particular processor
+     */
     private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
         Set<Stack<Temp>> output = new HashSet<>();
         for (int i=0; i < _numProcTask; i++) {
@@ -172,6 +212,11 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         return output;
         }
 
+    /**
+     * @return the total cost of the current partial or complete solution, which is the
+     * earliest possible starting time (without taking in to account dependencies of a task
+     * to be scheduled)
+     */
     private int getCostOfCurrentAllocation() {
         int max = 0;
         for (Stack<GraphNode> stack : _processorAllocation) {
@@ -187,12 +232,15 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         return max;
     }
 
+    /**
+     * Assigns the current best cost/finish time of a complete schedule, not yet guaranteed to be optimal
+     */
     private void assignCurrentBestSolution() {
         Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
         for (int i=0; i < _numProcTask; i++) {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocation.get(i));
         }
-
+        // Create the solution map
         Map<String, GraphNode> solution = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
@@ -201,9 +249,14 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                 solution.put(copy.getId(), copy);
             }
         }
+        // Pass best solution to the parent
         BBAStarParent._currentBestSolutions.put(_thread, solution);
     }
 
+    /**
+     * Backtrack the scheduling done on a particular processor by unscheduling all nodes on that processor
+     * @param processor the processor to be sanitised
+     */
     private void sanitise(int processor) {
         // Unschedules node, adds it to free task list and set it to free
         GraphNode node = _processorAllocation.get(processor).pop();
@@ -221,20 +274,34 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
+    /**
+     * Add an observer of the child thread
+     * @param e the observer of the child
+     */
     @Override public void addBBA(IBBAObserver e) {
         _BBAObserverList.add(e);
     }
 
+    /**
+     * Remove an observer of the child thread
+     * @param e the observer of the child
+     */
     @Override public void removeBBA(IBBAObserver e) {
         _BBAObserverList.remove(e);
     }
 
+    /**
+     * Notify this child thread's observers of statistic updates on the thread
+     */
     @Override public void notifyObserversOfSchedulingUpdateBBA() {
         for (IBBAObserver observer : _BBAObserverList) {
             observer.updateScheduleInformationBBA(_thread);
         }
     }
 
+    /**
+     * Notify the GUI that a specific child thread has stopped running.
+     */
     @Override public void notifyObserversOfAlgorithmEndingBBA() {
         for (IBBAObserver observer : _BBAObserverList) {
             observer.algorithmStoppedBBA(_thread, _upperBound);
