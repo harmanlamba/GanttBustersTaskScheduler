@@ -43,9 +43,7 @@ digraph "Random_Nodes_10_Density_1.90_CCR_10.00_WeightType_Random" {
 	9 -> 10	 [Weight=48];
 	11 -> 14	 [Weight=39];
 	8 -> 13	 [Weight=15];
-	8 -> 9	 [Weight=39];
 	2 -> 9	 [Weight=29];
-	7 -> 8	 [Weight=15];
 	15	 [Weight=10];
 	16	 [Weight=6];
 	17	 [Weight=10];
