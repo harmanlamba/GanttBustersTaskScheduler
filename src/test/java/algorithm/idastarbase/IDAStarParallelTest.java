@@ -33,7 +33,7 @@ public class IDAStarParallelTest {
     private Map<String, GraphNode> getIDAStarSolution(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        IDAStarParallel algorithm = new IDAStarParallel(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        IDAStarBase algorithm = new IDAStarBase(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         return algorithm.solve();
     }
 
