@@ -10,6 +10,9 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.*;
 
+/**
+ * A child class of Algorithm which uses the BBA* algorithm to solve the task scheduling problem.
+ * */
 public class BBAStarBase extends Algorithm {
 
     private final static int NUMBER_OF_GRAPH_UPDATES = 100000;
@@ -26,7 +29,12 @@ public class BBAStarBase extends Algorithm {
     private int _graphUpdates;
     private int _iterations;
 
-    //Constructor
+    /**
+     * Constructor for BBASTarBase to instantiate the object
+     * @param graph is a graph of the network
+     * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
+     * @param numProcParallel is the number of processors the algorithm should be working on
+     */
     public BBAStarBase(Graph graph, int numProcTask, int numProcParallel) {
         super(graph, numProcTask, numProcParallel);
         _jGraph = graph.getGraph();
@@ -44,6 +52,12 @@ public class BBAStarBase extends Algorithm {
         initializeFreeTasks();
     }
 
+    /**
+     * A recursive method that completes a BBA* search on branches by scheduling free tasks until tasks have been scheduled.
+     * Branch pruning techniques and cost functions have also been put in place to optimise performance.
+     * @param task is the task to be scheduled in this iteration
+     * @param processor is the processor number the task should be allocated on
+     */
     private void recursive(GraphNode task, int processor) {
         _iterations += 1;
         int startTime = getStartTime(task, processor);
@@ -103,8 +117,10 @@ public class BBAStarBase extends Algorithm {
         }
     }
 
-    // TODO: change temp to an array of strings with two indices for speedup
-    private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
+    /**
+     * @return the complete schedule where each stack populated by graph nodes represents
+     * the tasks scheduled on a particular processor
+     */    private Set<Stack<Temp>> convertProessorAllocationsToTemp() {
         Set<Stack<Temp>> output = new HashSet<>();
         for (int i=0; i < _numProcTask; i++) {
             List<GraphNode> temp = new ArrayList<>(_processorAllocation.get(i));
@@ -118,9 +134,6 @@ public class BBAStarBase extends Algorithm {
     }
 
 
-    //To Do
-
-    //Implemented
     @Override public Map<String, GraphNode> solve() {
         for (GraphNode initTask : new ArrayList<>(_taskInfo.values())) {
             if (initTask.isFree()) {
@@ -129,6 +142,11 @@ public class BBAStarBase extends Algorithm {
         }
         return _currentBestSolution;
     }
+
+    /**
+     * @return the sum of the weights of all tasks (nodes on graph), which is the
+     * initial upper bound
+     */
     private int initializeUpperBound() {
         int max = 0;
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
@@ -140,19 +158,34 @@ public class BBAStarBase extends Algorithm {
         return _upperBound;
     }
 
+    /**
+     * Set each task to be free or not free and create a map of the task ID to the corresponding
+     * GraphNode object
+     */
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
+            // Set a task to free if it has no withstanding unscheduled dependencies
             if (_jGraph.inDegreeOf(task) == 0) {
                 _freeTaskList.add(task);
                 task.setFree(true);
             } else {
                 task.setFree(false);
             }
+            // Map each task to its ID
             _taskInfo.put(task.getId(), task);
         }
     }
+
+    /**
+     * Finds the earliest possible time a task can be scheduled on a specific processor
+     * @param task
+     * @param processor
+     * @return the start time a task will be scheduled
+     */
     private int getStartTime(GraphNode task, int processor) {
         int[] maxTimes = new int[_numProcTask];
+
+        // For each immediate predecessor of the task
         for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
             GraphNode parent = (GraphNode) _jGraph.getEdgeSource(edge);
             if (parent.getProcessor() != processor) {
@@ -174,6 +207,12 @@ public class BBAStarBase extends Algorithm {
         // Returns the earliest time the task can be scheduled on the specified processor
         return Collections.max(Arrays.asList(ArrayUtils.toObject(maxTimes)));
     }
+
+    /**
+     * Get the parents of a particular task
+     * @param task
+     * @return set of parent nodes
+     */
     private Set<GraphNode> getParents(GraphNode task) {
         Set<GraphNode> parents = new HashSet<>();
         for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(task)) {
@@ -181,6 +220,12 @@ public class BBAStarBase extends Algorithm {
         }
         return parents;
     }
+
+    /**
+     * Get the children of a particular task
+     * @param task
+     * @return set of child nodes
+     */
     private Set<GraphNode> getChildren(GraphNode task) {
         Set<GraphNode> children = new HashSet<>();
         for (DefaultWeightedEdge edge : _jGraph.outgoingEdgesOf(task)) {
@@ -188,6 +233,11 @@ public class BBAStarBase extends Algorithm {
         }
         return children;
     }
+
+    /**
+     * Update the list of free tasks and update the mapping with the child ready to be scheduled
+     * @param task the task who's children will be updated in the list of free tasks if they are free
+     */
     private void updateFreeTasks(GraphNode task) {
         for (GraphNode child : getChildren(task)) { // For every child node
             boolean childFree = true;
@@ -205,7 +255,12 @@ public class BBAStarBase extends Algorithm {
             }
         }
     }
-    @Override public Map<String, GraphNode> getCurrentBestSolution() {
+
+    /**
+     * Assigns the current best cost/finish time of a complete schedule, not yet guaranteed to be optimal
+     */
+    @Override
+    public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolution;
     }
 
@@ -214,11 +269,21 @@ public class BBAStarBase extends Algorithm {
         return 0;
     }
 
+
+    /**
+     * @return the total cost of the current partial or complete solution, which is the
+     * earliest possible starting time (without taking in to account dependencies of a task
+     * to be scheduled)
+     */
     private int getCostOfCurrentAllocation() {
         int max = 0;
+
+        // For each processor
         for (Stack<GraphNode> stack : _processorAllocation) {
             try {
                 GraphNode task = stack.peek();
+
+                // Set the maximum possible starting time on that processor
                 if (task.getStartTime() + task.getWeight() > max) {
                     max = task.getStartTime() + task.getWeight();
                 }
@@ -228,9 +293,15 @@ public class BBAStarBase extends Algorithm {
         }
         return max;
     }
+
+    /**
+     * Backtrack the scheduling done on a particular processor by unscheduling all nodes on that processor
+     * @param processor the processor to be sanitised
+     */
     private void sanitise(int processor) {
         // Unschedules node, adds it to free task list and set it to free
         GraphNode node = _processorAllocation.get(processor).pop();
+        // Set task properties to default, unscheduled values
         node.setFree(true);
         node.setStartTime(-1);
         node.setProcessor(-1);
@@ -244,24 +315,39 @@ public class BBAStarBase extends Algorithm {
             _taskInfo.put(child.getId(), child);
         }
     }
+
+    /**
+     * Set the current best complete schedule solution
+     */
     private void assignCurrentBestSolution() {
         Deque<GraphNode>[] copyOfStacks  = new ArrayDeque[_numProcTask];
         for (int i=0; i < _numProcTask; i++) {
             copyOfStacks[i] = new ArrayDeque<GraphNode>(_processorAllocation.get(i));
         }
 
+        // Create a map to build the solution
         _currentBestSolution = new HashMap<>();
         for (int i = 0; i < _numProcTask; i++) {
             while (!copyOfStacks[i].isEmpty()) {
+                // Create a deep copy of the task
                 GraphNode task = copyOfStacks[i].pop();
                 GraphNode copy = new GraphNode(task.getId(), task.getWeight(), task.getProcessor(), task.getStartTime(), task.getParents(), task.getChildren());
                 _currentBestSolution.put(copy.getId(), copy);
             }
         }
     }
-    @Override protected int getBestScheduleCost() {
+
+    /**
+     * @return the current best cost of a schedule
+     */
+    @Override
+    protected int getBestScheduleCost() {
         return _upperBound;
     }
+
+    /**
+     * @return the number of processors which have no tasks scheduled on them yet
+     */
     private int getFreeProc() {
         int free = 0;
         for (int i = 0; i < _numProcTask; i++) {
