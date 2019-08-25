@@ -27,7 +27,7 @@ public class IDAStarParallel extends Algorithm {
     }
 
     @Override
-    public int getCurrentLowerBound() {
+    public int getCurrentUpperBound() {
         return 0;
     }
 }

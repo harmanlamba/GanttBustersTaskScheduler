@@ -68,7 +68,8 @@ public class BBAStarBase extends Algorithm {
                         _upperBound = cost;
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
-                            notifyObserversOfSchedulingUpdate(1);
+                            notifyObserversOfIterationChange(0);
+                            notifyObserversOfSchedulingUpdate(0);
                         }
                         _graphUpdates += 1;
                     }
@@ -120,7 +121,6 @@ public class BBAStarBase extends Algorithm {
     @Override public Map<String, GraphNode> solve() {
         for (GraphNode initTask : new ArrayList<>(_taskInfo.values())) {
             if (initTask.isFree()) {
-                notifyObserversOfIterationChange(1);
                 recursive(initTask, 0);
             }
         }
@@ -133,9 +133,8 @@ public class BBAStarBase extends Algorithm {
         }
         return max;
     }
-    @Override protected int getCurrentLowerBound() {
-        //Do Not Implement
-        return 0;
+    @Override protected int getCurrentUpperBound() {
+        return _upperBound;
     }
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {

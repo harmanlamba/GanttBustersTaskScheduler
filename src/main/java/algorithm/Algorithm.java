@@ -86,7 +86,7 @@ public abstract class Algorithm implements IObservable {
     @Override
     public void notifyObserversOfAlgorithmEnding(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(threadNumber, _branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound());
             observer.updateScheduleInformation(threadNumber, getCurrentBestSolution());
             observer.algorithmStopped(threadNumber, getBestScheduleCost());
         }
@@ -95,7 +95,7 @@ public abstract class Algorithm implements IObservable {
     @Override
     public void notifyObserversOfIterationChange(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(threadNumber, _branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound());
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class Algorithm implements IObservable {
      * Getter method for the current lower bound
      * @return returns the current lower bound to compare during algorithm iterations
      */
-    protected abstract int getCurrentLowerBound();
+    protected abstract int getCurrentUpperBound();
 
     public int getMaximumPossibleCost() {
         int max = 0;

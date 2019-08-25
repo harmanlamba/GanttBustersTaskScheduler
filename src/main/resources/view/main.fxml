@@ -201,22 +201,7 @@
                         </VBox>
                         <VBox prefWidth="100.0">
                            <children>
-                              <Text fx:id="bestScheduleCost" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Best Schedule Cost: -" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="numberOfIterations" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Iterations: 1" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="currentLowerBound" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Lower Bound: 0" wrappingWidth="280.0">
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Text>
-                              <Text fx:id="branchesPruned" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Branches Pruned: 0" wrappingWidth="280.0">
+                              <Text fx:id="currentScheduleCost" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Schedule Cost: -" wrappingWidth="280.0">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
