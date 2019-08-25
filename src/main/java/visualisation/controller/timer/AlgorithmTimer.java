@@ -44,12 +44,19 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         }
     }
 
+    /**
+     * stop - stop the current timer (pause)
+     */
     @Override
     public void stop() {
         _stopped = true;
         super.stop();
     }
 
+    /**
+     * setTimerStatistic - runs the timer of mins, seconds, milliseconds and notify observers of update for each time
+     * @param currentTime
+     */
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
 

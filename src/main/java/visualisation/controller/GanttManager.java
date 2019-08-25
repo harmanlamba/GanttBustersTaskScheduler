@@ -11,6 +11,9 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GanttManager class - managing the initiation of gantt and updating of XY chart linked to gantt
+ */
 public class GanttManager {
     private GanttChart<Number, String> _ganttChart;
     private Pane _ganttPane;
@@ -25,6 +28,9 @@ public class GanttManager {
         createGantt();
     }
 
+    /**
+     * createGantt - initiate gantt chart given number of tasks, bound, gantt pane, and chart controller
+     */
     private void createGantt() {
         //Gantt chart initialize
         NumberAxis xAxis = new NumberAxis();
