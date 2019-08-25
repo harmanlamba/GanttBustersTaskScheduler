@@ -1,6 +1,5 @@
 package visualisation.controller;
 
-import graph.GraphNode;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -195,7 +194,6 @@ public class GraphUpdater extends Viewer {
                     super.mousePressed(event);
                     curElement = view.findNodeOrSpriteAt(event.getX(), event.getY());
                 }
-
             };
             viewPanel.setMouseManager(manager);
         } else { //set view panel to default

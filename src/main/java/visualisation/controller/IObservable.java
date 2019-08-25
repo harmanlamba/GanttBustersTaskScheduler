@@ -6,14 +6,14 @@ package visualisation.controller;
 public interface IObservable {
 
     /**
-     * add - subscribes the observer to listen
-     * @param e - the observer
+     * Used to add observer to the implementing class to listen
+     * @param e is the instance of observer to be added
      */
     void add(IObserver e);
 
     /**
-     * remove - removes the observer to listen
-     * @param e - the observer
+     * Used to remove observer listening to the implementing class
+     * @param e is the instance of observer to be removed
      */
     void remove(IObserver e);
 
