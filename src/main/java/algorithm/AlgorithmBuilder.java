@@ -4,8 +4,11 @@ import algorithm.BBAStarParallel.BBAStarParent;
 import algorithm.bbastarbase.BBAStarBase;
 import algorithm.idastarbase.IDAStarBase;
 import algorithm.idastarparallel.IDAStarParallel;
+import algorithm.idastarparallel.IDAStarParallelRecursive;
 import algorithm.sequential.Sequential;
 import graph.Graph;
+
+import java.util.ArrayList;
 
 /**
  * Utilises the builder design pattern to create an instantiation of an abstract algorithm, depending on the enum type
@@ -40,10 +43,10 @@ public class AlgorithmBuilder {
                 break;
             default:
                 if (numProcParallel > 1) {
-                    _algorithmType = AlgorithmType.IDASTARPARRALLEL;
+                    _algorithmType = AlgorithmType.BBASTARPARRALLEL;
                     _algorithm = new BBAStarParent(graph, numProcTask, numProcParallel);
                 } else {
-                    _algorithmType = AlgorithmType.IDASTARBASE;
+                    _algorithmType = AlgorithmType.BBASTARBASE;
                     _algorithm = new BBAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
