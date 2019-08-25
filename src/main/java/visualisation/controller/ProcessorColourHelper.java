@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * ProcessorColourHelper - class to manage colours to assign for each different processor (visualisation)
+ */
 public class ProcessorColourHelper {
     private final static int MAXMIMUM_COLOURS_NUM = 11;
     private final static String UNASSIGNED_COLOUR = "#000000";
@@ -29,6 +32,10 @@ public class ProcessorColourHelper {
         setProcessorColours(processCount);
     }
 
+    /**
+     * getProcessColour - get processor colour given processor
+     * @param processorIndex - processor number
+     */
     public String getProcessorColour(int processorIndex) {
         if (processorIndex != -1) {
             return _processorColours.get(processorIndex);
@@ -37,12 +44,16 @@ public class ProcessorColourHelper {
         }
     }
 
+    /**
+     * setProcessorColour - set the processor colour given processor
+     * @param processorCount - processor number
+     */
     private void setProcessorColours(int processorCount) {
         //If only 1 processor count, then set to main node colour
         int randomColourNumber = rand.nextInt(MAXMIMUM_COLOURS_NUM);
         if (processorCount > 1) {
             for (int i = 0; i < processorCount; i++) {
-                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM));
+                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM)); //set processor colour of 11 lists
             }
         } else {
             _processorColours.add(_colours.get(1));
