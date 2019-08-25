@@ -1,15 +1,10 @@
 package algorithm.idastarbase;
 
-import algorithm.Algorithm;
-import algorithm.AlgorithmBuilder;
-import algorithm.idastarbase.IDAStarBase;
 import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
 import graph.GraphEdge;
 import graph.GraphNode;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
