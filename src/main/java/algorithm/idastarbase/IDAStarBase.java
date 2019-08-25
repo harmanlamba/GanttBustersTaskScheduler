@@ -98,7 +98,7 @@ public class IDAStarBase extends Algorithm {
      * @return returns an integer of the representing the current lower bound
      */
     @Override
-    public int getCurrentUpperBound() {
+    public int getCurrentUpperBound(int threadNumber) {
         return _lowerBound;
     }
 

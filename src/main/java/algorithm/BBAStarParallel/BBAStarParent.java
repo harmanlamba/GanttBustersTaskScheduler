@@ -76,9 +76,8 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestCosts.get(_bestSolutionIndex);
     }
 
-    @Override protected int getCurrentUpperBound() {
-        // Do not implement
-        return 0;
+    @Override protected int getCurrentUpperBound(int threadNumber) {
+        return _currentBestCosts.get(threadNumber);
     }
 
     @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
@@ -90,14 +89,11 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
-    @Override public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
-        _branchesPruned = _branchesPruned;
-        _numberOfIterations = iterations;
-            notifyObserversOfIterationChange(thread);
-    }
-
     @Override public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
+        if (_currentBestCosts.get(thread) != null) {
+            notifyObserversOfIterationChange(thread);
+        }
     }
 
 }

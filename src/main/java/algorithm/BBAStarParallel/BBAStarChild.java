@@ -69,6 +69,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                         _upperBound = cost;
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
+                            BBAStarParent._currentBestCosts.put(_thread, _upperBound);
                             notifyObserversOfSchedulingUpdateBBA();
                         }
                         _graphUpdates += 1;

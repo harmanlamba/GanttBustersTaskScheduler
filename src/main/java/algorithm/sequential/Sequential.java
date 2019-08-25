@@ -75,7 +75,7 @@ public class Sequential extends Algorithm {
     }
 
     @Override
-    public int getCurrentUpperBound() {
+    public int getCurrentUpperBound(int threadNumber) {
         return -1;
     }
 }
