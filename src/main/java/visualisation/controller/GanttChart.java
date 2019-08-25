@@ -25,11 +25,16 @@ import javafx.scene.text.TextAlignment;
 
 
 /**
- * From https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch?answertab=votes#tab-top
+ * GanttChart - Custom XYChart that provides ganttchart visualizations and extra information. Allows for horizontal
+ * columns with rectangles being created and placed in position according to x y location of procesor and start time
+ * Inspired by: https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch?answertab=votes#tab-top
  */
 public class GanttChart<X,Y> extends XYChart<X,Y> {
-    private double blockHeight = 10;
+    private double blockHeight = 10; //Height of rectangle
 
+    /**
+     * Properties Class - stores properties of each rectangle for the ganttchart task
+     */
     public static class Properties {
 
         private long _length;
@@ -37,6 +42,12 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         private String _style;
         private String _taskId;
 
+        /**
+         * Properties - constructor to create styling, length and id of each rectangle task
+         * @param lengthMs - start time -> end time
+         * @param style - style colour for rectangle
+         * @param taskId - task label of rectangle
+         */
         public Properties(long lengthMs, String style, String taskId) {
             super();
             _length = lengthMs;
@@ -78,10 +89,12 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         public String getTaskId() { return _taskId; }
     }
 
+    //Ganttchart constructor to create the XY chart with observable list
     public GanttChart(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis) {
         this(xAxis, yAxis, FXCollections.<Series<X, Y>>observableArrayList());
     }
 
+    //Ganttchart constructor for setting category axis
     public GanttChart(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis, @NamedArg("data") ObservableList<Series<X,Y>> data) {
         super(xAxis, yAxis);
         if (!(xAxis instanceof ValueAxis && yAxis instanceof CategoryAxis)) {
@@ -104,26 +117,31 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
 
     private static String getTaskId(Object obj) { return ((Properties) obj).getTaskId(); }
 
+    /**
+     * layoutPlotChildren - create rectangle given the properties constructor
+     */
     @Override protected void layoutPlotChildren() {
 
         for (int seriesIndex=0; seriesIndex < getData().size(); seriesIndex++) {
-
             Series<X,Y> series = getData().get(seriesIndex);
-
             Iterator<Data<X,Y>> iter = getDisplayedDataIterator(series);
+
+            //Iterate through list of tasks
             while(iter.hasNext()) {
                 Data<X,Y> item = iter.next();
                 double x = getXAxis().getDisplayPosition(item.getXValue());
                 double y = getYAxis().getDisplayPosition(item.getYValue());
-                if (Double.isNaN(x) || Double.isNaN(y)) {
+
+                if (Double.isNaN(x) || Double.isNaN(y)) { //Check for null
                     continue;
                 }
+
                 Node block = item.getNode();
                 Rectangle rectangle;
+                //Create stackpane for each rectangle
                 if (block != null) {
                     if (block instanceof StackPane) {
                         StackPane region = (StackPane)item.getNode();
-
                         if (region.getShape() == null) {
                             rectangle = new Rectangle( getLength( item.getExtraValue()), getBlockHeight());
                         } else if (region.getShape() instanceof Rectangle) {
@@ -132,6 +150,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                             return;
                         }
 
+                        //Set rectangle width and height and positioning
                         rectangle.setWidth( getLength( item.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         rectangle.setHeight(getBlockHeight() * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         y -= getBlockHeight() / 2.0;
@@ -151,11 +170,14 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         region.setMaxHeight(rectangle.getHeight());
                         region.setMinHeight(rectangle.getHeight());
                         region.setPrefHeight(rectangle.getHeight());
+
+                        //Create label according to properties id
                         Label text = new Label(getTaskId(item.getExtraValue())); //don't delete
                         text.setStyle("-fx-font-family: 'Space Mono', monospace; -fx-font-weight: BOLD; -fx-text-fill: white;");
                         text.setPadding(new Insets(paddingHeight, 0, 0, paddingWidth));
                         region.getChildren().add(text); //don't delete
 
+                        //Set rectangle position
                         block.setLayoutX(x);
                         block.setLayoutY(y);
                     }
@@ -203,10 +225,12 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
 
     }
 
+    /**
+     * Create container - applies style to each rectangle given properties (colour)
+     * @return node to place onto XY chart -> display
+     */
     private Node createContainer(Series<X, Y> series, int seriesIndex, final Data<X,Y> item, int itemIndex) {
-
         Node container = item.getNode();
-
         if (container == null) {
             container = new StackPane();
             item.setNode(container);
@@ -217,6 +241,9 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
         return container;
     }
 
+    /**
+     * updateAxisRange - update axis of x and y according to autoranging + provided upper and lower bound
+     */
     @Override protected void updateAxisRange() {
         final Axis<X> xa = getXAxis();
         final Axis<Y> ya = getYAxis();
