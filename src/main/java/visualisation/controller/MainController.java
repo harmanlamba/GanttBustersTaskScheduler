@@ -55,7 +55,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String NUMBER_OF_PROCESSORS_TEXT = "Processors: "; //this one
     private final static String NUMBER_OF_THREADS_TEXT = "Threads: "; //this one
     private final static String CURRENT_SCHEDULE_COST_TEXT = "Current Schedule Cost: ";
-    private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
+    private final static String NUMBER_OF_ITERATIONS_TEXT = "Iterations: ";
     private final static String TIME_ELAPSED_TEXT = "Time Elapsed: ";
     private final static String CURRENT_MEMORY_USAGE = "Memory Usage: ";
     private final static int KB_TO_MB_CONVERSION_RATE = 1000000;
