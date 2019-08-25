@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A child class of Algorithm which uses the BBA* algorithm to solve the task scheduling problem with parallelisation
+ * */
 public class BBAStarParent extends Algorithm implements IBBAObserver {
 
     private List<Thread> _threadList;
@@ -20,6 +23,12 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     private int _bestSolutionIndex;
     private boolean _solved;
 
+    /**
+     * Constructor for BBASTarParallel to instantiate the object
+     * @param g is a graph of the network
+     * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
+     * @param numProcParallel is the number of processors the algorithm should be working on
+     */
     public BBAStarParent(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         _threadList = new ArrayList<>();
@@ -31,6 +40,9 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         _solved = false;
     }
 
+    /**
+     * @return the complete schedule solution
+     */
     @Override
     public Map<String, GraphNode> solve() {
         int[] bounds = createBoundForThreads();
@@ -55,8 +67,10 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
-
-    //Complete
+    /**
+     * @return the sum of the weights of all tasks (nodes on graph), which is the
+     * initial upper bound
+     */
     private int initializeUpperBound() {
         int max = 0;
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
@@ -64,6 +78,11 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         }
         return max;
     }
+
+    /**
+     * Get the bound of each thread
+     * @return an array where each value entry represents the bound for a specific thread
+     */
     private int[] createBoundForThreads() {
         int[] bounds = new int[_numProcParallel];
         for (int i=0; i < _numProcParallel; i++) {
@@ -72,31 +91,37 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return bounds;
     }
 
-    @Override protected int getBestScheduleCost() {
+    @Override
+    protected int getBestScheduleCost() {
         return _currentBestCosts.get(_bestSolutionIndex);
     }
 
-    @Override protected int getCurrentLowerBound() {
+    @Override
+    protected int getCurrentLowerBound() {
         // Do not implement
         return 0;
     }
 
-    @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
+    @Override
+    public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
         _solved = true;
     }
 
-    @Override public Map<String, GraphNode> getCurrentBestSolution() {
+    @Override
+    public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
-    @Override public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
+    @Override
+    public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
         _numberOfIterations = iterations;
         notifyObserversOfIterationChange(thread);
     }
 
-    @Override public void updateScheduleInformationBBA(int thread) {
+    @Override
+    public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
     }
 

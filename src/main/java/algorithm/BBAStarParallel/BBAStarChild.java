@@ -24,7 +24,13 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private int _thread;
     private int _graphUpdates;
 
-
+    /**
+     * Constructor for BBASTarChild to instantiate the object
+     * @param graph of the network
+     * @param numProcTask number of processors for the tasks to be scheduled on in the problem
+     * @param thread the thread on which this instance of the algorithm is running on
+     * @param bound the bound of the thread
+     */
     public BBAStarChild(Graph graph, int numProcTask, int thread, int bound) {
         _BBAObserverList = new ArrayList<>();
         _graph = graph;
@@ -88,7 +94,6 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
-    //Implemented
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
             if (task.getParents().size() == 0) {
