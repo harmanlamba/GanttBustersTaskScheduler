@@ -325,32 +325,35 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 @Override
                 public void run() {
                     //update graph visualization using runnable
-                    List<GraphNode> test = new ArrayList<>(update.values());
+                    try {
+                        List<GraphNode> test = new ArrayList<>(update.values());
+                        if(selectedThread == _io.getNumberOfProcessorsForParallelAlgorithm()){
+                            updateTable(test);
+                            for (Node node : _graphStream) {
+                                updateGantt(test);
+                            }
+                            _graphManager.updateGraphStream(test);
+                            _graphStream = _graphManager.getGraph();
+                            _graphUpdater.updateGraph(_graphStream);
+                        }else{
+                            switch (_currentTab) {
+                                case TABLE:
+                                    updateTable(test);
+                                    break;
+                                case GANTT:
+                                    for (Node node : _graphStream) {
+                                        updateGantt(test);
+                                    }
+                                    break;
+                                default: //graph
+                                    _graphManager.updateGraphStream(test);
+                                    _graphStream = _graphManager.getGraph();
+                                    _graphUpdater.updateGraph(_graphStream);
 
-                    if(selectedThread == _io.getNumberOfProcessorsForParallelAlgorithm()){
-                        updateTable(test);
-                        for (Node node : _graphStream) {
-                            updateGantt(test);
+                            }
                         }
-                        _graphManager.updateGraphStream(test);
-                        _graphStream = _graphManager.getGraph();
-                        _graphUpdater.updateGraph(_graphStream);
-                    }else{
-                        switch (_currentTab) {
-                            case TABLE:
-                                updateTable(test);
-                                break;
-                            case GANTT:
-                                for (Node node : _graphStream) {
-                                    updateGantt(test);
-                                }
-                                break;
-                            default: //graph
-                                _graphManager.updateGraphStream(test);
-                                _graphStream = _graphManager.getGraph();
-                                _graphUpdater.updateGraph(_graphStream);
-
-                        }
+                    } catch (NullPointerException e) {
+                        System.out.println("yeet");
                     }
                 }
             });
