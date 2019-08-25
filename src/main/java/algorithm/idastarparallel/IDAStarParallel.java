@@ -48,7 +48,6 @@ public class IDAStarParallel extends Algorithm {
                 e.printStackTrace();
             }
         }
-        System.out.println("YAY");
 
 
         // Retrieve best schedule from the threads that have run

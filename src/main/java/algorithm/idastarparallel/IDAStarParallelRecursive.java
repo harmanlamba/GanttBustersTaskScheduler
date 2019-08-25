@@ -27,7 +27,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     private int _lowerBound; // Current lower bound to find solution against
 
     private static volatile PriorityBlockingQueue<Integer> _lowerBoundQueue = new PriorityBlockingQueue<>();
-    private static volatile TreeSet<Integer> _checkedLowerBoundList = new TreeSet<>();
+    private static volatile ArrayList<Integer> _checkedLowerBoundList = new ArrayList<>();
     private static volatile int _overallBestFinishTime = -1;
     private static volatile boolean _solved; // Represents whether the optimal solution has been found on any thread
     private static volatile Map<String, GraphNode> _overallBestSchedule = new HashMap<>();
@@ -482,7 +482,7 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
     public void resetStaticVolatileFields() {
         _solved = false;
         _lowerBoundQueue = new PriorityBlockingQueue<>();
-        _checkedLowerBoundList = new TreeSet<>();
+        _checkedLowerBoundList = new ArrayList<>();
         _overallBestFinishTime = -1;
         _overallBestSchedule = new HashMap<>();
     }
