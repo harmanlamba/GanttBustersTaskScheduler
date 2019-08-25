@@ -22,7 +22,7 @@ public abstract class Algorithm implements IObservable {
     protected List<IObserver> _observerList;
     protected int _branchesPruned;
     protected int _numberOfIterations;
-    private int _bestScheduleCost;
+    protected int _bestScheduleCost;
     protected int _threadNumber;
 
     /**
