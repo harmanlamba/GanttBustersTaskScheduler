@@ -163,7 +163,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _observableTimer.stop();
         ObservableList<String> comboBoxList = comboBox.getItems();
         comboBoxList.add("Solution Stats");
-        comboBox.getSelectionModel().select(comboBoxList.size());
+        comboBox.getSelectionModel().selectLast();
 
         statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
         algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
@@ -281,7 +281,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
         //On change combobox action
         comboBox.setOnAction(e -> {
-            int threadNumber = comboBox.getSelectionModel().getSelectedIndex() + 1;
+            int threadNumber = comboBox.getSelectionModel().getSelectedIndex();
             if (_updateThreadMap.get(threadNumber) != null){
                 graphPane.setVisible(true);
                 scheduleResultsTable.setVisible(true);
@@ -291,6 +291,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 graphPane.setVisible(false);
                 scheduleResultsTable.setVisible(false);
                 ganttPane.setVisible(false);
+                System.out.print("YO");
             }
 
         });
@@ -312,7 +313,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         _updateThreadMap.put(threadNumber, update);
         int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
 
-        if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber - 1) { //Update depending on combo box values
+        if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber) { //Update depending on combo box values
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {

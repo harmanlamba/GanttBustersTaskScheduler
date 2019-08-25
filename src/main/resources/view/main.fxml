@@ -288,14 +288,6 @@
                                                 <Insets top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <Text fx:id="searchGraph1" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="No current solutions for thread :-(" textAlignment="CENTER" wrappingWidth="700.0">
-                                             <font>
-                                                <Font size="18.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets top="-300.0" />
-                                             </VBox.margin>
-                                          </Text>
                                           <Pane fx:id="graphPane" prefHeight="549.0" prefWidth="679.0">
                                              <children>
                                                 <SwingNode fx:id="swingNode" />
@@ -307,7 +299,7 @@
                                                 </Button>
                                              </children>
                                              <VBox.margin>
-                                                <Insets top="300.0" />
+                                                <Insets />
                                              </VBox.margin>
                                           </Pane>
                                        </children>
