@@ -28,7 +28,7 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/main/resources/e11.dot", "2", "-o", "me1", "-p", "1"};
+        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "1"};
         _file2 = new String[]{"src/main/resources/e2.dot", "2", "-o", "me2", "-p", "1"};
         _file3 = new String[]{"src/main/resources/e3.dot", "2", "-o", "me3", "-p", "1"};
         _file4 = new String[]{"src/main/resources/e4.dot", "2", "-o", "me4", "-p", "1"};
