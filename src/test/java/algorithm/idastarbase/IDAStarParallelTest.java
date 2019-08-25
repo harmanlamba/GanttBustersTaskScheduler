@@ -74,7 +74,7 @@ public class IDAStarParallelTest {
     }
 
     @Test
-    public void testE3Proc() {
+    public void testE3Proc2() {
         try {
             assertTrue(solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 55));
         } catch (InputFileException e) {
