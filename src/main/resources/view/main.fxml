@@ -270,7 +270,7 @@
                                  <children>
                                     <VBox prefHeight="591.0" prefWidth="700.0">
                                        <children>
-                                          <Text fx:id="searchGraph" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Search graph" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="searchGraph" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="SEARCH GRAPH" textAlignment="CENTER" wrappingWidth="700.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -305,13 +305,13 @@
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                      <Tab fx:id="taskTab" text="Task schedule">
+                      <Tab fx:id="taskTab" text="Gantt schedule">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <VBox prefHeight="592.0" prefWidth="700.0">
                                        <children>
-                                          <Text fx:id="taskSchedule" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Task schedule" textAlignment="CENTER" wrappingWidth="701.0">
+                                          <Text fx:id="taskSchedule" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="GANTT SCHEDULE" textAlignment="CENTER" wrappingWidth="701.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -337,13 +337,13 @@
                                  </children></AnchorPane>
                         </content>
                       </Tab>
-                        <Tab fx:id="resultTab" text="Schedule results">
+                        <Tab fx:id="resultTab" text="Table results">
                            <content>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="545.0">
                                  <children>
-                                    <VBox prefHeight="583.0" prefWidth="700.0">
+                                    <VBox prefHeight="583.0" prefWidth="566.0">
                                        <children>
-                                          <Text fx:id="scheduleResults" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Schedule results" textAlignment="CENTER" wrappingWidth="679.0">
+                                          <Text fx:id="scheduleResults" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="SCHEDULE RESULTS" textAlignment="CENTER" wrappingWidth="679.0">
                                              <font>
                                                 <Font size="22.0" />
                                              </font>
@@ -359,18 +359,18 @@
                                                 <Insets top="240.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <TableView fx:id="scheduleResultsTable" prefHeight="530.0" prefWidth="700.0" stylesheets="@stylesheet.css">
+                                          <TableView fx:id="scheduleResultsTable" prefHeight="530.0" prefWidth="700.0">
                                             <columns>
                                               <TableColumn id="taskIDColumn" fx:id="taskIDColumn" editable="false" prefWidth="170.0" resizable="false" style="-fx-alignment: CENTER;" text="Task ID" />
-                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="165.0" resizable="false" text="Start Time" />
-                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="165.0" resizable="false" text="End Time" />
-                                                <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="180.0" resizable="false" text="Assigned Processor" />
+                                              <TableColumn id="startTimeColumn" fx:id="startTimeColumn" editable="false" prefWidth="155.0" resizable="false" text="Start Time" />
+                                                <TableColumn id="endTimeColumn" fx:id="endTimeColumn" editable="false" prefWidth="155.0" resizable="false" text="End Time" />
+                                                <TableColumn id="assignedProcessorColumn" fx:id="assignedProcessorColumn" editable="false" prefWidth="195.0" resizable="false" text="Assigned Processor" />
                                             </columns>
                                              <placeholder>
                                                 <Label text="No assigned processors :-(" />
                                              </placeholder>
                                              <VBox.margin>
-                                                <Insets top="-260.0" />
+                                                <Insets right="25.0" top="-260.0" />
                                              </VBox.margin>
                                           </TableView>
                                        </children>

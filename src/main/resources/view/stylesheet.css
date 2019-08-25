@@ -119,6 +119,12 @@ TABLE VIEW
 .table-view {
   -fx-background-insets: 0;
   -fx-padding: 0;
+  -fx-background-color: #414141;
+}
+
+.table-view .column-header-background .filler {
+  -fx-background-color: #414141;
+  -fx-padding: 1em;
 }
 
 .table-view .table.column {
@@ -147,6 +153,12 @@ TABLE VIEW
 
 .table-view .column-header {
   -fx-background-color: #414141;
+}
+
+.table-view .scroll-bar:horizontal .track,
+.table-view .scroll-bar:vertical .track{
+  -fx-background-color :#414141;
+  -fx-border-color :#414141;
 }
 
 /*
@@ -187,6 +199,7 @@ LEGEND
   -fx-background-color :transparent;
   -fx-border-color :transparent;
 }
+
 
 .scroll-bar:horizontal .increment-button ,
 .scroll-bar:horizontal .decrement-button {

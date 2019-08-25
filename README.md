@@ -1,8 +1,17 @@
 ![](https://i.imgur.com/sLNEchz.jpg)
+
+[![Build Status](https://semaphoreci.com/api/v1/projects/82787041-2e4c-4fc4-bf97-14c040db432a/2832446/badge.svg)](https://semaphoreci.com/preetpatel-20/softeng306_p1)
+
 # GanttBuster Scheduler 
 
 Welcome to the official page of Group 3's Parallel Scheduling Project for SOFTENG 306.
 
+## Screenshots and images
+![Graph](src/main/resources/screenshots/screenshot1.PNG)
+
+![Gantt](src/main/resources/screenshots/screenshot2.PNG)
+
+![Table](src/main/resources/screenshots/screenshot3.PNG)
 
 ## How to run it
 
@@ -20,10 +29,6 @@ Optional Arguments
 
 Required Environments
 - Java
-
-## Algorithm Build Status
-
-Master branch status: [![Build Status](https://semaphoreci.com/api/v1/projects/82787041-2e4c-4fc4-bf97-14c040db432a/2832446/badge.svg)](https://semaphoreci.com/preetpatel-20/softeng306_p1)
 
 ## Github Username to UPI Mapping
 
