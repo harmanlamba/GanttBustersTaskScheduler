@@ -24,6 +24,7 @@ public class BBAStarBase extends Algorithm {
     private int _numTasks;
     private Set<Set<Stack<Temp>>> _previousStates;
     private int _graphUpdates;
+    private int _iterations;
 
     //Constructor
     public BBAStarBase(Graph graph, int numProcTask, int numProcParallel) {
@@ -36,6 +37,7 @@ public class BBAStarBase extends Algorithm {
         _numTasks = _graph.get_vertexMap().size();
         _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
+        _iterations = 0;
         for (int i = 0; i < numProcTask; i++) {
             _processorAllocation.add(new Stack<GraphNode>());
         }
@@ -43,6 +45,7 @@ public class BBAStarBase extends Algorithm {
     }
 
     private void recursive(GraphNode task, int processor) {
+        _iterations += 1;
         int startTime = getStartTime(task, processor);
         if (startTime + task.getWeight() <= _upperBound) {
             _depth += 1;
@@ -136,6 +139,7 @@ public class BBAStarBase extends Algorithm {
     @Override protected int getCurrentUpperBound(int threadNumber) {
         return _upperBound;
     }
+
     private void initializeFreeTasks() {
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
             if (_jGraph.inDegreeOf(task) == 0) {
@@ -204,6 +208,12 @@ public class BBAStarBase extends Algorithm {
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolution;
     }
+
+    @Override
+    public int getSolutionThread() {
+        return 0;
+    }
+
     private int getCostOfCurrentAllocation() {
         int max = 0;
         for (Stack<GraphNode> stack : _processorAllocation) {
@@ -261,6 +271,11 @@ public class BBAStarBase extends Algorithm {
         }
         return free;
     }
+    @Override protected int getNumberOfIterations(int threadNumber) {
+        return _iterations;
+    }
+
+
 
 
 }

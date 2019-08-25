@@ -16,7 +16,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     private int _upperBound;
     private int _lowerBound;
     public static volatile Map<Integer, Map<String, GraphNode>> _currentBestSolutions;
-    public static volatile Map<Integer, Integer> _currentBestCosts;
+    public static volatile Map<Integer, int[]> _currentBestCostsAndIterations;
     private int _bestSolutionIndex;
     private boolean _solved;
 
@@ -27,7 +27,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         _upperBound = initializeUpperBound();
         _lowerBound = _upperBound / numProcTask;
         _currentBestSolutions = new HashMap<>();
-        _currentBestCosts = new HashMap<>();
+        _currentBestCostsAndIterations = new HashMap<>();
         _solved = false;
     }
 
@@ -73,11 +73,16 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
 
     @Override protected int getBestScheduleCost() {
-        return _currentBestCosts.get(_bestSolutionIndex);
+        return _currentBestCostsAndIterations.get(_bestSolutionIndex)[0];
     }
 
     @Override protected int getCurrentUpperBound(int threadNumber) {
-        return _currentBestCosts.get(threadNumber);
+        return _currentBestCostsAndIterations.get(threadNumber)[0];
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return _currentBestCostsAndIterations.get(threadNumber)[1];
     }
 
     @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
@@ -89,9 +94,14 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
+    @Override
+    public int getSolutionThread() {
+        return _bestSolutionIndex;
+    }
+
     @Override public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
-        if (_currentBestCosts.get(thread) != null) {
+        if (_currentBestCostsAndIterations.get(thread) != null) {
             notifyObserversOfIterationChange(thread);
         }
     }

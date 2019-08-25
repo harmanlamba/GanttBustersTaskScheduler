@@ -78,4 +78,14 @@ public class Sequential extends Algorithm {
     public int getCurrentUpperBound(int threadNumber) {
         return -1;
     }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return 1;
+    }
+
+    @Override
+    public int getSolutionThread() {
+        return 0;
+    }
 }

@@ -23,6 +23,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private Set<Set<Stack<Temp>>> _previousStates;
     private int _thread;
     private int _graphUpdates;
+    private int _iterations;
 
 
     public BBAStarChild(Graph graph, int numProcTask, int thread, int bound) {
@@ -35,6 +36,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _depth = 0;
+        _iterations = 0;
         _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
         _graphUpdates = 0;
@@ -44,6 +46,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     }
 
     public void recursive(GraphNode task, int processor) {
+        _iterations += 1;
         int startTime = getStartTime(task, processor);
         if (startTime + task.getWeight() <= _upperBound) {
             _depth += 1;
@@ -69,7 +72,8 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                         _upperBound = cost;
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
-                            BBAStarParent._currentBestCosts.put(_thread, _upperBound);
+                            BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
+
                             notifyObserversOfSchedulingUpdateBBA();
                         }
                         _graphUpdates += 1;
@@ -110,7 +114,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
             }
         }
         if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
-            BBAStarParent._currentBestCosts.put(_thread, _upperBound);
+            BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
             notifyObserversOfAlgorithmEndingBBA();
         }
     }

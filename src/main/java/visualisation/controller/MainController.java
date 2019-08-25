@@ -76,7 +76,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private Map<String, GraphNode> _latestUpdateMap;
     private ViewPanel _viewPanel;
     private Map<Integer, Map<String, GraphNode>> _updateThreadMap = new HashMap<>();
-    private Map<Integer, Integer> _updateStatisticsMap = new HashMap<>();
+    private Map<Integer, int[]> _updateStatisticsMap = new HashMap<>();
 
     //Public Control Fields from the FXML
     public VBox statsContainer;
@@ -90,8 +90,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfThreads;
     public Text currentScheduleCost;
     public Text numberOfIterations;
-    public Text branchesPruned;
-    public Text currentLowerBound;
     public Text currentMemoryUsage;
     public Text stats;
 
@@ -325,7 +323,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 scheduleResultsTable.setVisible(true);
                 ganttPane.setVisible(true);
                 updateScheduleInformation(threadNumber, _updateThreadMap.get(threadNumber));
-                updateIterationInformation(threadNumber, _updateStatisticsMap.get(threadNumber));
+                updateIterationInformation(threadNumber, _updateStatisticsMap.get(threadNumber)[0], _updateStatisticsMap.get(threadNumber)[1]);
             } else { //No update has happened
                 graphPane.setVisible(false);
                 scheduleResultsTable.setVisible(false);
@@ -466,13 +464,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      * @param threadNumber
      */
     @Override
-    public void updateIterationInformation(int threadNumber, int upperBound) {
-        _updateStatisticsMap.put(threadNumber, upperBound);
+    public void updateIterationInformation(int threadNumber, int upperBound, int numIterations) {
+        _updateStatisticsMap.put(threadNumber, new int[]{upperBound, numIterations});
         int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
 
         if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber) { //Update depending on combo box values
 
             currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + ((upperBound == -1) ? "-" : upperBound));
+            numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + numIterations);
             // Get memory usage in MBs
             long memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / KB_TO_MB_CONVERSION_RATE;
             currentMemoryUsage.setText(CURRENT_MEMORY_USAGE + memoryUsage + MB_TEXT);
