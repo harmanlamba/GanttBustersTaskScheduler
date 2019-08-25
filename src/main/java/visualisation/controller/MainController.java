@@ -349,7 +349,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                                     _graphManager.updateGraphStream(test);
                                     _graphStream = _graphManager.getGraph();
                                     _graphUpdater.updateGraph(_graphStream);
-
                             }
                         }
                     } catch (NullPointerException e) {

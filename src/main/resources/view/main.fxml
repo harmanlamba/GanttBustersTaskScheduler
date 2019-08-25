@@ -117,7 +117,7 @@
                                           <Insets top="2.0" />
                                        </HBox.margin>
                                     </ImageView>
-                                    <Text fx:id="currentMemoryUsage" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="197.0">
+                                    <Text fx:id="currentMemoryUsage" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Usage: 0" wrappingWidth="260.0">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
