@@ -66,7 +66,7 @@ public class BBAStarBase extends Algorithm {
                         _upperBound = cost;
                         System.out.println(_upperBound);
                         assignCurrentBestSolution();
-                        notifyObserversOfSchedulingUpdate();
+                        notifyObserversOfSchedulingUpdate(1);
                     }
                 } else {
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
@@ -116,7 +116,7 @@ public class BBAStarBase extends Algorithm {
     @Override public Map<String, GraphNode> solve() {
         for (GraphNode initTask : new ArrayList<>(_taskInfo.values())) {
             if (initTask.isFree()) {
-                notifyObserversOfIterationChange();
+                notifyObserversOfIterationChange(1);
                 recursive(initTask, 0);
             }
         }

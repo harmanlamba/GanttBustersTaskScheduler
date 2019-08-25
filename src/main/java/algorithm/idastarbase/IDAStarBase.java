@@ -63,11 +63,11 @@ public class IDAStarBase extends Algorithm {
                 _lowerBound = Math.max(maxComputationalTime(), task.getComputationalBottomLevel());
                 while (!_solved) { // If the optimal solution has not already been found
                     _numberOfIterations += 1;
-                    notifyObserversOfIterationChange();
+                    notifyObserversOfIterationChange(1);
                     _solved = idaRecursive(task, 0); // Schedules the task
                     _lowerBound = _nextLowerBound; // Increments the lower bound
                     _nextLowerBound = -1;
-                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
+                    notifyObserversOfSchedulingUpdate(1); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -211,7 +211,7 @@ public class IDAStarBase extends Algorithm {
                                 _solved = idaRecursive(freeTask, i);
                             }
                             if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
-                                notifyObserversOfSchedulingUpdate();
+                                notifyObserversOfSchedulingUpdate(1);
                             }
                             _updateGraphIteration += 1;
                             if (_solved) {

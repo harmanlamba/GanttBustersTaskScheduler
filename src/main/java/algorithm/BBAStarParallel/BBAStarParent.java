@@ -96,10 +96,10 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     @Override public void updateIterationInformation(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
         _numberOfIterations = iterations;
-        notifyObserversOfIterationChange();
+        notifyObserversOfIterationChange(thread);
     }
     @Override public void updateScheduleInformation(int thread) {
-        notifyObserversOfSchedulingUpdate();
+        notifyObserversOfSchedulingUpdate(thread);
     }
 
 }

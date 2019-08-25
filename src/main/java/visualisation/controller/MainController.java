@@ -152,14 +152,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
                 _currentTab = SelectedTab.values()[visualsContainer.getSelectionModel().getSelectedIndex()];
                 if (oldValue != newValue) {
-                    updateScheduleInformation(_latestUpdateMap);
+                    updateScheduleInformation(1, _latestUpdateMap);
                 }
             }
         });
     }
 
     @Override
-    public void updateScheduleInformation(Map<String, GraphNode> update) {
+    public void updateScheduleInformation(int threadNumber, Map<String, GraphNode> update) {
         _latestUpdateMap = update;
         Platform.runLater(new Runnable() {
             @Override
@@ -366,7 +366,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateIterationInformation(int prunedBranches, int iterations, int lowerBound) {
+    public void updateIterationInformation(int threadNumber, int prunedBranches, int iterations, int lowerBound) {
         branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
         numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
         currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));

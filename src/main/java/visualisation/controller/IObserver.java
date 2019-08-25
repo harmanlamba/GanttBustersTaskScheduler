@@ -5,8 +5,7 @@ import graph.GraphNode;
 import java.util.Map;
 
 public interface IObserver {
-    void updateScheduleInformation(Map<String, GraphNode> map);
+    void updateScheduleInformation(int threadNumber, Map<String, GraphNode> map);
     void algorithmStopped(int bestScheduleCost);
-    void updateIterationInformation(int prunedBranches, int iterations, int lowerBound);
+    void updateIterationInformation(int threadNumber, int prunedBranches, int iterations, int lowerBound);
 }
-
