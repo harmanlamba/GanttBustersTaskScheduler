@@ -4,7 +4,6 @@ import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
 import graph.Temp;
-import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
@@ -69,10 +68,7 @@ public class BBAStarBase extends Algorithm {
                         _upperBound = cost;
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
-                            Platform.runLater(() -> {
-                                notifyObserversOfSchedulingUpdate(1);
-                            });
-
+                            notifyObserversOfSchedulingUpdate(1);
                         }
                         _graphUpdates += 1;
                     }

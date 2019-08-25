@@ -3,7 +3,6 @@ package algorithm.BBAStarParallel;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,17 +93,11 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     @Override public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
         _numberOfIterations = iterations;
-        Platform.runLater(() -> {
             notifyObserversOfIterationChange(thread);
-        });
-
     }
 
     @Override public void updateScheduleInformationBBA(int thread) {
-        Platform.runLater(() ->{
             notifyObserversOfSchedulingUpdate(thread);
-        });
-
     }
 
 }
