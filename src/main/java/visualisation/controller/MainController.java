@@ -47,6 +47,7 @@ import java.util.List;
 
 public class MainController implements IObserver, ITimerObserver, Initializable {
 
+    //Statistics constants
     private final static String NUMBER_OF_TASKS_TEXT = "Tasks: ";
     private final static String ALGORITHM_STATUS_DONE_TEXT = "Done";
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
@@ -60,8 +61,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String CURRENT_MEMORY_USAGE = "Memory Usage: ";
     private final static int KB_TO_MB_CONVERSION_RATE = 1000000;
     private final static String MB_TEXT = " MB";
-
-
 
     //Private Fields
     private IObservable _observableAlgorithm;
@@ -78,7 +77,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private Map<Integer, Map<String, GraphNode>> _updateThreadMap = new HashMap<>();
 
     //Public Control Fields from the FXML
-    public HBox mainContainer;
     public VBox statsContainer;
     public VBox statusPane;
     public Text algorithmStatus;
@@ -96,17 +94,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text stats;
 
     public TabPane visualsContainer;
-    public Tab graphTab;
     public Pane graphPane;
     public SwingNode swingNode;
 
-    public Tab taskTab;
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
     public Button spriteButton;
     public Button floppyButton;
 
-    public Tab resultTab;
     public TableView<MockGraphNode> scheduleResultsTable;
     public TableColumn<MockGraphNode, String> taskIDColumn;
     public TableColumn<MockGraphNode, Integer> startTimeColumn;
@@ -115,10 +110,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     public JFXListView<String> legendListView;
     public JFXComboBox<String> comboBox;
-
-    public MainController(){
-
-    }
 
     /**
      * initialize - Initiate algorithm and GUI components
@@ -130,14 +121,15 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
-        initializeTabSelectionModel();
-        initializeViews();
 
         //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
         _observableTimer = AlgorithmTimer.getAlgorithmTimer();
         _observableTimer.add(this);
+
+        initializeTabSelectionModel();
+        initializeViews();
     }
 
     /**
