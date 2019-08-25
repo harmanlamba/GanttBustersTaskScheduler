@@ -21,7 +21,7 @@ public class FXApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         // Load FXML
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));\
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
         MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
@@ -49,4 +49,5 @@ public class FXApplication extends Application {
             IIO io = App._mainIO;
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
+    }
 }

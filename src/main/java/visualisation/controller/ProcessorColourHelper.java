@@ -55,7 +55,7 @@ public class ProcessorColourHelper {
         int randomColourNumber = rand.nextInt(MAXIMUM_COLOURS_NUM);
         if (processorCount > 1) {
             for (int i = 0; i < processorCount; i++) {
-                _processorColours.add(_colours.get((i + randomColourNumber) % MAXMIMUM_COLOURS_NUM)); //set processor colour of 11 lists
+                _processorColours.add(_colours.get((i + randomColourNumber) % MAXIMUM_COLOURS_NUM)); //set processor colour of 11 lists
             }
         } else {
             _processorColours.add(_colours.get(1));
