@@ -66,7 +66,6 @@ public class BBAStarBase extends Algorithm {
                     int cost = getCostOfCurrentAllocation();
                     if (cost <= _upperBound) {
                         _upperBound = cost;
-                        System.out.println(_upperBound);
                         assignCurrentBestSolution();
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
                             notifyObserversOfSchedulingUpdate(1);
