@@ -49,7 +49,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         _stopped = true;
         super.stop();
     }
-    
+
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
 

@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -460,9 +461,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     /**
      * updateIterationInformation - for each iteration of the algorithm, update statistics given from BBA* implementation
      * @param threadNumber
-     * @param prunedBranches
-     * @param iterations
-     * @param lowerBound
      */
     @Override
     public void updateIterationInformation(int threadNumber, int upperBound) {
