@@ -23,6 +23,7 @@ public abstract class Algorithm implements IObservable {
     protected int _branchesPruned;
     protected int _numberOfIterations;
     private int _bestScheduleCost;
+    protected int _threadNumber;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -56,7 +57,8 @@ public abstract class Algorithm implements IObservable {
         Map<String, GraphNode> outputMap = solve();
         System.out.println("\nDone");
         System.out.println("Best time: " + getBestScheduleCost());
-        notifyObserversOfAlgorithmEnding();
+
+        notifyObserversOfAlgorithmEnding(getSolutionThread());
         return outputMap;
     }
 
@@ -67,6 +69,8 @@ public abstract class Algorithm implements IObservable {
      */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
 
+    public abstract int getSolutionThread();
+
     @Override
     public void add(IObserver e) {
         _observerList.add(e);
@@ -76,25 +80,25 @@ public abstract class Algorithm implements IObservable {
     public void remove(IObserver e) { _observerList.remove(e); }
 
     @Override
-    public void notifyObserversOfSchedulingUpdate() {
+    public void notifyObserversOfSchedulingUpdate(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateScheduleInformation(getCurrentBestSolution());
+            observer.updateScheduleInformation(threadNumber, getCurrentBestSolution());
         }
     }
 
     @Override
-    public void notifyObserversOfAlgorithmEnding() {
+    public void notifyObserversOfAlgorithmEnding(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
-            observer.updateScheduleInformation(getCurrentBestSolution());
-            observer.algorithmStopped(getBestScheduleCost());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound(threadNumber), getNumberOfIterations(threadNumber));
+            observer.updateScheduleInformation(threadNumber, getCurrentBestSolution());
+            observer.algorithmStopped(threadNumber, getBestScheduleCost());
         }
     }
 
     @Override
-    public void notifyObserversOfIterationChange() {
+    public void notifyObserversOfIterationChange(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(_branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound(threadNumber), getNumberOfIterations(threadNumber));
         }
     }
 
@@ -108,7 +112,9 @@ public abstract class Algorithm implements IObservable {
      * Getter method for the current lower bound
      * @return returns the current lower bound to compare during algorithm iterations
      */
-    protected abstract int getCurrentLowerBound();
+    protected abstract int getCurrentUpperBound(int threadNumber);
+
+    protected abstract int getNumberOfIterations(int threadNumber);
 
     public int getMaximumPossibleCost() {
         int max = 0;
