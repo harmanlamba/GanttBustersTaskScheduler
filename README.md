@@ -1,3 +1,4 @@
+![](https://i.imgur.com/sLNEchz.jpg)
 # GanttBuster Scheduler 
 
 Welcome to the official page of Group 3's Parallel Scheduling Project for SOFTENG 306.
