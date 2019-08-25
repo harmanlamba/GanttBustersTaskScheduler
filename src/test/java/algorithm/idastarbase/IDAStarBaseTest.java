@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  * Tests for the IDAStarBase class
  */
 public class IDAStarBaseTest {
-    //File arrays for input file locations
+    // File arrays for input file locations
     private final static String[] FILE1_PROC2 = new String[]{"src/main/resources/e1.dot", "2", "-p", "1"};
     private final static String[] FILE2_PROC2 = new String[]{"src/main/resources/e2.dot", "2", "-p", "1"};
     private final static String[] FILE3_PROC2  = new String[]{"src/main/resources/e3.dot", "2", "-p", "1"};
