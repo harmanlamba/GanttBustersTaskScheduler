@@ -130,15 +130,14 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //GUI
         _graphManager = new GraphManager(_io.getNodeMap(),_io.getEdgeList());
         _processColourHelper = new ProcessorColourHelper(_io.getNumberOfProcessorsForTask());
+        initializeTabSelectionModel();
+        initializeViews();
 
         //Algorithm
         _observableAlgorithm = AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm();
         _observableAlgorithm.add(this);
         _observableTimer = AlgorithmTimer.getAlgorithmTimer();
         _observableTimer.add(this);
-
-        initializeTabSelectionModel();
-        initializeViews();
     }
 
     /**
@@ -157,6 +156,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      */
     private void initializeTabSelectionModel() {
         _currentTab = SelectedTab.GRAPH;
+
+        //Select initial tab with initial data and threads
         visualsContainer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
