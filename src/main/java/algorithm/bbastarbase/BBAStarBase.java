@@ -133,7 +133,7 @@ public class BBAStarBase extends Algorithm {
         }
         return max;
     }
-    @Override protected int getCurrentUpperBound() {
+    @Override protected int getCurrentUpperBound(int threadNumber) {
         return _upperBound;
     }
     private void initializeFreeTasks() {
