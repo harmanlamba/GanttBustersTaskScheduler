@@ -84,6 +84,11 @@ public class IDAStarBase extends Algorithm {
         return convertProcessorAllocationsToMap();
     }
 
+    @Override
+    public int getSolutionThread() {
+        return 0;
+    }
+
     /**
      * Getter method for the cost/finish time of the optimal scheduling
      * @return returns an integer representing the optimal finish time
@@ -98,8 +103,13 @@ public class IDAStarBase extends Algorithm {
      * @return returns an integer of the representing the current lower bound
      */
     @Override
-    public int getCurrentLowerBound() {
+    public int getCurrentUpperBound(int threadNumber) {
         return _lowerBound;
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return 0; //not implemented yet
     }
 
     /**

@@ -27,6 +27,7 @@ public class BBAStarBase extends Algorithm {
     private int _numTasks;
     private Set<Set<Stack<Temp>>> _previousStates;
     private int _graphUpdates;
+    private int _iterations;
 
     /**
      * Constructor for BBASTarBase to instantiate the object
@@ -44,6 +45,7 @@ public class BBAStarBase extends Algorithm {
         _numTasks = _graph.get_vertexMap().size();
         _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
+        _iterations = 0;
         for (int i = 0; i < numProcTask; i++) {
             _processorAllocation.add(new Stack<GraphNode>());
         }
@@ -57,6 +59,7 @@ public class BBAStarBase extends Algorithm {
      * @param processor is the processor number the task should be allocated on
      */
     private void recursive(GraphNode task, int processor) {
+        _iterations += 1;
         int startTime = getStartTime(task, processor);
         if (startTime + task.getWeight() <= _upperBound) {
             _depth += 1;
@@ -83,12 +86,12 @@ public class BBAStarBase extends Algorithm {
                     // Update upper bound value
                     if (cost <= _upperBound) {
                         _upperBound = cost;
-                        System.out.println(_upperBound);
                         assignCurrentBestSolution();
 
                         // Notify GUI of scheduling update
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
-                            notifyObserversOfSchedulingUpdate(1);
+                            notifyObserversOfIterationChange(0);
+                            notifyObserversOfSchedulingUpdate(0);
                         }
                         _graphUpdates += 1;
                     }
@@ -141,7 +144,6 @@ public class BBAStarBase extends Algorithm {
     @Override public Map<String, GraphNode> solve() {
         for (GraphNode initTask : new ArrayList<>(_taskInfo.values())) {
             if (initTask.isFree()) {
-                notifyObserversOfIterationChange(1);
                 recursive(initTask, 0);
             }
         }
@@ -165,7 +167,10 @@ public class BBAStarBase extends Algorithm {
         //Do Not Implement
         return 0;
     }
-
+  
+    @Override protected int getCurrentUpperBound(int threadNumber) {
+        return _upperBound;
+    }
     /**
      * Set each task to be free or not free and create a map of the task ID to the corresponding
      * GraphNode object
@@ -271,7 +276,12 @@ public class BBAStarBase extends Algorithm {
         return _currentBestSolution;
     }
 
-    /**
+    @Override
+    public int getSolutionThread() {
+        return 0;
+    }
+  
+  /**
      * @return the total cost of the current partial or complete solution, which is the
      * earliest possible starting time (without taking in to account dependencies of a task
      * to be scheduled)
@@ -358,5 +368,7 @@ public class BBAStarBase extends Algorithm {
         }
         return free;
     }
-
+    @Override protected int getNumberOfIterations(int threadNumber) {
+        return _iterations;
+    }
 }

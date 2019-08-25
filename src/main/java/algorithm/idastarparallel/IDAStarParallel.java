@@ -22,12 +22,25 @@ public class IDAStarParallel extends Algorithm {
     }
 
     @Override
+    public int getSolutionThread() {
+        return 0;
+    }
+
+    @Override
     public int getBestScheduleCost() {
         return 0;
     }
 
     @Override
-    public int getCurrentLowerBound() {
+    public int getCurrentUpperBound(int threadNumber) {
         return 0;
     }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return 0;
+    }
+
+
+
 }

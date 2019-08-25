@@ -9,7 +9,7 @@ import java.util.*;
 
 public class BBAStarChild implements IBBAObservable, Runnable {
 
-    private final static int NUMBER_OF_GRAPH_UPDATES = 1000000000;
+    private final static int NUMBER_OF_GRAPH_UPDATES = 2100000000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
     private Graph _graph; // Reference to the Graph object containing the jGraph
@@ -23,6 +23,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private Set<Set<Stack<Temp>>> _previousStates;
     private int _thread; // This thread's thread number
     private int _graphUpdates;
+    private int _iterations;
 
     /**
      * Constructor for BBASTarChild to instantiate the object
@@ -41,6 +42,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         _taskInfo = new HashMap<>();
         _freeTaskList = new ArrayList<>();
         _depth = 0;
+        _iterations = 0;
         _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
         _graphUpdates = 0;
@@ -56,6 +58,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
      * @param processor is the processor number the task should be allocated on
      */
     public void recursive(GraphNode task, int processor) {
+        _iterations += 1;
         int startTime = getStartTime(task, processor);
         if (startTime + task.getWeight() <= _upperBound) {
             _depth += 1;
@@ -84,6 +87,8 @@ public class BBAStarChild implements IBBAObservable, Runnable {
 
                         // Notify GUI of scheduling update
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
+                            BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
+
                             notifyObserversOfSchedulingUpdateBBA();
                         }
                         _graphUpdates += 1;
@@ -135,7 +140,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
         // Set the best cost path of the parent to the one found in this child
         if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
-            BBAStarParent._currentBestCosts.put(_thread, _upperBound);
+            BBAStarParent._currentBestCostsAndIterations.put(_thread, new int[]{_upperBound, _iterations});
             notifyObserversOfAlgorithmEndingBBA();
         }
     }

@@ -19,7 +19,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     private int _upperBound;
     private int _lowerBound;
     public static volatile Map<Integer, Map<String, GraphNode>> _currentBestSolutions;
-    public static volatile Map<Integer, Integer> _currentBestCosts;
+    public static volatile Map<Integer, int[]> _currentBestCostsAndIterations;
     private int _bestSolutionIndex;
     private boolean _solved;
 
@@ -36,7 +36,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         _upperBound = initializeUpperBound();
         _lowerBound = _upperBound / numProcTask;
         _currentBestSolutions = new HashMap<>();
-        _currentBestCosts = new HashMap<>();
+        _currentBestCostsAndIterations = new HashMap<>();
         _solved = false;
     }
 
@@ -99,18 +99,25 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return bounds;
     }
 
-    /**
-     * @return the current best cost of a schedule
-     */
-    @Override
-    protected int getBestScheduleCost() {
-        return _currentBestCosts.get(_bestSolutionIndex);
-    }
-
     @Override
     protected int getCurrentLowerBound() {
         // Do not implement
         return 0;
+
+    /**
+     * @return the current best cost of a schedule
+     */
+    @Override protected int getBestScheduleCost() {
+        return _currentBestCostsAndIterations.get(_bestSolutionIndex)[0];
+    }
+
+    @Override protected int getCurrentUpperBound(int threadNumber) {
+        return _currentBestCostsAndIterations.get(threadNumber)[0];
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return _currentBestCostsAndIterations.get(threadNumber)[1];
     }
 
     /**
@@ -133,18 +140,9 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
-    /**
-     * Update the GUI with current iteration statistics
-     * @param thread the thread which is being updated with statistics
-     * @param prunedBranches the number of branches pruned
-     * @param iterations the number of iterations (depth)
-     * @param lowerBound the current lower bound
-     */
     @Override
-    public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
-        _branchesPruned = _branchesPruned;
-        _numberOfIterations = iterations;
-        notifyObserversOfIterationChange(thread);
+    public int getSolutionThread() {
+        return _bestSolutionIndex;
     }
 
     /**
@@ -154,6 +152,8 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     @Override
     public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
+        if (_currentBestCostsAndIterations.get(thread) != null) {
+            notifyObserversOfIterationChange(thread);
+        }
     }
-
 }

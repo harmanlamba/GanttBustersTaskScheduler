@@ -1,12 +1,10 @@
 package visualisation;
 
-import algorithm.Algorithm;
 import algorithm.AlgorithmBuilder;
 import app.App;
 import fileio.IIO;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,8 +15,6 @@ import javafx.stage.WindowEvent;
 import visualisation.controller.timer.AlgorithmTimer;
 import visualisation.controller.MainController;
 
-import java.util.concurrent.TimeUnit;
-
 public class FXApplication extends Application {
 
     @Override
@@ -26,9 +22,6 @@ public class FXApplication extends Application {
 
         //Load FXML
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-
-
-        //Run algorithm on own thread
         MainController controller = new MainController();
         loader.setController(controller);
         Parent root = loader.load();
@@ -51,12 +44,13 @@ public class FXApplication extends Application {
             }
         });
 
-        AlgorithmTimer.getAlgorithmTimer().start();
-        IIO io = App._mainIO;
         //Runs the algorithm in a new thread
         new Thread(() -> {
+            AlgorithmTimer.getAlgorithmTimer().start();
+            IIO io = App._mainIO;
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
+
     }
 
 }

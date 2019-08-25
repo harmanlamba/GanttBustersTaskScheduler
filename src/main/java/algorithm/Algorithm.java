@@ -57,7 +57,8 @@ public abstract class Algorithm implements IObservable {
         Map<String, GraphNode> outputMap = solve();
         System.out.println("\nDone");
         System.out.println("Best time: " + getBestScheduleCost());
-        notifyObserversOfAlgorithmEnding(1);
+
+        notifyObserversOfAlgorithmEnding(getSolutionThread());
         return outputMap;
     }
 
@@ -67,6 +68,8 @@ public abstract class Algorithm implements IObservable {
      * @return a map of Strings mapping to GraphNodes containing the nodes' scheduling information
      */
     public abstract Map<String,GraphNode> getCurrentBestSolution();
+
+    public abstract int getSolutionThread();
 
     @Override
     public void add(IObserver e) {
@@ -86,7 +89,7 @@ public abstract class Algorithm implements IObservable {
     @Override
     public void notifyObserversOfAlgorithmEnding(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(threadNumber, _branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound(threadNumber), getNumberOfIterations(threadNumber));
             observer.updateScheduleInformation(threadNumber, getCurrentBestSolution());
             observer.algorithmStopped(threadNumber, getBestScheduleCost());
         }
@@ -95,7 +98,7 @@ public abstract class Algorithm implements IObservable {
     @Override
     public void notifyObserversOfIterationChange(int threadNumber) {
         for (IObserver observer : _observerList) {
-            observer.updateIterationInformation(threadNumber, _branchesPruned, _numberOfIterations, getCurrentLowerBound());
+            observer.updateIterationInformation(threadNumber, getCurrentUpperBound(threadNumber), getNumberOfIterations(threadNumber));
         }
     }
 
@@ -109,7 +112,9 @@ public abstract class Algorithm implements IObservable {
      * Getter method for the current lower bound
      * @return returns the current lower bound to compare during algorithm iterations
      */
-    protected abstract int getCurrentLowerBound();
+    protected abstract int getCurrentUpperBound(int threadNumber);
+
+    protected abstract int getNumberOfIterations(int threadNumber);
 
     public int getMaximumPossibleCost() {
         int max = 0;
