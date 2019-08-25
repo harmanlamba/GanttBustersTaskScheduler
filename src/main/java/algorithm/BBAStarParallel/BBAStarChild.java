@@ -9,7 +9,7 @@ import java.util.*;
 
 public class BBAStarChild implements IBBAObservable, Runnable {
 
-    private final static int NUMBER_OF_GRAPH_UPDATES = 9000;
+    private final static int NUMBER_OF_GRAPH_UPDATES = 15000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
     private Graph _graph;

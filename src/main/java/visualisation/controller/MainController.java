@@ -74,7 +74,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private SelectedTab _currentTab;
     private Map<String, GraphNode> _latestUpdateMap;
     private ViewPanel _viewPanel;
-
+    private Map<Integer, Map<String, GraphNode>> _updateThreadMap = new HashMap<>();
 
     //Public Control Fields from the FXML
     public HBox mainContainer;
@@ -161,29 +161,34 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void updateScheduleInformation(int threadNumber, Map<String, GraphNode> update) {
         _latestUpdateMap = update;
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //update graph visualization using runnable
-                List<GraphNode> test = new ArrayList<>(update.values());
+        _updateThreadMap.put(threadNumber, update);
+        int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
 
-                switch (_currentTab) {
-                    case TABLE:
-                        updateTable(test);
-                        break;
-                    case GANTT:
-                        for (Node node : _graphStream) {
-                            updateGantt(test);
-                        }
-                        break;
-                    default: //graph
-                        _graphManager.updateGraphStream(test);
-                        _graphStream = _graphManager.getGraph();
-                        _graphUpdater.updateGraph(_graphStream);
+        if (selectedThread == -1 || selectedThread == threadNumber - 1) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    //update graph visualization using runnable
+                    List<GraphNode> test = new ArrayList<>(update.values());
 
+                    switch (_currentTab) {
+                        case TABLE:
+                            updateTable(test);
+                            break;
+                        case GANTT:
+                            for (Node node : _graphStream) {
+                                updateGantt(test);
+                            }
+                            break;
+                        default: //graph
+                            _graphManager.updateGraphStream(test);
+                            _graphStream = _graphManager.getGraph();
+                            _graphUpdater.updateGraph(_graphStream);
+
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -302,6 +307,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         }
         comboBox.setItems(parallelProcessorList);
         comboBox.getSelectionModel().selectFirst();
+
+        //On change combobox action
+        comboBox.setOnAction(e -> {
+            int threadNumber = comboBox.getSelectionModel().getSelectedIndex() + 1;
+            updateScheduleInformation(threadNumber, _updateThreadMap.get(threadNumber));
+        });
     }
 
 

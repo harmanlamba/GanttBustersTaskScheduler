@@ -12,6 +12,7 @@ import java.util.*;
 
 public class BBAStarBase extends Algorithm {
 
+    private final static int NUMBER_OF_GRAPH_UPDATES = 1;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private DirectedWeightedMultigraph<GraphNode, DefaultWeightedEdge> _jGraph; // Contains task dependency graph
     private Map<String, GraphNode> _taskInfo; // Map of String to GraphNode, the string being the ID of the node
@@ -22,6 +23,7 @@ public class BBAStarBase extends Algorithm {
     private int _depth;
     private int _numTasks;
     private Set<Set<Stack<Temp>>> _previousStates;
+    private int _graphUpdates;
 
     //Constructor
     public BBAStarBase(Graph graph, int numProcTask, int numProcParallel) {
@@ -66,7 +68,10 @@ public class BBAStarBase extends Algorithm {
                         _upperBound = cost;
                         System.out.println(_upperBound);
                         assignCurrentBestSolution();
-                        notifyObserversOfSchedulingUpdate(1);
+                        if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
+                            notifyObserversOfSchedulingUpdate(1);
+                        }
+                        _graphUpdates += 1;
                     }
                 } else {
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
