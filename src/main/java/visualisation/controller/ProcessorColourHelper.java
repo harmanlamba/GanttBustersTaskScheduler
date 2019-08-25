@@ -61,5 +61,4 @@ public class ProcessorColourHelper {
             _processorColours.add(_colours.get(1));
         }
     }
-
 }

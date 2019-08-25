@@ -24,6 +24,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
 
     /**
      * getAlgorithmTimer - get current timer given algorithm start
+
      */
     public static AlgorithmTimer getAlgorithmTimer() {
         if (_algorithmTimer == null) {
@@ -33,6 +34,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
     }
 
     /**
+
      * start - begin time using timestamp
      */
     @Override
@@ -64,6 +66,7 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         _stopped = true;
         super.stop();
     }
+
 
     /**
      * setTimerStatistic - runs the timer of mins, seconds, milliseconds and notify observers of update for each time
