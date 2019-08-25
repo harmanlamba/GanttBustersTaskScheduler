@@ -10,6 +10,8 @@ import javafx.application.Application;
 import utility.Utility;
 import visualisation.FXApplication;
 
+import java.util.ArrayList;
+
 /**
  * App - takes command user input, reads file and creates a JGraphT from the dot file. Execute algorithm onto graph, and write onto output path.
  */

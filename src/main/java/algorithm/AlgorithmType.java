@@ -5,8 +5,10 @@ package algorithm;
  */
 public enum AlgorithmType {
     SEQUENTIAL("Sequential"),
-    IDASTARPARRALLEL("Parallelised BBA*"),
-    IDASTARBASE("BBA*");
+    BBASTARPARRALLEL("Parallelised BBA*"),
+    BBASTARBASE("BBA*"),
+    IDASTARPARALLEL("Parallelised IDA*"),
+    IDASTARBASE("IDA*");
 
     private String _name;
 

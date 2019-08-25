@@ -11,6 +11,8 @@ import graph.Graph;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
  * AppTest - testing the input and output of dot files. If exceptions have been caught from some exception (usually found
  * in the dot file), the tests will fail.
@@ -28,11 +30,11 @@ public class AppTest
 
     @Before
     public void setup() {
-        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "1"};
-        _file2 = new String[]{"src/main/resources/e2.dot", "2", "-o", "me2", "-p", "1"};
-        _file3 = new String[]{"src/main/resources/e3.dot", "2", "-o", "me3", "-p", "1"};
-        _file4 = new String[]{"src/main/resources/e4.dot", "2", "-o", "me4", "-p", "1"};
-        _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "1"};
+        _file1 = new String[]{"src/main/resources/e1.dot", "2", "-o", "me1", "-p", "4"};
+        _file2 = new String[]{"src/main/resources/e2.dot", "2", "-o", "me2", "-p", "4"};
+        _file3 = new String[]{"src/main/resources/e3.dot", "2", "-o", "me3", "-p", "4"};
+        _file4 = new String[]{"src/main/resources/e4.dot", "2", "-o", "me4", "-p", "4"};
+        _file5 = new String[]{"src/main/resources/e5.dot", "2", "-o", "me5", "-p", "4"};
         _invalidFormat = new String[]{"src/main/resources/e6.dot", "1", "-o", "me", "-p", "2"};
         _missingNode = new String[]{"src/main/resources/e7.dot", "1", "-o", "me", "-p", "2"};
     }
