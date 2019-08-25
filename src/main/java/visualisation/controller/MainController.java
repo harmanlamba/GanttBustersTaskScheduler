@@ -62,6 +62,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String MB_TEXT = " MB";
 
 
+
     //Private Fields
     private IObservable _observableAlgorithm;
     private SingleGraph _graphStream;
@@ -325,11 +326,32 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 public void run() {
                     //update graph visualization using runnable
                     List<GraphNode> test = new ArrayList<>(update.values());
-                    updateTable(test);
-                    updateGantt(test);
-                    _graphManager.updateGraphStream(test);
-                    _graphStream = _graphManager.getGraph();
-                    _graphUpdater.updateGraph(_graphStream);
+
+                    if(selectedThread == _io.getNumberOfProcessorsForParallelAlgorithm()){
+                        updateTable(test);
+                        for (Node node : _graphStream) {
+                            updateGantt(test);
+                        }
+                        _graphManager.updateGraphStream(test);
+                        _graphStream = _graphManager.getGraph();
+                        _graphUpdater.updateGraph(_graphStream);
+                    }else{
+                        switch (_currentTab) {
+                            case TABLE:
+                                updateTable(test);
+                                break;
+                            case GANTT:
+                                for (Node node : _graphStream) {
+                                    updateGantt(test);
+                                }
+                                break;
+                            default: //graph
+                                _graphManager.updateGraphStream(test);
+                                _graphStream = _graphManager.getGraph();
+                                _graphUpdater.updateGraph(_graphStream);
+
+                        }
+                    }
                 }
             });
         }
