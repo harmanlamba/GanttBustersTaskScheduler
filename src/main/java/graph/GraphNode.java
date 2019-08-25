@@ -41,6 +41,13 @@ public class GraphNode {
      * @param processor - processor number the node is assigned to
      * @param startTime - start time of the scheduled node
      */
+    public GraphNode(String id, int weight, int processor, int startTime){
+        _id = id;
+        _weight = weight;
+        _processor = processor;
+        _startTime =  startTime;
+    }
+
     public GraphNode(String id, int weight, int processor, int startTime, List<GraphNode> parents, List<GraphNode> children){
         _id = id;
         _weight = weight;
