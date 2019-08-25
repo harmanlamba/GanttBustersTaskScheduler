@@ -53,7 +53,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     private final static String ALGORITHM_FILE_TEXT = "Running: ";
     private final static String NUMBER_OF_PROCESSORS_TEXT = "Processors: "; //this one
     private final static String NUMBER_OF_THREADS_TEXT = "Threads: "; //this one
-    private final static String BEST_SCHEDULE_COST_TEXT = "Best Schedule Cost: ";
+    private final static String CURRENT_SCHEDULE_COST_TEXT = "Current Schedule Cost: ";
     private final static String NUMBER_OF_ITERATIONS_TEXT = "Number of Iterations: ";
     private final static String BRANCHES_PRUNED_TEXT = "Branches Pruned: ";
     private final static String CURRENT_LOWER_BOUND_TEXT = "Current Lower Bound: ";
@@ -86,7 +86,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfTasks;
     public Text numberOfProcessors;
     public Text numberOfThreads;
-    public Text bestScheduleCost;
+    public Text currentScheduleCost;
     public Text numberOfIterations;
     public Text branchesPruned;
     public Text currentLowerBound;
@@ -182,7 +182,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //Set status and stats
         statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
         algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
-        bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
+        currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + bestCost);
     }
 
     /**
@@ -465,10 +465,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      * @param lowerBound
      */
     @Override
-    public void updateIterationInformation(int threadNumber, int prunedBranches, int iterations, int lowerBound) {
-        branchesPruned.setText(BRANCHES_PRUNED_TEXT + prunedBranches);
-        numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + iterations);
-        currentLowerBound.setText(CURRENT_LOWER_BOUND_TEXT + ((lowerBound == -1) ? "N/A" : lowerBound));
+    public void updateIterationInformation(int threadNumber, int upperBound) {
+        currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + ((upperBound == -1) ? "-" : upperBound));
         // Get memory usage in MBs
         long memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / KB_TO_MB_CONVERSION_RATE;
         currentMemoryUsage.setText(CURRENT_MEMORY_USAGE + memoryUsage + MB_TEXT);

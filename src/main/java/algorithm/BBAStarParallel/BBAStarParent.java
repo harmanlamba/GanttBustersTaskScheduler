@@ -35,7 +35,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     public Map<String, GraphNode> solve() {
         int[] bounds = createBoundForThreads();
 
-        for (int i=0; i < _numProcParallel - 1 ; i++) {
+        for (int i=0; i < _numProcParallel; i++) {
             IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
             child.addBBA(this);
             _observableList.add(child);
@@ -66,7 +66,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
     private int[] createBoundForThreads() {
         int[] bounds = new int[_numProcParallel];
-        for (int i=0; i < _numProcParallel - 1; i++) {
+        for (int i=0; i < _numProcParallel; i++) {
             bounds[i] = _upperBound - (i * (_upperBound - _lowerBound) / _numProcParallel);
         }
         return bounds;
@@ -76,7 +76,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestCosts.get(_bestSolutionIndex);
     }
 
-    @Override protected int getCurrentLowerBound() {
+    @Override protected int getCurrentUpperBound() {
         // Do not implement
         return 0;
     }
@@ -97,7 +97,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
 
     @Override public void updateScheduleInformationBBA(int thread) {
-            notifyObserversOfSchedulingUpdate(thread);
+        notifyObserversOfSchedulingUpdate(thread);
     }
 
 }
