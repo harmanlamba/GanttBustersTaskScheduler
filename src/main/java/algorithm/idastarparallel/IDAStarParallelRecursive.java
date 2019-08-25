@@ -82,7 +82,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                 _checkedLowerBoundList.add(_lowerBound);
                 while (!_solved) { // If the optimal solution has not already been found
                     _numberOfIterations += 1;
-                    notifyObserversOfIterationChange();
                     idaRecursive(task, 0); // Schedules the task
 
                     // a thread should only try to get a new _lowerBound if it isn't solved
@@ -96,8 +95,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                         }
                     }
                     _checkedLowerBoundList.add(_lowerBound);
-
-                    notifyObserversOfSchedulingUpdate(); //TODO: This line of code perhaps needs to be put in a better place. This is the periodic update to the GUI. Someone please figure out a good place to put this
                 }
             }
         }
@@ -123,13 +120,10 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         return _threadBestFinishTime;
     }
 
-    /**
-     * Getter method for the current lower bound in the IDA Star algorithm
-     * @return returns an integer of the representing the current lower bound
-     */
+
     @Override
-    public int getCurrentLowerBound() {
-        return _lowerBound;
+    public int getCurrentUpperBound(int threadNumber) {
+        return 0;
     }
 
     /**
@@ -261,7 +255,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
                                 idaRecursive(freeTask, i);
                             }
                             if (_updateGraphIteration % UPDATE_GRAPH_ITERATION_ROLLOVER == 0) {
-                                notifyObserversOfSchedulingUpdate();
                             }
                             _updateGraphIteration += 1;
                             if (_solved) {
@@ -485,6 +478,16 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         _checkedLowerBoundList = new ArrayList<>();
         _overallBestFinishTime = -1;
         _overallBestSchedule = new HashMap<>();
+    }
+
+    @Override
+    public int getSolutionThread() {
+        return _threadNum;
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
+        return 0;
     }
 
     @Override

@@ -69,7 +69,7 @@ public class Write {
                     GraphNode graphNode = _algorithmResultMap.get(lineIsNode(currentLine));
 
                     // append results to each line
-                    String appendToLine = ",Start=" + graphNode.getStartTime() + ",Processor=" + graphNode.getProcessor() + "];\n";
+                    String appendToLine = ",Start=" + graphNode.getStartTime() + ",Processor=" + (graphNode.getProcessor() + 1) + "];\n";
                     StringBuilder sb =  new StringBuilder();
                     sb.append(currentLine);
                     sb.setLength(sb.length()-2);

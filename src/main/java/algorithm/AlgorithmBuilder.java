@@ -43,10 +43,10 @@ public class AlgorithmBuilder {
                 break;
             default:
                 if (numProcParallel > 1) {
-                    _algorithmType = AlgorithmType.IDASTARPARRALLEL;
+                    _algorithmType = AlgorithmType.BBASTARPARRALLEL;
                     _algorithm = new BBAStarParent(graph, numProcTask, numProcParallel);
                 } else {
-                    _algorithmType = AlgorithmType.IDASTARBASE;
+                    _algorithmType = AlgorithmType.BBASTARBASE;
                     _algorithm = new BBAStarBase(graph, numProcTask, numProcParallel);
                 }
         }

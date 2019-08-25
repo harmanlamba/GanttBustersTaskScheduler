@@ -278,7 +278,7 @@
                                                 <Insets top="10.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <Text fx:id="warning1" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Thread has no solution :-(" textAlignment="CENTER" wrappingWidth="700.0">
+                                          <Text fx:id="warning1" fill="#ffffff" strokeType="OUTSIDE" strokeWidth="0.0" text="Thread has no solution yet :-(" textAlignment="CENTER" wrappingWidth="700.0">
                                              <font>
                                                 <Font size="18.0" />
                                              </font>
