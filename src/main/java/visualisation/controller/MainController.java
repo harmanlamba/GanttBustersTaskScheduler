@@ -322,6 +322,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
 
         scheduleResultsTable.setItems(_tablePopulationList);
+        scheduleResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
     }
 
     /**
