@@ -41,16 +41,23 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
 
     /**
+     * The BBA* algorithm is paralellised by running a BBAStarChild algorithm on each processor in a new thread
+     * When the best solution is found, the threads will terminate
      * @return the complete schedule solution
      */
     @Override
     public Map<String, GraphNode> solve() {
         int[] bounds = createBoundForThreads();
 
+        // For each t
         for (int i=0; i < _numProcParallel; i++) {
             IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
+
+            // Add this parent object to the child and make it an observer of parent
             child.addBBA(this);
             _observableList.add(child);
+
+            // Create the child threa and start it
             Thread thread = new Thread(child);
             _threadList.add(thread);
             thread.start();
@@ -60,6 +67,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
             while(!_solved){
                 Thread.sleep(100);
             }
+            // When the best solution is found, end the thread
             _threadList.get(_bestSolutionIndex).join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -80,7 +88,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
 
     /**
-     * Get the bound of each thread
+     * Get the lower bound of each thread
      * @return an array where each value entry represents the bound for a specific thread
      */
     private int[] createBoundForThreads() {
@@ -91,6 +99,9 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return bounds;
     }
 
+    /**
+     * @return the current best cost of a schedule
+     */
     @Override
     protected int getBestScheduleCost() {
         return _currentBestCosts.get(_bestSolutionIndex);
@@ -102,17 +113,33 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return 0;
     }
 
+    /**
+     * Signals that the best schedule cost has been found on a thread, when called,
+     * this thread will terminate
+     * @param thread the thread with the best schedule cost
+     * @param bestScheduleCost
+     */
     @Override
     public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
         _solved = true;
     }
 
+    /**
+     * @return the curent best complete schedule solution
+     */
     @Override
     public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
 
+    /**
+     * Update the GUI with current iteration statistics
+     * @param thread the thread which is being updated with statistics
+     * @param prunedBranches the number of branches pruned
+     * @param iterations the number of iterations (depth)
+     * @param lowerBound the current lower bound
+     */
     @Override
     public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
@@ -120,6 +147,10 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         notifyObserversOfIterationChange(thread);
     }
 
+    /**
+     * Update the GUI with the scheduling update of a thread
+     * @param thread the thread which is being updated woth statistics
+     */
     @Override
     public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);

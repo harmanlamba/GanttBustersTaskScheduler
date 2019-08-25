@@ -51,9 +51,10 @@ public class BBAStarBase extends Algorithm {
     }
 
     /**
-     * The method used to recursively run the BBA* algorithm
-     * @param task
-     * @param processor
+     * A recursive method that completes a BBA* search on branches by scheduling free tasks until tasks have been scheduled.
+     * Branch pruning techniques and cost functions have also been put in place to optimise performance.
+     * @param task is the task to be scheduled in this iteration
+     * @param processor is the processor number the task should be allocated on
      */
     private void recursive(GraphNode task, int processor) {
         int startTime = getStartTime(task, processor);
@@ -85,7 +86,7 @@ public class BBAStarBase extends Algorithm {
                         System.out.println(_upperBound);
                         assignCurrentBestSolution();
 
-                        // Notify GUI
+                        // Notify GUI of scheduling update
                         if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
                             notifyObserversOfSchedulingUpdate(1);
                         }
@@ -169,7 +170,8 @@ public class BBAStarBase extends Algorithm {
         return max;
     }
 
-    @Override protected int getCurrentLowerBound() {
+    @Override
+    protected int getCurrentLowerBound() {
         //Do Not Implement
         return 0;
     }
@@ -252,7 +254,7 @@ public class BBAStarBase extends Algorithm {
 
     /**
      * Update the list of free tasks and update the mapping with the child ready to be scheduled
-     * @param task
+     * @param task the task who's children will be updated in the list of free tasks if they are free
      */
     private void updateFreeTasks(GraphNode task) {
         for (GraphNode child : getChildren(task)) { // For every child node
@@ -273,7 +275,7 @@ public class BBAStarBase extends Algorithm {
     }
 
     /**
-     * @return the current best complete solution, not guaranteed to be optimal
+     * Assigns the current best cost/finish time of a complete schedule, not yet guaranteed to be optimal
      */
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolution;
@@ -305,7 +307,7 @@ public class BBAStarBase extends Algorithm {
 
     /**
      * Backtrack the scheduling done on a particular processor by unscheduling all nodes on that processor
-     * @param processor
+     * @param processor the processor to be sanitised
      */
     private void sanitise(int processor) {
         // Unschedules node, adds it to free task list and set it to free
