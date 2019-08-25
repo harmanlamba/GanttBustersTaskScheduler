@@ -64,7 +64,7 @@ public class BBAStarBase extends Algorithm {
 
                 if (_freeTaskList.isEmpty() && _depth == _numTasks) {
                     int cost = getCostOfCurrentAllocation();
-                    if (cost < _upperBound) {
+                    if (cost <= _upperBound) {
                         _upperBound = cost;
                         System.out.println(_upperBound);
                         assignCurrentBestSolution();

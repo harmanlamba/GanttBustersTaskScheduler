@@ -49,7 +49,6 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
                 Thread.sleep(100);
             }
             _threadList.get(_bestSolutionIndex).join();
-            System.out.println("hi");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

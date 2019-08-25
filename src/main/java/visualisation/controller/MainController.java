@@ -161,10 +161,15 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     @Override
     public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
-        ObservableList<String> comboBoxList = comboBox.getItems();
-        comboBoxList.add("Solution Stats");
-        comboBox.getSelectionModel().selectLast();
 
+        //Combo box create solution selection
+        ObservableList<String> comboBoxList = comboBox.getItems();
+        Platform.runLater(() -> {
+            comboBoxList.add("Solution stats");
+            comboBox.getSelectionModel().selectLast();
+        });
+
+        //Set status and stats
         statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
         algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
@@ -282,7 +287,7 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //On change combobox action
         comboBox.setOnAction(e -> {
             int threadNumber = comboBox.getSelectionModel().getSelectedIndex();
-            if (_updateThreadMap.get(threadNumber) != null){
+            if (_updateThreadMap.get(threadNumber) != null){ //Update has happened in thread
                 graphPane.setVisible(true);
                 scheduleResultsTable.setVisible(true);
                 ganttPane.setVisible(true);
@@ -291,7 +296,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 graphPane.setVisible(false);
                 scheduleResultsTable.setVisible(false);
                 ganttPane.setVisible(false);
-                System.out.print("YO");
             }
 
         });
