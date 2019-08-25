@@ -43,7 +43,7 @@ public class AppTest
      * scheduleTestHelper - runs required class instantiations to test sequential algorithm type and writing to file
      * @param file - dot file input file location
      */
-    private void sequentialTestHelper(String[] file) throws InputFileException {
+    private void testHelper(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
         Algorithm algorithm =  AlgorithmBuilder.getAlgorithmBuilder().createAlgorithm(graph,
@@ -55,7 +55,7 @@ public class AppTest
     @Test
     public void testE1File() {
         try {
-            sequentialTestHelper(_file1);
+            testHelper(_file1);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -66,19 +66,17 @@ public class AppTest
     @Test
     public void testE2File() {
         try {
-            sequentialTestHelper(_file2);
+            testHelper(_file2);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
         }
     }
 
-
-
     @Test
     public void testE3File() {
         try {
-            sequentialTestHelper(_file3);
+            testHelper(_file3);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -88,7 +86,7 @@ public class AppTest
     @Test
     public void testE4File() {
         try {
-            sequentialTestHelper(_file4);
+            testHelper(_file4);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -98,7 +96,7 @@ public class AppTest
     @Test
     public void testE5File() {
         try {
-            sequentialTestHelper(_file5);
+            testHelper(_file5);
             assertTrue(true);
         } catch (InputFileException e) {
             assert(false);
@@ -108,7 +106,7 @@ public class AppTest
     @Test
     public void testInvalidFormat() {
         try {
-            sequentialTestHelper(_invalidFormat);
+            testHelper(_invalidFormat);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Invalid Format");
@@ -118,7 +116,7 @@ public class AppTest
     @Test
     public void testMissingNodes() {
         try {
-            sequentialTestHelper(_missingNode);
+            testHelper(_missingNode);
             assert(false);
         } catch(InputFileException e) {
             assertEquals(e.getMessage(),"Node has not been instantiated");

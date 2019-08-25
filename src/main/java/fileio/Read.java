@@ -125,9 +125,9 @@ public class Read {
         Matcher matcherNode = patternNode.matcher(line);
         Matcher matcherEdge = patternEdge.matcher(line);
 
-        if (matcherNode.matches()) {    //If regex compared with node line is correct, add to vertex map
+        if (matcherNode.matches()) {    //If regex compared with node line is correct, addBBA to vertex map
             _vertexMap.put(matcherNode.group(1), new GraphNode(matcherNode.group(1), Integer.parseInt(matcherNode.group(2))));
-        } else if (matcherEdge.matches()) { //Else if regex compare with edge line is correct, add to edge list
+        } else if (matcherEdge.matches()) { //Else if regex compare with edge line is correct, addBBA to edge list
             GraphNode node1 = _vertexMap.get(matcherEdge.group(1));
             GraphNode node2 = _vertexMap.get(matcherEdge.group(2));
             if (node1 == null || node2 == null) {   //Throw nodenotexist exception for if any node is currently not shown in edge

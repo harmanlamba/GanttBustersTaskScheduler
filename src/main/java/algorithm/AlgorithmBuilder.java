@@ -1,5 +1,7 @@
 package algorithm;
 
+import algorithm.BBAStarParallel.BBAStarParent;
+import algorithm.bbastarbase.BBAStarBase;
 import algorithm.idastarbase.IDAStarBase;
 import algorithm.idastarparallel.IDAStarParallel;
 import algorithm.idastarparallel.IDAStarParallelRecursive;
@@ -42,10 +44,10 @@ public class AlgorithmBuilder {
             default:
                 if (numProcParallel > 1) {
                     _algorithmType = AlgorithmType.IDASTARPARRALLEL;
-                    _algorithm = new IDAStarParallel(graph, numProcTask, numProcParallel);
+                    _algorithm = new BBAStarParent(graph, numProcTask, numProcParallel);
                 } else {
                     _algorithmType = AlgorithmType.IDASTARBASE;
-                    _algorithm = new IDAStarBase(graph, numProcTask, numProcParallel);
+                    _algorithm = new BBAStarBase(graph, numProcTask, numProcParallel);
                 }
         }
         return _algorithmBuilder;

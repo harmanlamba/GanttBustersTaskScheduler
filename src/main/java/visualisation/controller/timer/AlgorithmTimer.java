@@ -6,6 +6,9 @@ import javafx.application.Platform;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AlgorithmTimer - class for algorithm timer to manage GUI time
+ */
 public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
 
     private static AlgorithmTimer _algorithmTimer;
@@ -19,6 +22,10 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         super();
     }
 
+    /**
+     * getAlgorithmTimer - get current timer given algorithm start
+
+     */
     public static AlgorithmTimer getAlgorithmTimer() {
         if (_algorithmTimer == null) {
             _algorithmTimer = new AlgorithmTimer();
@@ -26,7 +33,10 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         return _algorithmTimer;
     }
 
+    /**
 
+     * start - begin time using timestamp
+     */
     @Override
     public void start() {
         // current time adjusted by remaining time from last run
@@ -34,6 +44,10 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         super.start();
     }
 
+    /**
+     * handle - current new time
+     * @param now - current time
+     */
     @Override
     public void handle(long now) {
         long newTime = System.currentTimeMillis();
@@ -44,21 +58,29 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         }
     }
 
+    /**
+     * stop - stop the current timer (pause)
+     */
     @Override
     public void stop() {
         _stopped = true;
         super.stop();
     }
 
-    //TODO: Refactor this stuff out
+
+    /**
+     * setTimerStatistic - runs the timer of mins, seconds, milliseconds and notify observers of update for each time
+     * @param currentTime
+     */
     public void setTimerStatistic(long currentTime) {
         Platform.runLater(() -> {
 
+            // Converts time from long into a displayable string format
             long minutes = (currentTime / 60000);
             long seconds = ((currentTime - minutes * 60) / 1000);
             long milliseconds = (currentTime - minutes * 60 - seconds * 1000) / 10;
 
-            String minutesText ="";
+            String minutesText = "";
             String secondsText = "";
             String millisecondsText = "";
             if (seconds % 60 < 10) { //Fix seconds
@@ -84,6 +106,9 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         });
     }
 
+    /**
+     * notifyObserversOfTimerUpdate - notify currently subscribed observers for time update
+     */
     public void notifyObserversOfTimerUpdate() {
         if (!_stopped) {
             for (ITimerObserver observer : _observerList) {
@@ -92,6 +117,10 @@ public class AlgorithmTimer extends AnimationTimer implements ITimerObservable {
         }
     }
 
+    /**
+     * add - add subscriber to timer observer
+     * @param e - observer e
+     */
     public void add(ITimerObserver e) {
         _observerList.add(e);
     }

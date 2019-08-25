@@ -4,11 +4,9 @@ import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class IDAStarParallel extends Algorithm {
-
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -23,50 +21,8 @@ public class IDAStarParallel extends Algorithm {
     }
 
     @Override
-    public  Map<String, GraphNode> solve() {
-
-        ArrayList<Thread> threadList = new ArrayList<Thread>(_numProcParallel);
-        ArrayList<IDAStarParallelRecursive> solutionsList = new ArrayList<IDAStarParallelRecursive>(_numProcParallel);
-
-        for (int i = 0; i < _numProcParallel; i++) {
-            IDAStarParallelRecursive potentialSolution = new IDAStarParallelRecursive(_graph, _numProcTask, _numProcParallel, i);
-            solutionsList.add(potentialSolution);
-            threadList.add(new Thread(potentialSolution));
-        }
-
-        solutionsList.get(0).resetStaticVolatileFields();
-
-        for (Thread thread: threadList) {
-            thread.start();
-        }
-
-        // Joining all threads to wait on their completion
-        for (Thread thread: threadList) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        // Retrieve best schedule from the threads that have run
-//        IDAStarParallelRecursive bestSchedule = null;
-        int bestCost = solutionsList.get(0).getOverallBestFinishTime();
-        System.out.println("Best cost = " + bestCost);
-//        for (int i = 0; i < _numProcParallel; i++) {
-//            IDAStarParallelRecursive currentPotentialSchedule = solutionsList.get(i);
-//            if (currentPotentialSchedule.getBestScheduleCost() == bestCost) {
-//                bestSchedule = currentPotentialSchedule;
-//            }
-//        }
-//        if (bestSchedule != null) {
-//            return bestSchedule.getCurrentBestSolution();
-//        } else {
-//            System.out.println("returning null");
-//            return getCurrentBestSolution();
-//        }
-        return solutionsList.get(0).getOverallBestSchedule();
+    public Map<String, GraphNode> solve() {
+        return null;
     }
 
     @Override
@@ -75,7 +31,22 @@ public class IDAStarParallel extends Algorithm {
     }
 
     @Override
-    protected int getBestScheduleCost() {
+    public int getSolutionThread() {
+        return 0;
+    }
+
+    @Override
+    public int getBestScheduleCost() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentUpperBound(int threadNumber) {
+        return 0;
+    }
+
+    @Override
+    protected int getNumberOfIterations(int threadNumber) {
         return 0;
     }
 

@@ -38,7 +38,7 @@
 CHART
  */
 .chart-plot-background {
-  -fx-background-color: transparent;
+  -fx-background-color: #414141;
 }
 
 .chart-vertical-grid-lines {
@@ -152,6 +152,10 @@ TABLE VIEW
 /*
 LEGEND
  */
+#legendListView .label {
+  -fx-text-fill: white;
+}
+
 #legendListView {
   -fx-background-color: rgba(0,0,0,0);
   -fx-selection-bar: #dedede;
@@ -403,5 +407,24 @@ FONT SETTING
 }
 
 #currentMemoryUsage {
+  -fx-font-family: 'Space Mono', monospace;
+}
+
+#warning1 {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 15;
+}
+
+#warning2 {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 15;
+}
+
+#warning3 {
+  -fx-font-family: 'Space Mono', monospace;
+  -fx-font-size: 15;
+}
+
+#currentScheduleCost {
   -fx-font-family: 'Space Mono', monospace;
 }
