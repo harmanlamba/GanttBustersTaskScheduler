@@ -159,41 +159,12 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void updateScheduleInformation(int threadNumber, Map<String, GraphNode> update) {
-        _latestUpdateMap = update;
-        _updateThreadMap.put(threadNumber, update);
-        int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
-
-        if (selectedThread == -1 || selectedThread == threadNumber - 1) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    //update graph visualization using runnable
-                    List<GraphNode> test = new ArrayList<>(update.values());
-
-                    switch (_currentTab) {
-                        case TABLE:
-                            updateTable(test);
-                            break;
-                        case GANTT:
-                            for (Node node : _graphStream) {
-                                updateGantt(test);
-                            }
-                            break;
-                        default: //graph
-                            _graphManager.updateGraphStream(test);
-                            _graphStream = _graphManager.getGraph();
-                            _graphUpdater.updateGraph(_graphStream);
-
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
     public void algorithmStopped(int bestCost) {
         _observableTimer.stop();
+        ObservableList<String> comboBoxList = comboBox.getItems();
+        comboBoxList.add("Solution Stats");
+        comboBox.getSelectionModel().select(comboBoxList.size());
+
         statusPane.setStyle("-fx-background-color: #60d67f; -fx-border-color: #60d67f;");
         algorithmStatus.setText(ALGORITHM_STATUS_DONE_TEXT);
         bestScheduleCost.setText(BEST_SCHEDULE_COST_TEXT + bestCost);
@@ -311,10 +282,19 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //On change combobox action
         comboBox.setOnAction(e -> {
             int threadNumber = comboBox.getSelectionModel().getSelectedIndex() + 1;
-            updateScheduleInformation(threadNumber, _updateThreadMap.get(threadNumber));
+            if (_updateThreadMap.get(threadNumber) != null){
+                graphPane.setVisible(true);
+                scheduleResultsTable.setVisible(true);
+                ganttPane.setVisible(true);
+                updateScheduleInformation(threadNumber, _updateThreadMap.get(threadNumber));
+            } else { //No update has happened
+                graphPane.setVisible(false);
+                scheduleResultsTable.setVisible(false);
+                ganttPane.setVisible(false);
+            }
+
         });
     }
-
 
     private void initializeTable() {
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -324,6 +304,39 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
         scheduleResultsTable.setItems(_tablePopulationList);
+    }
+
+    @Override
+    public void updateScheduleInformation(int threadNumber, Map<String, GraphNode> update) {
+        _latestUpdateMap = update;
+        _updateThreadMap.put(threadNumber, update);
+        int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
+
+        if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber - 1) { //Update depending on combo box values
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    //update graph visualization using runnable
+                    List<GraphNode> test = new ArrayList<>(update.values());
+
+                    switch (_currentTab) {
+                        case TABLE:
+                            updateTable(test);
+                            break;
+                        case GANTT:
+                            for (Node node : _graphStream) {
+                                updateGantt(test);
+                            }
+                            break;
+                        default: //graph
+                            _graphManager.updateGraphStream(test);
+                            _graphStream = _graphManager.getGraph();
+                            _graphUpdater.updateGraph(_graphStream);
+
+                    }
+                }
+            });
+        }
     }
 
     private void updateTable(List<GraphNode> update) {
