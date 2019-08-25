@@ -65,16 +65,18 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
 
     //Private Fields
     private IObservable _observableAlgorithm;
-    private SingleGraph _graphStream;
     private IIO _io;
-    private GraphManager _graphManager;
-    private GraphUpdater _graphUpdater;
-    private ProcessorColourHelper _processColourHelper;
     private ITimerObservable _observableTimer;
     private ObservableList<MockGraphNode> _tablePopulationList = FXCollections.observableArrayList();
+
+    private SingleGraph _graphStream;
+    private GraphManager _graphManager;
+    private GraphUpdater _graphUpdater;
+    private GanttManager _ganttManager;
+    private ProcessorColourHelper _processColourHelper;
     private SelectedTab _currentTab;
+
     private Map<String, GraphNode> _latestUpdateMap;
-    private ViewPanel _viewPanel;
     private Map<Integer, Map<String, GraphNode>> _updateThreadMap = new HashMap<>();
     private Map<Integer, Integer> _updateStatisticsMap = new HashMap<>();
 
@@ -90,26 +92,29 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     public Text numberOfThreads;
     public Text currentScheduleCost;
     public Text numberOfIterations;
-    public Text branchesPruned;
-    public Text currentLowerBound;
     public Text currentMemoryUsage;
     public Text stats;
 
+    //Graph pane
+    private ViewPanel _viewPanel;
     public TabPane visualsContainer;
     public Pane graphPane;
     public SwingNode swingNode;
 
+    //Gantt pane
     public Pane ganttPane;
     private GanttChart<Number, String> ganttChart;
     public Button spriteButton;
     public Button floppyButton;
 
+    //Table pane
     public TableView<MockGraphNode> scheduleResultsTable;
     public TableColumn<MockGraphNode, String> taskIDColumn;
     public TableColumn<MockGraphNode, Integer> startTimeColumn;
     public TableColumn<MockGraphNode, Integer> endTimeColumn;
     public TableColumn<MockGraphNode, Integer> assignedProcessorColumn;
 
+    //Legend pane
     public JFXListView<String> legendListView;
     public JFXComboBox<String> comboBox;
 
@@ -200,9 +205,9 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         //Create graphstream view panel
         _viewPanel = _graphUpdater.addDefaultView(false);
         _viewPanel.setMinimumSize(new Dimension(660,530)); //Window size
-        _graphUpdater.setMouseManager(_viewPanel);
         _viewPanel.setOpaque(false);
-        _viewPanel.setBackground(Color.BLACK);
+        _viewPanel.setBackground(Color.getHSBColor(0, 0, 25));
+        _graphUpdater.setMouseManager(_viewPanel);
 
         //Assign graph using swing node
         SwingUtilities.invokeLater(() -> {
@@ -224,40 +229,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      * initializeGantt - create gantt component and its xAxis + YAxis properties
      */
     private void initializeGantt() {
-        //Gantt chart initialize
-        NumberAxis xAxis = new NumberAxis();
-        CategoryAxis yAxis = new CategoryAxis();
-        ganttChart = new GanttChart<>(xAxis, yAxis);
-        ganttPane.getChildren().add(ganttChart);
-        ganttChart.getStylesheets().add(getClass().getResource("/view/stylesheet.css").toExternalForm()); //style
-
-        //ganttchart fx properties
-        ganttChart.setPrefWidth(650);
-        ganttChart.setPrefHeight(500);
-        ganttChart.setLayoutY(10);
-        ganttChart.setLegendVisible(false);
-        ganttChart.setBlockHeight(50);
-        ganttChart.setAlternativeRowFillVisible(false);
-        ganttChart.setHorizontalGridLinesVisible(false);
-        ganttChart.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-
-        //x axis (xValue=Starttime, lengthMs=Worktime)
-        xAxis.setLabel("Start time (s)");
-        xAxis.setTickUnit(50);
-        xAxis.setAutoRanging(false);
-        xAxis.setLowerBound(0);
-        xAxis.setUpperBound(_observableAlgorithm.getMaximumPossibleCost());
-        xAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
-
-        //y axis (processor count)
-        List<String> processors = new ArrayList<>();
-        for (int i = 0; i < _io.getNumberOfProcessorsForTask(); i++) {
-            processors.add(Integer.toString(i));
-        }
-        yAxis.setLabel("Processor(s)");
-        yAxis.setTickLabelGap(20);
-        yAxis.setCategories(FXCollections.observableList(processors));
-        yAxis.setStyle("-fx-font-family: 'Space Mono', monospace;");
+        _ganttManager = new GanttManager(ganttChart, ganttPane, _io.getNumberOfProcessorsForTask(), _observableAlgorithm.getMaximumPossibleCost());
+        ganttChart = _ganttManager.getGanttChart();
     }
 
     /**
@@ -339,12 +312,15 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      * initializeTable - create table component with appropriate column ids
      */
     private void initializeTable() {
+        Comparator<String> stringToIntComparator = Comparator.comparingInt(Integer::parseInt);
+
+        //Update appropriate properties of table values
         taskIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        Comparator<String> stringToIntComparator = (o1, o2) -> Integer.compare(Integer.parseInt(o1), Integer.parseInt(o2));
         taskIDColumn.setComparator(stringToIntComparator);
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
         endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
         assignedProcessorColumn.setCellValueFactory((new PropertyValueFactory<>("processor")));
+
         scheduleResultsTable.setItems(_tablePopulationList);
     }
 
@@ -361,40 +337,36 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
 
         if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber) { //Update depending on combo box values
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-
-                    //update graph visualization using runnable
-                    try {
-                        List<GraphNode> test = new ArrayList<>(update.values());
-                        if(selectedThread == _io.getNumberOfProcessorsForParallelAlgorithm()){
-                            updateTable(test);
-                            for (Node node : _graphStream) {
-                                updateGantt(test);
-                            }
-                            _graphManager.updateGraphStream(test);
-                            _graphStream = _graphManager.getGraph();
-                            _graphUpdater.updateGraph(_graphStream);
-                        }else{
-                            switch (_currentTab) {
-                                case TABLE:
-                                    updateTable(test);
-                                    break;
-                                case GANTT:
-                                    for (Node node : _graphStream) {
-                                        updateGantt(test);
-                                    }
-                                    break;
-                                default: //graph
-                                    _graphManager.updateGraphStream(test);
-                                    _graphStream = _graphManager.getGraph();
-                                    _graphUpdater.updateGraph(_graphStream);
-                            }
+            Platform.runLater(() -> {
+                //update graph visualization using runnable
+                try {
+                    List<GraphNode> test = new ArrayList<>(update.values());
+                    if(selectedThread == _io.getNumberOfProcessorsForParallelAlgorithm()){
+                        updateTable(test);
+                        for (Node node : _graphStream) {
+                            updateGantt(test);
                         }
-                    } catch (NullPointerException e) {
-                        System.out.println("Too fast"); //null pointer for thread race -> won't break algorithm
+                        _graphManager.updateGraphStream(test);
+                        _graphStream = _graphManager.getGraph();
+                        _graphUpdater.updateGraph(_graphStream);
+                    }else{
+                        switch (_currentTab) {
+                            case TABLE:
+                                updateTable(test);
+                                break;
+                            case GANTT:
+                                for (Node node : _graphStream) {
+                                    updateGantt(test);
+                                }
+                                break;
+                            default: //graph
+                                _graphManager.updateGraphStream(test);
+                                _graphStream = _graphManager.getGraph();
+                                _graphUpdater.updateGraph(_graphStream);
+                        }
                     }
+                } catch (NullPointerException e) {
+                    System.out.println("Thread is too fast!"); //null pointer for thread race -> won't break algorithm
                 }
             });
         }
@@ -415,6 +387,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             if(node.getStartTime() != -1 && node.getProcessor() != -1){
                 MockGraphNode tempMockGraphNode = new MockGraphNode(node.getId(),node.getWeight(),node.getProcessor(),node.getStartTime());
                 colorMap.put(tempMockGraphNode.getId(),_processColourHelper.getProcessorColour(tempMockGraphNode.getProcessor()));
+
+                //Get specific cell of id and set border colour to processor colour
                 taskIDColumn.setCellFactory(cell -> new TableCell<MockGraphNode,String>() {
                     @Override
                     protected void updateItem(String item, boolean empty) {
@@ -438,7 +412,6 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
      * @param graphNodeList - list of nodes to update processor and start time
      */
     public void updateGantt(List<GraphNode> graphNodeList) {
-        XYChart.Series series1 = new XYChart.Series();
         ganttChart.getData().clear();
 
         //Get list of processors
@@ -447,18 +420,13 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
             processors.add(Integer.toString(i));
         }
 
-        //Assign colour for processor list
+        //Assign position and colour for processor list
         for (String processor : processors) {
             for (GraphNode graphNode : graphNodeList) {
                 String processorColour = _processColourHelper.getProcessorColour(graphNode.getProcessor());
-                if (Integer.toString(graphNode.getProcessor()).equals(processor)) {
-                    series1.getData().add(new XYChart.Data(graphNode.getStartTime(), processor,
-                            new GanttChart.Properties(graphNode.getWeight(),
-                                    processorColour, graphNode.getId())));
-                }
+                ganttChart.getData().add(_ganttManager.updateGanttChart(processor, processorColour, graphNode));
             }
         }
-        ganttChart.getData().addAll(series1);
     }
 
     /**
@@ -471,9 +439,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
         int selectedThread = comboBox.getSelectionModel().getSelectedIndex();
 
         if (selectedThread == 0 || selectedThread == -1 || selectedThread == threadNumber) { //Update depending on combo box values
-
-            currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + ((upperBound == -1) ? "-" : upperBound));
             // Get memory usage in MBs
+            currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + ((upperBound == -1) ? "-" : upperBound));
             long memoryUsage = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / KB_TO_MB_CONVERSION_RATE;
             currentMemoryUsage.setText(CURRENT_MEMORY_USAGE + memoryUsage + MB_TEXT);
         }

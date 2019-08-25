@@ -105,14 +105,14 @@ public class GraphUpdater extends Viewer {
                 //Update nodes information using Sprites
                 Sprite sprite = _spriteManager.getSprite(node.getId());
                 sprite.addAttribute("ui.label",
-                        "Start time: " + node.getAttribute("startTime") + "s");
+                        "Start [P" + node.getAttribute("processor") + "]: " + node.getAttribute("startTime") + "s");
                 sprite.addAttribute("ui.style",
                         "\ttext-alignment: under;\n"
                                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
                                 + "\ttext-background-color: rgba(255,255,255,180);\n"
                                 + "\ttext-background-mode: rounded-box;\n"
                                 + "\tpadding: 3px;\n"
-                                + "\ttext-size: 15px;\n");
+                                + "\ttext-size: 16px;\n");
                 sprite.attachToNode(node.getId());
 
                 //Handle sprite display
