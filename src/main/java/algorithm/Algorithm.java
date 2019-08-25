@@ -23,6 +23,7 @@ public abstract class Algorithm implements IObservable {
     protected int _branchesPruned;
     protected int _numberOfIterations;
     private int _bestScheduleCost;
+    protected int _threadNumber;
 
     /**
      * An instance of Algorithm requires the input graph to run the algorithm on,
@@ -87,7 +88,7 @@ public abstract class Algorithm implements IObservable {
         for (IObserver observer : _observerList) {
             observer.updateIterationInformation(threadNumber, _branchesPruned, _numberOfIterations, getCurrentLowerBound());
             observer.updateScheduleInformation(threadNumber, getCurrentBestSolution());
-            observer.algorithmStopped(getBestScheduleCost());
+            observer.algorithmStopped(threadNumber, getBestScheduleCost());
         }
     }
 

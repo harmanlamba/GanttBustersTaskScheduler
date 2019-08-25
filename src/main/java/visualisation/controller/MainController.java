@@ -159,14 +159,16 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
     }
 
     @Override
-    public void algorithmStopped(int bestCost) {
+    public void algorithmStopped(int thread, int bestCost) {
         _observableTimer.stop();
+        _updateThreadMap.put(_io.getNumberOfProcessorsForParallelAlgorithm(), _updateThreadMap.get(thread));
 
         //Combo box create solution selection
         ObservableList<String> comboBoxList = comboBox.getItems();
         Platform.runLater(() -> {
             comboBoxList.add("Solution stats");
             comboBox.getSelectionModel().selectLast();
+
         });
 
         //Set status and stats
@@ -323,22 +325,11 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 public void run() {
                     //update graph visualization using runnable
                     List<GraphNode> test = new ArrayList<>(update.values());
-
-                    switch (_currentTab) {
-                        case TABLE:
-                            updateTable(test);
-                            break;
-                        case GANTT:
-                            for (Node node : _graphStream) {
-                                updateGantt(test);
-                            }
-                            break;
-                        default: //graph
-                            _graphManager.updateGraphStream(test);
-                            _graphStream = _graphManager.getGraph();
-                            _graphUpdater.updateGraph(_graphStream);
-
-                    }
+                    updateTable(test);
+                    updateGantt(test);
+                    _graphManager.updateGraphStream(test);
+                    _graphStream = _graphManager.getGraph();
+                    _graphUpdater.updateGraph(_graphStream);
                 }
             });
         }

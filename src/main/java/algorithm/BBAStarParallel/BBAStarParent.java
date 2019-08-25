@@ -71,30 +71,31 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         }
         return bounds;
     }
+
     @Override protected int getBestScheduleCost() {
         return _currentBestCosts.get(_bestSolutionIndex);
     }
+
     @Override protected int getCurrentLowerBound() {
         // Do not implement
         return 0;
     }
+
     @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
         _solved = true;
     }
 
-
-
-
-    //TODO: fix these mofos
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
+
     @Override public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
         _numberOfIterations = iterations;
         notifyObserversOfIterationChange(thread);
     }
+
     @Override public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
     }

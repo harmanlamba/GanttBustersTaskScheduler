@@ -57,11 +57,6 @@ public class FXApplication extends Application {
         new Thread(() -> {
             io.write(AlgorithmBuilder.getAlgorithmBuilder().getAlgorithm().solveAlgorithm());
         }).start();
-
-
-
-
     }
 
-    //TODO: Override stop() method to stop algorithm
 }
