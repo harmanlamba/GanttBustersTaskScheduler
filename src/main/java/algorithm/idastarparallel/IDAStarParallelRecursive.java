@@ -165,7 +165,6 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
 
 
         if (_solved) {
-            System.out.println("thread " + Thread.currentThread().getId() + " has stopped");
             return true;
         }
 
@@ -227,12 +226,10 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
 
                 if (_overallBestFinishTime > currentFinishedTime || _overallBestFinishTime == -1) {
                     _overallBestFinishTime = currentFinishedTime;
-                    setOverallBestSchedule();
-                }
-
-                if (_threadBestFinishTime > currentFinishedTime || _threadBestFinishTime == -1) {
                     _threadBestFinishTime = currentFinishedTime;
-                    System.out.println("thread " + Thread.currentThread().getId() + " has finished with best time of " + _threadBestFinishTime);
+                    setOverallBestSchedule();
+                } else if (_threadBestFinishTime > currentFinishedTime || _threadBestFinishTime == -1) {
+                    _threadBestFinishTime = currentFinishedTime;
                 }
                 _solved = true;
                 return _solved; // If the solution is most optimal, end search
@@ -318,13 +315,9 @@ public class IDAStarParallelRecursive extends Algorithm implements  Runnable {
         for (DefaultWeightedEdge edge : _jGraph.incomingEdgesOf(jGraphNode)) {
             GraphNode parent = _taskInfo.get(((GraphNode) _jGraph.getEdgeSource(edge)).getId());
             if (parent.getProcessor() != processorNumber) {
-//                if (parent.getProcessor() == -1) {
-//                    System.out.println("STOP");
 //                }
                 int cost = parent.getStartTime() + parent.getWeight(); //parent finish time
                 cost += (int) _jGraph.getEdgeWeight(edge); //communication cost
-//                System.out.printf("maxTimes Length: " + maxTimes.length);
-//                System.out.println("parent proc: " + parent.getProcessor());
                 if (cost > maxTimes[parent.getProcessor()]) {
                     maxTimes[parent.getProcessor()] = cost;
                 }
