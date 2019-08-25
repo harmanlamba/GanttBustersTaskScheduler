@@ -301,6 +301,8 @@ public class MainController implements IObserver, ITimerObserver, Initializable 
                 graphPane.setVisible(false);
                 scheduleResultsTable.setVisible(false);
                 ganttPane.setVisible(false);
+                currentScheduleCost.setText(CURRENT_SCHEDULE_COST_TEXT + "-");
+                numberOfIterations.setText(NUMBER_OF_ITERATIONS_TEXT + "-");
             }
 
         });
