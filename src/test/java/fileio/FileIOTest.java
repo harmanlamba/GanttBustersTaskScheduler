@@ -125,6 +125,10 @@ public class FileIOTest {
         }
     }
 
+    /**
+     * Test an input DOT file with an invalid format, specifically, there is an extra space
+     * preceeding the node id. Where it should be <TAB>Node, it is <TAB><SPACE>Node.
+     */
     @Test
     public void testInvalidFormat() {
         try {
@@ -135,6 +139,10 @@ public class FileIOTest {
         }
     }
 
+    /**
+     * Test an input DOT file with an edge that includes a node which hasn't been declared
+     * in the file.
+     */
     @Test
     public void testMissingNodes() {
         try {
@@ -170,12 +178,4 @@ public class FileIOTest {
             assertEquals(e.getMessage(),"Invalid Format");
         }
     }
-
-
-    // TODO: Apply regex to output DOT files to check for the correct format
-    @Test
-    public void testOutputFileFormat() {
-
-    }
-
 }
