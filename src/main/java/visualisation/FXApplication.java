@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import visualisation.controller.timer.AlgorithmTimer;
@@ -33,11 +34,12 @@ public class FXApplication extends Application {
         Parent root = loader.load();
 
         //Show stage
-        Scene scene = new Scene(root, 990, 590);
-        scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono&display=swap");
+        Scene scene = new Scene(root, 1005, 610);
+        scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap");
         primaryStage.setScene(scene); //total window size
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Visualization screen");
+        primaryStage.setTitle("GanttBuster's Schedule");
+        primaryStage.getIcons().add(new Image("/images/logo.png"));
         primaryStage.show();
 
         //On exit, stop program

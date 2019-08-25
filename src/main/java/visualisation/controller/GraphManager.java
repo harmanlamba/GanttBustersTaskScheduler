@@ -33,7 +33,6 @@ public class GraphManager {
             Node tempChildNode = _graphStream.getNode(edge.getEdgeTo().getId());
             Edge edgeGraphStream = _graphStream.addEdge(Integer.toString(edgeID),tempParentNode, tempChildNode, true); //True = directed edge
             edgeGraphStream.addAttribute("weight", edge.getEdgeWeight());
-
         }
     }
 

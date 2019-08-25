@@ -32,8 +32,8 @@ public class GraphUpdater extends Viewer {
     private ProcessorColourHelper _processorColourHelper;
 
     //Toggle properties
-    private boolean isShowSprite = false;
-    private boolean isShowFloppy = false;
+    private boolean _isShowSprite = false;
+    private boolean _isShowFloppy = false;
 
     public GraphUpdater(Graph graph, ThreadingModel threadingModel, ProcessorColourHelper processorColourHelper) {
         super(graph, threadingModel);
@@ -51,6 +51,11 @@ public class GraphUpdater extends Viewer {
         //Graph attributes
         _graph.addAttribute("ui.antialias");
         _graph.addAttribute("ui.quality");
+        _graph.addAttribute("ui.stylesheet", "graph {\n" +
+                "fill-mode: plain;\n" +
+                "fill-color: #414141;\n" +
+                "padding: 40px;\n" +
+                "}");
 
         //Style list of nodes
         for (Node node : _graph) {
@@ -65,8 +70,8 @@ public class GraphUpdater extends Viewer {
             Edge edge = _graph.getEdge(i);
             edge.addAttribute("ui.label",edge.getAttribute("weight") + "");
             edge.addAttribute("ui.style",
-                    "fill-mode: plain; fill-color: rgba(0,0,0,100);\n"
-                            + "\ttext-size: 17px; text-color: rgba(0,0,0,255);\n"
+                    "fill-mode: plain; fill-color: rgba(255,255,255,100);\n"
+                            + "\ttext-size: 17px; text-color: rgba(255,255,255,255);\n"
                             + "\ttext-alignment: along;\n");
         }
 
@@ -104,14 +109,14 @@ public class GraphUpdater extends Viewer {
                 sprite.addAttribute("ui.style",
                         "\ttext-alignment: under;\n"
                                 + "\tfill-mode: plain; fill-color: rgba(0,0,0,0);\n"
-                                + "\ttext-background-color: rgba(222,222,222,100);\n"
+                                + "\ttext-background-color: rgba(255,255,255,180);\n"
                                 + "\ttext-background-mode: rounded-box;\n"
                                 + "\tpadding: 3px;\n"
                                 + "\ttext-size: 15px;\n");
                 sprite.attachToNode(node.getId());
 
                 //Handle sprite display
-                if (!isShowSprite) {
+                if (!_isShowSprite) {
                     _spriteManager.getSprite(node.getId()).addAttribute("ui.hide");
                 } else {
                     _spriteManager.getSprite(node.getId()).removeAttribute("ui.hide");
@@ -131,10 +136,10 @@ public class GraphUpdater extends Viewer {
      * @param graph
      */
     public void toggleSprites(Graph graph) {
-        isShowSprite = !isShowSprite; //enable sprites in updateGraph
+        _isShowSprite = !_isShowSprite; //enable sprites in updateGraph
         List<Node> nodesList = new ArrayList<>(graph.getNodeSet());
 
-        if (!isShowSprite) {
+        if (!_isShowSprite) {
             for (Node node : nodesList) {
                 _spriteManager.getSprite(node.getId()).addAttribute("ui.hide");
             }
@@ -146,13 +151,21 @@ public class GraphUpdater extends Viewer {
     }
 
     public void toggleMouseManager(ViewPanel viewPanel) {
-        isShowFloppy = !isShowFloppy;
+        _isShowFloppy = !_isShowFloppy;
 
-        if (isShowFloppy) {
+        if (_isShowFloppy) {
             viewPanel.setMouseManager(null);
         } else {
             setMouseManager(viewPanel);
         }
+    }
+
+    public Boolean getSpriteFlag() {
+        return _isShowSprite;
+    }
+
+    public Boolean getFloppyFlag() {
+        return _isShowFloppy;
     }
 
     /**
@@ -160,7 +173,7 @@ public class GraphUpdater extends Viewer {
      * @param viewPanel
      */
     public void setMouseManager(ViewPanel viewPanel) {
-        if (!isShowFloppy) {
+        if (!_isShowFloppy) {
             MouseManager manager = new DefaultMouseManager() {
 
                 @Override
