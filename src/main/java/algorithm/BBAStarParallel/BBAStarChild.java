@@ -106,6 +106,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
             }
         }
         if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
+            BBAStarParent._currentBestCosts.put(_thread, _upperBound);
             System.out.println("Thread " + _thread + ": " + _upperBound);
             notifyObserversOfAlgorithmEnding();
         }

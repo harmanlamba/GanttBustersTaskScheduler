@@ -38,7 +38,6 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         int[] bounds = createBoundForThreads();
 
         for (int i=0; i < _numProcParallel; i++) {
-            //TODO: give deep copy of _graph
             IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
             child.add(this);
             _observableList.add(child);
@@ -48,30 +47,15 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         }
 
         try {
-            synchronized(this){
-                while(!_solved){
-                    wait();
-                }
+            while(!_solved){
+                Thread.sleep(100);
             }
+            _threadList.get(_bestSolutionIndex).join();
             System.out.println("hi");
-            try {
-                _threadList.get(_bestSolutionIndex).join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return _currentBestSolutions.get(_bestSolutionIndex);
-    }
-
-
-    //TODO: Implement these mofos
-    @Override public void algorithmStopped(int thread, int bestScheduleCost) {
-        _bestSolutionIndex = thread;
-        synchronized(this){
-            notifyAll();
-        }
     }
 
 
@@ -97,12 +81,17 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         // Do not implement
         return 0;
     }
+    @Override public void algorithmStopped(int thread, int bestScheduleCost) {
+        _bestSolutionIndex = thread;
+        _solved = true;
+    }
+
 
 
 
     //TODO: fix these mofos
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
-        return _currentBestSolutions.get(0);
+        return _currentBestSolutions.get(_bestSolutionIndex);
     }
     @Override public void updateIterationInformation(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
