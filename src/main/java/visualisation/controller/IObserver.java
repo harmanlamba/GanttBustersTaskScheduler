@@ -4,28 +4,29 @@ import graph.GraphNode;
 
 import java.util.Map;
 
+/**
+ * IOObserver - observes algorithm and gets notified when there are any changes/better solution
+ */
 public interface IObserver {
+    /**
+     * updateScheduleInformation - updates the main controller method given observable
+     * @param threadNumber - current thread on view
+     * @param map - map of data
+     */
+    void updateScheduleInformation(int threadNumber, Map<String, GraphNode> map);
 
     /**
-     * Used to let the observer know that updates have been made
-     * to schedule information
-     * @param map
+     * algorithmStopped - calls observers when algorithm is completed
+     * @param thread - current thread on view
+     * @param bestScheduleCost - current schedule cost value
      */
-    void updateScheduleInformation(Map<String, GraphNode> map);
+    void algorithmStopped(int thread, int bestScheduleCost);
 
     /**
-     * Used to let the observer know that the algorithm has stopped
-     * as well as the cost of the optimal schedule
-     * @param bestScheduleCost is the cost of the optimal schedule
+     * updateIterationInformation - updates the amount of iterations algorithm made
+     * @param threadNumber - current thread on view
+     * @param upperBound - current upperbound of algorithm
+     * @param numIterations - number of iterations completed by the algorithm
      */
-    void algorithmStopped(int bestScheduleCost);
-
-    /**
-     * Used to let the observer know statistics after an iteration
-     * @param prunedBranches is the number of branches pruned thus far
-     * @param iterations is the number of interations made thus far
-     * @param lowerBound is the current lower bound being searched
-     */
-    void updateIterationInformation(int prunedBranches, int iterations, int lowerBound);
+    void updateIterationInformation(int threadNumber, int upperBound, int numIterations);
 }
-

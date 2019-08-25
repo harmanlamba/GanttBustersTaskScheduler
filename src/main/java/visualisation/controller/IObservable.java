@@ -1,41 +1,42 @@
 package visualisation.controller;
 
+/**
+ * IObservable - notifies the observer of changes that are relevant
+ */
 public interface IObservable {
 
     /**
-     * Used to add observer to the implementing class
+     * Used to add observer to the implementing class to listen
      * @param e is the instance of observer to be added
      */
     void add(IObserver e);
 
     /**
-     * Used to remove observer to the implementing class
+     * Used to remove observer listening to the implementing class
      * @param e is the instance of observer to be removed
      */
     void remove(IObserver e);
 
     /**
-     * Used to notify subscribed observers of any scheduling
-     * updates made
+     * notifyObserversOfSchedulingUpdate - notifies observers of new schedule produced on thread view
+     * @param threadNumber - current thread view
      */
-    void notifyObserversOfSchedulingUpdate();
+    void notifyObserversOfSchedulingUpdate(int threadNumber);
 
     /**
-     * Used to notify subscribed observers that the algorithm
-     * has completed
+     * notifyObserversOfAlgorithmEnding - notifies observers of when algorithm is finished
+     * @param threadNumber - current thread view
      */
-    void notifyObserversOfAlgorithmEnding();
+    void notifyObserversOfAlgorithmEnding(int threadNumber);
 
     /**
-     * Used to notify subscribed observers of any changes made
-     * after an iteration of the algorithm
+     * notifyObserversOfIterationChange - notifies observers of iteration change in algorithm
+     * @param threadNumber - current thread view
      */
-    void notifyObserversOfIterationChange();
+    void notifyObserversOfIterationChange(int threadNumber);
 
     /**
-     * Getter method for the maximum possible cost a.k.a.
-     * the upper bound
-     * @return an int representing the max possible cost
+     * getMaximumPossibleCost - notify observers of getting current cost of path from algorithm
      */
     int getMaximumPossibleCost();
 }
