@@ -1,17 +1,20 @@
 package algorithm.idastarbase;
 
+import algorithm.idastarparallel.IDAStarParallel;
 import exception.InputFileException;
 import fileio.IO;
 import graph.Graph;
 import graph.GraphNode;
 import org.junit.Test;
+import org.junit.Assert.*;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class IDAStarParallelTest {
-    private final static String NUM_PROC_PARALLEL = "4";
+    private final static String NUM_PROC_PARALLEL = "1";
     //File arrays for input file locations
     private final static String[] FILE1_PROC2 = new String[]{"src/main/resources/e1.dot", "2", "-p", NUM_PROC_PARALLEL};
     private final static String[] FILE2_PROC2 = new String[]{"src/main/resources/e2.dot", "2", "-p", NUM_PROC_PARALLEL};
@@ -27,7 +30,7 @@ public class IDAStarParallelTest {
     private Map<String, GraphNode> getIDAStarSolution(String[] file) throws InputFileException {
         IO io = new IO(file);
         Graph graph = new Graph(io.getNodeMap(), io.getEdgeList());
-        IDAStarBase algorithm = new IDAStarBase(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
+        IDAStarParallel algorithm = new IDAStarParallel(graph, io.getNumberOfProcessorsForTask(), io.getNumberOfProcessorsForParallelAlgorithm());
         return algorithm.solve();
     }
 
@@ -48,11 +51,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE1Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE1_PROC2), 22, 6)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC2), 22, 6));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -61,11 +60,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE2Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE2_PROC2), 528, 53)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC2), 528, 53));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -74,11 +69,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE3Proc() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 48, 7)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE3_PROC2), 48, 7));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -87,11 +78,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE4Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE4_PROC2), 40, 10)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC2), 40, 10));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -100,11 +87,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE5Proc2() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE5_PROC2), 270, 80)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE5_PROC2), 270, 80));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -113,11 +96,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE1Proc4() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE1_PROC4), 15, 7)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE1_PROC4), 15, 7));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -126,11 +105,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE2Proc4() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE2_PROC4), 528, 53)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE2_PROC4), 528, 53));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -138,11 +113,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE3Proc4() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE3_PROC4), 48, 7)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE3_PROC4), 48, 7));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -152,11 +123,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE4Proc4() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE4_PROC4), 40, 10)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE4_PROC4), 40, 10));
         } catch (InputFileException e) {
             assert(false);
         }
@@ -165,11 +132,7 @@ public class IDAStarParallelTest {
     @Test
     public void testE5Proc4() {
         try {
-            if (solutionIsOptimal(getIDAStarSolution(FILE5_PROC4), 147, 80)) {
-                assertTrue(true);
-            } else {
-                assert(false);
-            }
+            assertTrue(solutionIsOptimal(getIDAStarSolution(FILE5_PROC4), 147, 80));
         } catch (InputFileException e) {
             assert(false);
         }
