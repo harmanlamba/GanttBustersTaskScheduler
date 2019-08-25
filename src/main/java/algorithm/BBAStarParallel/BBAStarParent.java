@@ -3,8 +3,6 @@ package algorithm.BBAStarParallel;
 import algorithm.Algorithm;
 import graph.Graph;
 import graph.GraphNode;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +37,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
 
         for (int i=0; i < _numProcParallel; i++) {
             IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
-            child.add(this);
+            child.addBBA(this);
             _observableList.add(child);
             Thread thread = new Thread(child);
             _threadList.add(thread);
@@ -81,7 +79,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         // Do not implement
         return 0;
     }
-    @Override public void algorithmStopped(int thread, int bestScheduleCost) {
+    @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
         _solved = true;
     }
@@ -93,12 +91,12 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
-    @Override public void updateIterationInformation(int thread, int prunedBranches, int iterations, int lowerBound) {
+    @Override public void updateIterationInformationBBA(int thread, int prunedBranches, int iterations, int lowerBound) {
         _branchesPruned = _branchesPruned;
         _numberOfIterations = iterations;
         notifyObserversOfIterationChange(thread);
     }
-    @Override public void updateScheduleInformation(int thread) {
+    @Override public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
     }
 

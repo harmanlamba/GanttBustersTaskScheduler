@@ -147,7 +147,7 @@ public class GanttChart<X,Y> extends XYChart<X,Y> {
                         region.setCenterShape(false);
                         region.setCacheShape(false);
 
-                        //Set positioning and add text with padding
+                        //Set positioning and addBBA text with padding
                         region.setMaxHeight(rectangle.getHeight());
                         region.setMinHeight(rectangle.getHeight());
                         region.setPrefHeight(rectangle.getHeight());

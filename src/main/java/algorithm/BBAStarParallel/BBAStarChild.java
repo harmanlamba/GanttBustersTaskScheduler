@@ -4,13 +4,12 @@ import graph.Graph;
 import graph.GraphNode;
 import graph.Temp;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import java.util.*;
 
 public class BBAStarChild implements IBBAObservable, Runnable {
 
+    private final static int NUMBER_OF_GRAPH_UPDATES = 9000;
     private final static int DEPTH_OF_STATES_TO_STORE = 10;
     private List<IBBAObserver> _BBAObserverList;
     private Graph _graph;
@@ -23,6 +22,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
     private int _numProcTask;
     private Set<Set<Stack<Temp>>> _previousStates;
     private int _thread;
+    private int _graphUpdates;
 
 
     public BBAStarChild(Graph graph, int numProcTask, int thread, int bound) {
@@ -37,6 +37,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         _depth = 0;
         _previousStates = new HashSet<>();
         _processorAllocation = new ArrayList<>();
+        _graphUpdates = 0;
         for (int i = 0; i < numProcTask; i++) {
             _processorAllocation.add(new Stack<GraphNode>());
         }
@@ -67,7 +68,10 @@ public class BBAStarChild implements IBBAObservable, Runnable {
                     if (cost <= _upperBound) {
                         _upperBound = cost;
                         assignCurrentBestSolution();
-                        notifyObserversOfSchedulingUpdate();
+                        if (_graphUpdates % NUMBER_OF_GRAPH_UPDATES == 0) {
+                            notifyObserversOfSchedulingUpdateBBA();
+                        }
+                        _graphUpdates += 1;
                     }
                 } else {
                     for (GraphNode freeTask : new ArrayList<>(_taskInfo.values())) {
@@ -108,7 +112,7 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         if (BBAStarParent._currentBestSolutions.get(_thread) != null) {
             BBAStarParent._currentBestCosts.put(_thread, _upperBound);
             System.out.println("Thread " + _thread + ": " + _upperBound);
-            notifyObserversOfAlgorithmEnding();
+            notifyObserversOfAlgorithmEndingBBA();
         }
     }
     private int getStartTime(GraphNode task, int processor) {
@@ -209,23 +213,20 @@ public class BBAStarChild implements IBBAObservable, Runnable {
         }
     }
 
-    @Override public void add(IBBAObserver e) {
+    @Override public void addBBA(IBBAObserver e) {
         _BBAObserverList.add(e);
     }
-    @Override public void remove(IBBAObserver e) {
+    @Override public void removeBBA(IBBAObserver e) {
         _BBAObserverList.remove(e);
     }
-    @Override public void notifyObserversOfSchedulingUpdate() {
+    @Override public void notifyObserversOfSchedulingUpdateBBA() {
         for (IBBAObserver observer : _BBAObserverList) {
-            observer.updateScheduleInformation(_thread);
+            observer.updateScheduleInformationBBA(_thread);
         }
     }
-    @Override public void notifyObserversOfAlgorithmEnding() {
+    @Override public void notifyObserversOfAlgorithmEndingBBA() {
         for (IBBAObserver observer : _BBAObserverList) {
-            observer.algorithmStopped(_thread, _upperBound);
+            observer.algorithmStoppedBBA(_thread, _upperBound);
         }
-    }
-    @Override public Map<String, GraphNode> getBestPath() {
-        return BBAStarParent._currentBestSolutions.get(_thread);
     }
 }

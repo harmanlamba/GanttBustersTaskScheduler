@@ -197,7 +197,7 @@ public class IDAStarBase extends Algorithm {
                     if (freeTask.isFree()) {
                         for (int i = 0; i < _numProcTask; i++) {
                             // Grabs the next free task that is ready to schedule and tries scheduling it on a processor
-                            // The next few if statements remove redundant scheduling onto homogeneous processors
+                            // The next few if statements removeBBA redundant scheduling onto homogeneous processors
                             // that are all empty
                             if (_numProcTask > 2) { // If the total number of processors is greater than 2, then there may be homogeneous processors
                                 int freeProc = getFreeProc();
@@ -393,7 +393,7 @@ public class IDAStarBase extends Algorithm {
 
     /**
      * Backtracking method which unschedules a task and updates its children so that they can no longer be scheduled
-     * @param processorNumber - the processor number to remove the latest scheduled task from
+     * @param processorNumber - the processor number to removeBBA the latest scheduled task from
      */
     private void sanitise(int processorNumber) {
         // Unschedules node, adds it to free task list and set it to free
