@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A child class of Algorithm which uses the BBA* algorithm to solve the task scheduling problem with parallelisation
+ * */
 public class BBAStarParent extends Algorithm implements IBBAObserver {
 
     private List<Thread> _threadList;
@@ -20,6 +23,12 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     private int _bestSolutionIndex;
     private boolean _solved;
 
+    /**
+     * Constructor for BBASTarParallel to instantiate the object
+     * @param g is a graph of the network
+     * @param numProcTask is the number of processors that the tasks needed to be scheduled onto
+     * @param numProcParallel is the number of processors the algorithm should be working on
+     */
     public BBAStarParent(Graph g, int numProcTask, int numProcParallel) {
         super(g, numProcTask, numProcParallel);
         _threadList = new ArrayList<>();
@@ -31,14 +40,23 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         _solved = false;
     }
 
+    /**
+     * The BBA* algorithm is paralellised by running a BBAStarChild algorithm on each processor in a new thread
+     * When the best solution is found, the threads will terminate
+     * @return the complete schedule solution
+     */
     @Override
     public Map<String, GraphNode> solve() {
         int[] bounds = createBoundForThreads();
-
+        // For each task
         for (int i=0; i < _numProcParallel; i++) {
             IBBAObservable child = new BBAStarChild(_graph.deepCopyGraph(), _numProcTask, i, bounds[i]);
+
+            // Add this parent object to the child and make it an observer of parent
             child.addBBA(this);
             _observableList.add(child);
+
+            // Create the child thread and start it
             Thread thread = new Thread(child);
             _threadList.add(thread);
             thread.start();
@@ -48,6 +66,7 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
             while(!_solved){
                 Thread.sleep(100);
             }
+            // When the best solution is found, end the thread
             _threadList.get(_bestSolutionIndex).join();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -56,7 +75,10 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
     }
 
 
-    //Complete
+    /**
+     * @return the sum of the weights of all tasks (nodes on graph), which is the
+     * initial upper bound
+     */
     private int initializeUpperBound() {
         int max = 0;
         for (GraphNode task : new ArrayList<>(_graph.get_vertexMap().values())) {
@@ -64,6 +86,11 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         }
         return max;
     }
+
+    /**
+     * Get the lower bound of each thread
+     * @return an array where each value entry represents the bound for a specific thread
+     */
     private int[] createBoundForThreads() {
         int[] bounds = new int[_numProcParallel];
         for (int i=0; i < _numProcParallel; i++) {
@@ -85,11 +112,20 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _currentBestCostsAndIterations.get(threadNumber)[1];
     }
 
+    /**
+     * Signals that the best schedule cost has been found on a thread, when called,
+     * this thread will terminate
+     * @param thread the thread with the best schedule cost
+     * @param bestScheduleCost
+     */
     @Override public void algorithmStoppedBBA(int thread, int bestScheduleCost) {
         _bestSolutionIndex = thread;
         _solved = true;
     }
 
+    /**
+     * @return the curent best complete schedule solution
+     */
     @Override public Map<String, GraphNode> getCurrentBestSolution() {
         return _currentBestSolutions.get(_bestSolutionIndex);
     }
@@ -99,6 +135,10 @@ public class BBAStarParent extends Algorithm implements IBBAObserver {
         return _bestSolutionIndex;
     }
 
+    /**
+     * Update the GUI with the scheduling update of a thread
+     * @param thread the thread which is being updated woth statistics
+     */
     @Override public void updateScheduleInformationBBA(int thread) {
         notifyObserversOfSchedulingUpdate(thread);
         if (_currentBestCostsAndIterations.get(thread) != null) {
